@@ -5,243 +5,642 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Мэр Мегаполиса — Полная версия</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, 'SF Pro Display', sans-serif; background: #000000; min-height: 100vh; color: #ffffff; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1 { text-align: center; padding: 20px; font-size: 1.6em; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 55px; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 20px; }
-        .resources-panel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .resource-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 24px; padding: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', 'Segoe UI', Helvetica, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.6em;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 55px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+        }
+
+        /* Ресурсы */
+        .resources-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .resource-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
         .resource-icon { font-size: 1.5em; }
         .resource-value { font-size: 1.3em; font-weight: bold; color: #ffd700; }
         .resource-label { font-size: 0.6em; opacity: 0.7; }
-        .profile-panel { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 60px; padding: 8px 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .profile-info { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #ffd700, #ff8c00); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5em; cursor: pointer; }
-        .username { font-weight: 600; font-size: 1.1em; cursor: pointer; }
-        .logout-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); padding: 6px 16px; border-radius: 30px; cursor: pointer; color: white; font-size: 0.8em; }
-        .section-title { font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); margin: 20px 0 10px 8px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .tab-btn { flex: 1; background: rgba(255,255,255,0.08); border: none; padding: 10px; border-radius: 30px; color: white; cursor: pointer; font-size: 0.75em; transition: all 0.2s; }
-        .tab-btn.active { background: rgba(138,180,248,0.3); border-bottom: 2px solid #ffd700; }
+
+        .section-title {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 20px 0 10px 8px;
+        }
+
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            padding: 10px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.75em;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: rgba(138, 180, 248, 0.3);
+            border-bottom: 2px solid #ffd700;
+        }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .buildings-grid, .upgrades-grid, .workers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .building-card, .upgrade-card, .worker-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; padding: 10px; text-align: center; cursor: pointer; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.2); position: relative; }
-        .building-card:hover, .upgrade-card:hover, .worker-card:hover { background: rgba(255,255,255,0.12); transform: scale(1.02); }
-        .building-icon, .upgrade-icon, .worker-icon { font-size: 1.8em; }
-        .building-name, .upgrade-name, .worker-name { font-size: 0.8em; font-weight: 500; }
+
+        /* Сетки */
+        .buildings-grid, .upgrades-grid, .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .building-card, .upgrade-card, .research-card, .event-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .building-card:hover, .upgrade-card:hover, .research-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.02);
+        }
+
+        .building-icon, .upgrade-icon, .research-icon { font-size: 1.8em; }
+        .building-name, .upgrade-name, .research-name { font-size: 0.8em; font-weight: 500; }
         .building-stats, .upgrade-stats { font-size: 0.6em; opacity: 0.7; }
-        .building-price, .upgrade-price { color: #ffd700; font-size: 0.65em; margin-top: 5px; }
+        .building-price, .upgrade-price, .research-price { color: #ffd700; font-size: 0.65em; margin-top: 5px; }
         .building-count, .upgrade-level { position: absolute; top: 5px; right: 8px; font-size: 0.65em; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 20px; }
-        .progress-bar { background: rgba(255,255,255,0.1); border-radius: 20px; height: 6px; overflow: hidden; margin: 8px 0; }
+
+        .locked { opacity: 0.5; cursor: default; }
+        .locked:hover { transform: none; background: rgba(255, 255, 255, 0.05); }
+
+        /* Прогресс-бары */
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            height: 6px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
         .progress-fill { background: linear-gradient(90deg, #ffd700, #ff8c00); height: 100%; transition: width 0.3s; }
+
         .happiness-fill { background: linear-gradient(90deg, #ff6b6b, #ffd700, #4ecdc4); height: 100%; transition: width 0.3s; }
-        .action-btn { background: rgba(255,215,0,0.2); border: 1px solid rgba(255,215,0,0.5); padding: 10px; border-radius: 40px; cursor: pointer; font-size: 0.8em; color: #ffd700; width: 100%; margin-top: 8px; transition: all 0.2s; }
-        .action-btn:active { transform: scale(0.98); }
-        .action-btn.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-        .leaderboard { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 400px; overflow-y: auto; }
-        .leader-row { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 10px 15px; display: flex; align-items: center; gap: 12px; }
-        .leader-rank { width: 40px; font-weight: bold; color: #ffd700; }
-        .leader-name { flex: 2; font-weight: 500; }
-        .leader-prestige { width: 80px; text-align: center; }
-        .leader-earned { width: 100px; text-align: center; color: #ffd700; }
-        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-card { background: rgba(20,30,50,0.95); backdrop-filter: blur(30px); border-radius: 48px; padding: 30px; width: 320px; border: 1px solid rgba(255,255,255,0.3); }
-        .modal-card input { width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 30px; color: white; text-align: center; }
-        .password-wrapper { position: relative; }
-        .password-wrapper input { padding-right: 45px; }
-        .toggle-password { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; background: none; border: none; font-size: 1.2em; }
-        .modal-card button { background: #ffd700; border: none; padding: 12px; border-radius: 30px; font-weight: bold; width: 100%; margin-top: 5px; cursor: pointer; }
-        .secondary-btn { background: rgba(255,255,255,0.1); color: white; }
+
+        /* Кнопки */
+        .action-btn {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            padding: 10px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8em;
+            color: #ffd700;
+            width: 100%;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        .action-btn:hover { background: rgba(255, 215, 0, 0.35); transform: scale(1.01); }
+
+        /* Случайные события */
+        .event-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 40px;
+            z-index: 1000;
+            font-weight: bold;
+            animation: slideDown 0.3s ease-out;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
         .footer { text-align: center; padding: 20px; font-size: 0.6em; opacity: 0.5; }
-        @media (max-width: 550px) { .resources-panel { gap: 6px; } .resource-value { font-size: 1em; } }
+
+        @media (max-width: 550px) {
+            .resources-panel { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+            .resource-value { font-size: 1em; }
+            .buildings-grid, .upgrades-grid, .research-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>🏙️ Мэр Мегаполиса</h1>
-    <div class="profile-panel"><div class="profile-info"><div class="avatar" onclick="openAuthModal()">👤</div><div class="username" id="usernameDisplay" onclick="openAuthModal()">Гость</div></div><button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logout()">🚪 ВЫЙТИ</button></div>
+
+    <!-- Ресурсы -->
     <div class="resources-panel">
         <div class="resource-card"><div class="resource-icon">💰</div><div class="resource-value" id="money">0</div><div class="resource-label">БЮДЖЕТ</div></div>
         <div class="resource-card"><div class="resource-icon">👥</div><div class="resource-value" id="population">0</div><div class="resource-label">НАСЕЛЕНИЕ</div></div>
         <div class="resource-card"><div class="resource-icon">😊</div><div class="resource-value" id="happiness">50</div><div class="resource-label">СЧАСТЬЕ %</div><div class="progress-bar"><div class="happiness-fill" id="happinessFill" style="width:50%"></div></div></div>
-        <div class="resource-card"><div class="resource-icon">🏆</div><div class="resource-value" id="prestige">0</div><div class="resource-label">ПРЕСТИЖ</div></div>
+        <div class="resource-card"><div class="resource-icon">📊</div><div class="resource-value" id="prestige">0</div><div class="resource-label">ПРЕСТИЖ</div></div>
     </div>
+
+    <!-- Вкладки -->
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('buildings')">🏗️ ЗДАНИЯ</button>
         <button class="tab-btn" onclick="switchTab('upgrades')">📈 УЛУЧШЕНИЯ</button>
-        <button class="tab-btn" onclick="switchTab('workers')">👷 РАБОТНИКИ</button>
-        <button class="tab-btn" onclick="switchTab('market')">🌍 РЫНОК</button>
-        <button class="tab-btn" onclick="switchTab('leaders')">🏆 ЛИДЕРЫ</button>
+        <button class="tab-btn" onclick="switchTab('research')">🔬 ИССЛЕДОВАНИЯ</button>
         <button class="tab-btn" onclick="switchTab('stats')">📊 СТАТИСТИКА</button>
     </div>
-    <div id="buildingsTab" class="tab-content active"><div class="buildings-grid" id="buildingsGrid"></div><button class="action-btn" id="collectTaxBtn">💰 СОБРАТЬ НАЛОГИ (x2)</button><button class="action-btn" id="festivalBtn">🎉 ФЕСТИВАЛЬ (500💰 → +15% счастья)</button></div>
-    <div id="upgradesTab" class="tab-content"><div class="upgrades-grid" id="upgradesGrid"></div></div>
-    <div id="workersTab" class="tab-content"><div class="workers-grid" id="workersGrid"></div></div>
-    <div id="marketTab" class="tab-content"><div class="section-title">🌍 МИРОВОЙ РЫНОК</div><div id="marketGrid"></div></div>
-    <div id="leadersTab" class="tab-content"><div class="section-title">🏆 ТОП-20 ЛИДЕРОВ</div><div id="leaderboard" class="leaderboard"></div></div>
-    <div id="statsTab" class="tab-content"><div class="section-title">📊 СТАТИСТИКА</div><div id="statsContainer"></div><button class="action-btn" id="prestigeBtn" style="background:rgba(255,85,85,0.2); color:#ff6b6b;">🔄 ПЕРЕРОДИТЬСЯ</button><button class="reset-btn" id="resetBtn" style="margin-top:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:30px; width:100%; cursor:pointer;">🔄 СБРОСИТЬ ПРОГРЕСС</button></div>
-    <div class="footer">Управляй городом | Нанимай работников | Добывай ресурсы</div>
+
+    <!-- Вкладка Здания -->
+    <div id="buildingsTab" class="tab-content active">
+        <div class="buildings-grid" id="buildingsGrid"></div>
+        <button class="action-btn" id="collectTaxBtn">💰 СОБРАТЬ НАЛОГИ (x2)</button>
+        <button class="action-btn" id="festivalBtn">🎉 ФЕСТИВАЛЬ (500💰 → +15% счастья)</button>
+    </div>
+
+    <!-- Вкладка Улучшения -->
+    <div id="upgradesTab" class="tab-content">
+        <div class="upgrades-grid" id="upgradesGrid"></div>
+    </div>
+
+    <!-- Вкладка Исследования -->
+    <div id="researchTab" class="tab-content">
+        <div class="research-grid" id="researchGrid"></div>
+    </div>
+
+    <!-- Вкладка Статистика -->
+    <div id="statsTab" class="tab-content">
+        <div class="section-title">🏆 ДОСТИЖЕНИЯ</div>
+        <div id="achievementsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+        <div class="section-title">📈 СТАТИСТИКА</div>
+        <div style="background:rgba(255,255,255,0.05); border-radius:20px; padding:15px;">
+            <div>📅 Дней правления: <strong id="daysCount">0</strong></div>
+            <div>💰 Всего заработано: <strong id="totalEarned">0</strong></div>
+            <div>🏗️ Всего построено: <strong id="totalBuildingsBuilt">0</strong></div>
+            <div>🎉 Фестивалей проведено: <strong id="festivalsCount">0</strong></div>
+            <div>⚠️ Кризисов пережито: <strong id="crisesCount">0</strong></div>
+        </div>
+        <button class="action-btn" id="prestigeBtn" style="background:rgba(255,85,85,0.2); color:#ff6b6b;">🔄 ПЕРЕРОДИТЬСЯ (+1 престиж, сброс прогресса с бонусом)</button>
+        <button class="reset-btn" id="resetBtn" style="margin-top:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); padding:10px; border-radius:30px; width:100%; cursor:pointer;">🔄 СБРОСИТЬ ПРОГРЕСС</button>
+    </div>
+
+    <div class="footer">Управляй городом | Исследуй технологии | Перерождайся для бонусов</div>
 </div>
 
 <script>
-    // ========== АВТОРИЗАЦИЯ ==========
-    let currentUser = null;
-    let users = JSON.parse(localStorage.getItem('mayor_users') || '{}');
-    function openAuthModal() {
-        if (currentUser) return;
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.innerHTML = `<div class="modal-card"><h3 style="text-align:center;">🔐 ВХОД / РЕГИСТРАЦИЯ</h3><div style="display:flex; gap:10px; margin:15px 0;"><button id="authLoginBtn" style="flex:1; background:rgba(255,215,0,0.3);">ВХОД</button><button id="authRegisterBtn" style="flex:1;">РЕГИСТРАЦИЯ</button></div><div id="authForm"><input type="text" id="authUsername" placeholder="@никнейм" maxlength="20"><div class="password-wrapper"><input type="password" id="authPassword" placeholder="Пароль"><button class="toggle-password" onclick="togglePassword('authPassword')">👁️</button></div></div><button id="authSubmitBtn">ВОЙТИ</button><button class="secondary-btn" onclick="this.closest('.modal').remove()">ЗАКРЫТЬ</button><div id="authError" style="color:#ff6b6b; margin-top:10px; text-align:center;"></div></div>`;
-        document.body.appendChild(modal);
-        let isLogin = true;
-        const updateForm = () => { document.getElementById('authSubmitBtn').innerText = isLogin ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ'; document.getElementById('authError').innerText = ''; };
-        document.getElementById('authLoginBtn').onclick = () => { isLogin = true; updateForm(); };
-        document.getElementById('authRegisterBtn').onclick = () => { isLogin = false; updateForm(); };
-        document.getElementById('authSubmitBtn').onclick = () => {
-            let username = document.getElementById('authUsername').value.trim();
-            const pwd = document.getElementById('authPassword').value;
-            if (!username.startsWith('@')) username = '@' + username;
-            if (!username || !pwd) { document.getElementById('authError').innerText = 'Заполните поля'; return; }
-            if (isLogin) {
-                if (!users[username]) { document.getElementById('authError').innerText = 'Пользователь не найден'; return; }
-                if (users[username].password !== pwd) { document.getElementById('authError').innerText = 'Неверный пароль'; return; }
-                currentUser = username;
-                localStorage.setItem('mayor_current_user', currentUser);
-                loadUserGame();
-                modal.remove();
-                updateProfileUI();
-            } else {
-                if (users[username]) { document.getElementById('authError').innerText = 'Никнейм уже занят'; return; }
-                users[username] = { password: pwd, gameData: null, stats: { totalEarned: 0, prestige: 0 } };
-                localStorage.setItem('mayor_users', JSON.stringify(users));
-                currentUser = username;
-                localStorage.setItem('mayor_current_user', currentUser);
-                initNewGame();
-                modal.remove();
-                updateProfileUI();
-            }
-        };
-    }
-    function updateProfileUI() { document.getElementById('usernameDisplay').innerText = currentUser || 'Гость'; document.getElementById('logoutBtn').style.display = currentUser ? 'block' : 'none'; }
-    function logout() { if (currentUser) saveGameToUser(); currentUser = null; localStorage.removeItem('mayor_current_user'); location.reload(); }
-    function togglePassword(id) { const inp = document.getElementById(id); inp.type = inp.type === 'password' ? 'text' : 'password'; }
-    
-    // ========== ИГРОВЫЕ ДАННЫЕ ==========
+    // === ИГРОВЫЕ ДАННЫЕ ===
     let gameData = {
-        money: 1000, population: 0, happiness: 50, prestige: 0, prestigeBonus: 1,
+        money: 1000,
+        population: 0,
+        happiness: 50,
+        prestige: 0,
+        prestigeBonus: 1,
         buildings: { house: 0, commercial: 0, factory: 0, park: 0, school: 0, stadium: 0, hospital: 0, police: 0 },
         upgrades: { incomeBonus: 0, happinessBonus: 0, buildingDiscount: 0, taxBonus: 0 },
-        workers: { miner: { level: 1, hired: false, lastPay: Date.now(), inventory: 0, mining: false, miningEnd: 0 }, farmer: { level: 1, hired: false, lastPay: Date.now(), inventory: 0, farming: false, farmingEnd: 0 }, doctor: { level: 1, hired: false, lastPay: Date.now() } },
-        stats: { totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, lastTaxTime: 0, autoClickerWarnings: 0 }
+        research: { recycling: false, solar: false, transport: false, education: false, medicine: false, robotics: false },
+        achievements: [],
+        stats: { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0 },
+        lastIncomeTime: Date.now(),
+        lastEventTime: Date.now()
     };
-    let resources = { coal: 0, rice: 0 };
-    let salaryInt = {}, miningInt = {};
-    let taxCooldown = false;
-    
-    const prestigeCosts = [0, 50000, 75000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000, 500000, 550000, 600000, 650000, 700000, 750000, 800000, 850000, 900000, 950000, 1000000, 1100000, 1200000, 1300000, 1500000];
+
+    // Конфигурация зданий
     const buildings = {
-        house: { name: "Жилой дом", icon: "🏠", basePrice: 800, income: 5, happiness: 0, population: 8 },
-        commercial: { name: "ТЦ", icon: "🏬", basePrice: 2000, income: 20, happiness: 2, population: 5 },
-        factory: { name: "Завод", icon: "🏭", basePrice: 3000, income: 40, happiness: -4, population: 3 },
-        park: { name: "Парк", icon: "🌳", basePrice: 1500, income: 0, happiness: 5, population: 0 },
-        school: { name: "Школа", icon: "🏫", basePrice: 2500, income: 0, happiness: 6, population: 0 },
-        stadium: { name: "Стадион", icon: "⚽", basePrice: 4000, income: 15, happiness: 8, population: 2 },
-        hospital: { name: "Больница", icon: "🏥", basePrice: 3500, income: 0, happiness: 10, population: 0 },
-        police: { name: "Полиция", icon: "👮", basePrice: 3000, income: 0, happiness: 7, population: 0 }
+        house: { name: "Жилой дом", icon: "🏠", basePrice: 150, income: 5, happiness: 0, population: 8, desc: "+8 жителей" },
+        commercial: { name: "Торговый центр", icon: "🏬", basePrice: 400, income: 20, happiness: 2, population: 5, desc: "+20💰/сек" },
+        factory: { name: "Завод", icon: "🏭", basePrice: 600, income: 40, happiness: -4, population: 3, desc: "-4% счастья" },
+        park: { name: "Парк", icon: "🌳", basePrice: 250, income: 0, happiness: 5, population: 0, desc: "+5% счастья" },
+        school: { name: "Школа", icon: "🏫", basePrice: 500, income: 0, happiness: 6, population: 0, desc: "+6% счастья" },
+        stadium: { name: "Стадион", icon: "⚽", basePrice: 800, income: 15, happiness: 8, population: 2, desc: "+15💰/сек, +8% счастья" },
+        hospital: { name: "Больница", icon: "🏥", basePrice: 700, income: 0, happiness: 10, population: 0, desc: "+10% счастья" },
+        police: { name: "Полиция", icon: "👮", basePrice: 600, income: 0, happiness: 7, population: 0, desc: "+7% счастья" }
     };
+
+    // Улучшения
     const upgrades = [
-        { id: "incomeBonus", name: "📈 Эффективность", icon: "📊", basePrice: 500, effect: 0.1, desc: "+10% доход", maxLevel: 20 },
-        { id: "happinessBonus", name: "😊 Соцподдержка", icon: "❤️", basePrice: 400, effect: 2, desc: "+2% счастья", maxLevel: 15 },
-        { id: "buildingDiscount", name: "🏗️ Стройтрест", icon: "🔨", basePrice: 800, effect: 0.05, desc: "-5% стоимость зданий", maxLevel: 10 },
-        { id: "taxBonus", name: "💰 Налоговая", icon: "📑", basePrice: 600, effect: 0.15, desc: "+15% сбор налогов", maxLevel: 15 }
+        { id: "incomeBonus", name: "📈 Эффективность", icon: "📊", basePrice: 500, effect: 0.1, desc: "+10% к доходу", maxLevel: 20 },
+        { id: "happinessBonus", name: "😊 Соцподдержка", icon: "❤️", basePrice: 400, effect: 2, desc: "+2% к счастью", maxLevel: 15 },
+        { id: "buildingDiscount", name: "🏗️ Стройтрест", icon: "🔨", basePrice: 800, effect: 0.05, desc: "-5% к стоимости зданий", maxLevel: 10 },
+        { id: "taxBonus", name: "💰 Налоговая", icon: "📑", basePrice: 600, effect: 0.15, desc: "+15% к сбору налогов", maxLevel: 15 }
     ];
-    const workerTypes = {
-        miner: { name: "⛏️ Шахтёр", baseSalary: 450000, salaryHours: 3, baseProductionTime: 60, baseProduction: 1, baseInventory: 250, upgradeCost: 100000, produceItem: "coal" },
-        farmer: { name: "🌾 Фермер", baseSalary: 450000, salaryHours: 3, baseProductionTime: 60, baseProduction: 1, baseInventory: 250, upgradeCost: 100000, produceItem: "rice" },
-        doctor: { name: "🏥 Врач", baseSalary: 450000, salaryHours: 3, upgradeCost: 100000, effect: 0.3 }
-    };
-    
-    function getBuildingPrice(bp) { return Math.floor(bp * (0.8 + gameData.prestige * 0.05) / gameData.prestigeBonus / (1 - gameData.upgrades.buildingDiscount * 0.05)); }
-    function getIncome() { let inc = 0; for (let [k,v] of Object.entries(gameData.buildings)) inc += v * (buildings[k]?.income || 0); return Math.floor(inc * (1 + gameData.upgrades.incomeBonus * 0.1) * (1 + gameData.prestige * 0.1)); }
-    function getHappiness() { let h = 50; for (let [k,v] of Object.entries(gameData.buildings)) h += v * (buildings[k]?.happiness || 0); h -= gameData.buildings.factory * 4; h += gameData.upgrades.happinessBonus * 2; if (gameData.workers.doctor.hired) h += gameData.workers.doctor.level * 0.3; return Math.min(100, Math.max(0, h)); }
-    
-    function buyBuilding(type) { let b = buildings[type]; let price = getBuildingPrice(b.basePrice); if (gameData.money >= price) { gameData.money -= price; gameData.buildings[type]++; gameData.population += b.population; gameData.stats.totalBuildingsBuilt++; gameData.happiness = getHappiness(); updateUI(); saveGameToUser(); } else showNotif("❌ Недостаточно денег!"); }
-    function buyUpgrade(id) { let up = upgrades.find(u=>u.id===id); let lvl = gameData.upgrades[id]; if (lvl >= up.maxLevel) { showNotif("❌ Максимальный уровень!"); return; } let price = Math.floor(up.basePrice * (1 + lvl * 0.3)); if (gameData.money >= price) { gameData.money -= price; gameData.upgrades[id]++; updateUI(); saveGameToUser(); showNotif(`✅ ${up.name} улучшен до ${lvl+1} уровня!`); } else showNotif("❌ Недостаточно денег!"); }
-    
+
+    // Исследования
+    const researchList = [
+        { id: "recycling", name: "♻️ Переработка", icon: "♻️", price: 2000, desc: "+20% дохода", requiredPrestige: 0 },
+        { id: "solar", name: "☀️ Солнечная энергия", icon: "☀️", price: 3000, desc: "-30% затрат на энергию (доход +15%)", requiredPrestige: 1 },
+        { id: "transport", name: "🚇 Метро", icon: "🚇", price: 4000, desc: "+25% населения", requiredPrestige: 2 },
+        { id: "education", name: "🎓 Образование", icon: "🎓", price: 5000, desc: "+30% к счастью", requiredPrestige: 3 },
+        { id: "medicine", name: "💊 Медицина", icon: "💊", price: 6000, desc: "Кризисы на 50% реже", requiredPrestige: 5 },
+        { id: "robotics", name: "🤖 Роботизация", icon: "🤖", price: 10000, desc: "Автоматический сбор налогов", requiredPrestige: 10 }
+    ];
+
+    // Случайные события
+    const events = [
+        { name: "🌞 Солнечный день", effect: (d) => { d.happiness = Math.min(100, d.happiness + 5); return "Счастье +5%!"; }, chance: 0.15 },
+        { name: "🌧️ Наводнение", effect: (d) => { d.money = Math.max(0, d.money - 500); d.happiness = Math.max(0, d.happiness - 10); d.stats.crises++; return "Потеряно 500💰 и -10% счастья!"; }, chance: 0.08 },
+        { name: "🎊 Бум туризма", effect: (d) => { d.money += 1000; d.happiness = Math.min(100, d.happiness + 10); return "+1000💰 и +10% счастья!"; }, chance: 0.1 },
+        { name: "🏭 Забастовка", effect: (d) => { d.money = Math.max(0, d.money - 800); d.happiness = Math.max(0, d.happiness - 15); d.stats.crises++; return "-800💰 и -15% счастья!"; }, chance: 0.07 },
+        { name: "🕊️ Мирный договор", effect: (d) => { d.happiness = Math.min(100, d.happiness + 20); return "+20% счастья!"; }, chance: 0.05 },
+        { name: "📈 Экономический рост", effect: (d) => { d.money += 1500; return "+1500💰!"; }, chance: 0.12 }
+    ];
+
+    let lastEventTime = Date.now();
+    let eventInterval;
+
+    // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+    function getBuildingPrice(basePrice) {
+        let discount = gameData.upgrades.buildingDiscount * 0.05;
+        discount += gameData.research.recycling ? 0.05 : 0;
+        discount += gameData.research.solar ? 0.03 : 0;
+        return Math.floor(basePrice * (1 - discount) / gameData.prestigeBonus);
+    }
+
+    function getIncome() {
+        let income = 0;
+        income += gameData.buildings.house * buildings.house.income;
+        income += gameData.buildings.commercial * buildings.commercial.income;
+        income += gameData.buildings.factory * buildings.factory.income;
+        income += gameData.buildings.stadium * buildings.stadium.income;
+        let bonus = 1 + gameData.upgrades.incomeBonus * 0.1;
+        if (gameData.research.recycling) bonus += 0.2;
+        if (gameData.research.solar) bonus += 0.15;
+        if (gameData.research.robotics) bonus += 0.25;
+        return Math.floor(income * bonus * gameData.prestigeBonus);
+    }
+
+    function getHappiness() {
+        let happiness = 50;
+        happiness += gameData.buildings.park * buildings.park.happiness;
+        happiness += gameData.buildings.school * buildings.school.happiness;
+        happiness += gameData.buildings.stadium * buildings.stadium.happiness;
+        happiness += gameData.buildings.hospital * buildings.hospital.happiness;
+        happiness += gameData.buildings.police * buildings.police.happiness;
+        happiness -= gameData.buildings.factory * Math.abs(buildings.factory.happiness);
+        happiness += gameData.upgrades.happinessBonus * 2;
+        if (gameData.research.education) happiness += 30;
+        return Math.min(100, Math.max(0, happiness));
+    }
+
+    // === ПОСТРОЙКА ===
+    function buyBuilding(type) {
+        const b = buildings[type];
+        const price = getBuildingPrice(b.basePrice);
+        if (gameData.money >= price) {
+            gameData.money -= price;
+            gameData.buildings[type]++;
+            gameData.population += b.population;
+            gameData.stats.totalBuildingsBuilt++;
+            gameData.happiness = getHappiness();
+            updateUI();
+            saveGame();
+            checkAchievements();
+        } else showNotif("❌ Недостаточно денег!");
+    }
+
+    // === УЛУЧШЕНИЯ ===
+    function buyUpgrade(id) {
+        const up = upgrades.find(u => u.id === id);
+        const level = gameData.upgrades[id];
+        if (level >= up.maxLevel) { showNotif("❌ Максимальный уровень!"); return; }
+        const price = Math.floor(up.basePrice * (1 + level * 0.3));
+        if (gameData.money >= price) {
+            gameData.money -= price;
+            gameData.upgrades[id]++;
+            updateUI();
+            saveGame();
+            showNotif(`✅ ${up.name} улучшен до ${level + 1} уровня!`);
+        } else showNotif("❌ Недостаточно денег!");
+    }
+
+    // === ИССЛЕДОВАНИЯ ===
+    function buyResearch(id) {
+        const r = researchList.find(r => r.id === id);
+        if (gameData.research[id]) { showNotif("❌ Уже исследовано!"); return; }
+        if (gameData.prestige < r.requiredPrestige) { showNotif("❌ Нужен престиж " + r.requiredPrestige); return; }
+        if (gameData.money >= r.price) {
+            gameData.money -= r.price;
+            gameData.research[id] = true;
+            updateUI();
+            saveGame();
+            showNotif(`🔬 Исследовано: ${r.name}! ${r.desc}`);
+        } else showNotif("❌ Недостаточно денег!");
+    }
+
+    // === ДЕЙСТВИЯ ===
     function collectTax() {
-        if (!currentUser) { showNotif("❌ Войдите в аккаунт!"); openAuthModal(); return; }
-        if (taxCooldown) { showNotif("⏳ Налоги раз в 2 секунды!"); return; }
-        let now = Date.now();
-        if (gameData.stats.lastTaxTime && now - gameData.stats.lastTaxTime < 200) { gameData.stats.autoClickerWarnings++; if (gameData.stats.autoClickerWarnings >= 3) { showNotif("🚫 Автокликер! Кик."); setTimeout(()=>logout(),1000); return; } }
-        taxCooldown = true; setTimeout(()=>{ taxCooldown = false; }, 2000);
-        gameData.stats.lastTaxTime = now;
-        let income = getIncome(); let tax = Math.floor(income * 2 * (1 + gameData.upgrades.taxBonus * 0.15));
-        gameData.money += tax; gameData.stats.totalEarned += tax; updateUI(); saveGameToUser(); showNotif(`💰 +${tax} монет!`);
+        let income = getIncome();
+        let bonus = 1 + (gameData.upgrades.taxBonus * 0.15);
+        if (gameData.research.robotics) bonus *= 1.5;
+        const tax = Math.floor(income * bonus * 2);
+        gameData.money += tax;
+        gameData.stats.totalEarned += tax;
+        updateUI();
+        saveGame();
+        showNotif(`💰 Собрано налогов: ${tax} монет!`);
     }
-    function festival() { if (gameData.money >= 500) { gameData.money -= 500; gameData.happiness = Math.min(100, gameData.happiness + 15); gameData.stats.festivals++; updateUI(); saveGameToUser(); showNotif("🎉 +15% счастья!"); } else showNotif("❌ Нужно 500💰"); }
-    
-    function hireWorker(type) { let w = gameData.workers[type]; if (w.hired) { showNotif("❌ Уже нанят"); return; } let cost = 50000 * (1 + gameData.prestige * 0.1); if (gameData.money >= cost) { gameData.money -= cost; w.hired = true; w.lastPay = Date.now(); if (salaryInt[type]) clearInterval(salaryInt[type]); salaryInt[type] = setInterval(() => { if (!gameData.workers[type].hired) return; let sal = workerTypes[type].baseSalary; if (gameData.money >= sal) { gameData.money -= sal; gameData.workers[type].lastPay = Date.now(); updateUI(); saveGameToUser(); } else { showNotif(`⚠️ ${workerTypes[type].name} уволился!`); gameData.workers[type].hired = false; clearInterval(salaryInt[type]); updateUI(); saveGameToUser(); } }, workerTypes[type].salaryHours * 3600000); updateUI(); saveGameToUser(); showNotif(`✅ ${workerTypes[type].name} нанят!`); } else showNotif(`❌ Нужно ${Math.floor(cost)}💰`); }
-    function upgradeWorker(type) { let w = gameData.workers[type]; if (!w.hired) { showNotif("❌ Сначала наймите"); return; } if (w.level >= 15) { showNotif("❌ Макс. уровень 15"); return; } let cost = workerTypes[type].upgradeCost * w.level; if (gameData.money >= cost) { gameData.money -= cost; w.level++; updateUI(); saveGameToUser(); showNotif(`✅ ${workerTypes[type].name} улучшен до ${w.level} уровня!`); } else showNotif(`❌ Нужно ${cost}💰`); }
-    function startMining(type) { let w = gameData.workers[type]; if (!w.hired) { showNotif("❌ Работник не нанят"); return; } if (w.mining) { showNotif("❌ Уже добывает"); return; } let time = Math.max(5, workerTypes[type].baseProductionTime / w.level); w.mining = true; w.miningEnd = Date.now() + time * 1000; if (miningInt[type]) clearInterval(miningInt[type]); miningInt[type] = setInterval(() => { if (!w.mining || Date.now() >= w.miningEnd) { if (w.mining && Date.now() >= w.miningEnd) { let amt = workerTypes[type].baseProduction * w.level; let maxInv = workerTypes[type].baseInventory * w.level; if (w.inventory + amt <= maxInv) { w.inventory += amt; resources[workerTypes[type].produceItem] = w.inventory; showNotif(`⛏️ Добыто ${amt} ${workerTypes[type].produceItem === 'coal' ? 'угля' : 'риса'}!`); } else showNotif(`⚠️ Инвентарь полон!`); } w.mining = false; clearInterval(miningInt[type]); updateUI(); saveGameToUser(); } }, 1000); updateUI(); saveGameToUser(); }
-    function sellResource(type) { let amt = resources[type]; if (amt <= 0) { showNotif("❌ Нет ресурсов"); return; } let price = 1000; gameData.money += amt * price; gameData.stats.totalEarned += amt * price; resources[type] = 0; if (type === 'coal') gameData.workers.miner.inventory = 0; else gameData.workers.farmer.inventory = 0; updateUI(); saveGameToUser(); showNotif(`💰 Продано ${amt} ${type === 'coal' ? 'угля' : 'риса'} за ${amt*price}💰`); }
-    
-    function doPrestige() {
-        if (!currentUser) { showNotif("❌ Войдите в аккаунт!"); return; }
-        let nextCost = prestigeCosts[gameData.prestige + 1];
-        if (!nextCost) { showNotif("❌ Макс. престиж 25!"); return; }
-        if (gameData.stats.totalEarned < nextCost) { showNotif(`❌ Нужно ${nextCost}💰 для престижа ${gameData.prestige+1}`); return; }
-        gameData.prestige++; gameData.prestigeBonus = 1 + gameData.prestige * 0.1;
-        gameData.money = 1000 * gameData.prestigeBonus;
-        gameData.population = 0; gameData.happiness = 50;
-        gameData.buildings = { house:0, commercial:0, factory:0, park:0, school:0, stadium:0, hospital:0, police:0 };
-        gameData.upgrades = { incomeBonus:0, happinessBonus:0, buildingDiscount:0, taxBonus:0 };
-        gameData.workers = { miner:{ level:1, hired:false, lastPay:Date.now(), inventory:0, mining:false, miningEnd:0 }, farmer:{ level:1, hired:false, lastPay:Date.now(), inventory:0, farming:false, farmingEnd:0 }, doctor:{ level:1, hired:false, lastPay:Date.now() } };
-        resources = { coal:0, rice:0 };
-        updateUI(); saveGameToUser(); showNotif(`✨ Престиж ${gameData.prestige}! Бонус x${gameData.prestigeBonus}`);
+
+    function festival() {
+        let price = 500;
+        if (gameData.research.transport) price = 400;
+        if (gameData.money >= price) {
+            gameData.money -= price;
+            gameData.happiness = Math.min(100, gameData.happiness + 15);
+            gameData.stats.festivals++;
+            updateUI();
+            saveGame();
+            showNotif("🎉 Фестиваль прошёл успешно! +15% счастья!");
+        } else showNotif("❌ Не хватает монет!");
     }
-    
-    function updateLeaderboard() {
-        let lb = Object.entries(users).map(([n,d]) => ({ name:n, prestige:d.stats?.prestige || 0, earned:d.stats?.totalEarned || 0 }));
-        lb.sort((a,b) => { if (a.prestige !== b.prestige) return b.prestige - a.prestige; else return b.earned - a.earned; });
-        let cont = document.getElementById('leaderboard');
-        if (!cont) return;
-        cont.innerHTML = '<div class="leader-row"><div class="leader-rank">#</div><div class="leader-name">ИГРОК</div><div class="leader-prestige">ПРЕСТИЖ</div><div class="leader-earned">ЗАРАБОТАНО</div></div>';
-        lb.slice(0,20).forEach((u,i) => { cont.innerHTML += `<div class="leader-row"><div class="leader-rank">${i+1}</div><div class="leader-name">${u.name}</div><div class="leader-prestige">${u.prestige}</div><div class="leader-earned">${Math.floor(u.earned)}💰</div></div>`; });
+
+    // === ПЕРЕРОЖДЕНИЕ ===
+    function prestige() {
+        if (gameData.stats.totalEarned < 50000 && gameData.population < 5000) {
+            showNotif("❌ Нужно заработать 50000💰 или иметь 5000 жителей для перерождения!");
+            return;
+        }
+        if (confirm("⚠️ Перерождение сбросит весь прогресс, но даст +1 престиж и постоянный бонус к доходу!")) {
+            gameData.prestige++;
+            gameData.prestigeBonus = 1 + gameData.prestige * 0.1;
+            gameData.money = 1000 * gameData.prestigeBonus;
+            gameData.population = 0;
+            gameData.happiness = 50;
+            gameData.buildings = { house: 0, commercial: 0, factory: 0, park: 0, school: 0, stadium: 0, hospital: 0, police: 0 };
+            gameData.upgrades = { incomeBonus: 0, happinessBonus: 0, buildingDiscount: 0, taxBonus: 0 };
+            gameData.research = { recycling: false, solar: false, transport: false, education: false, medicine: false, robotics: false };
+            gameData.stats = { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0 };
+            updateUI();
+            saveGame();
+            showNotif(`✨ Перерождение! Теперь у вас ${gameData.prestige} престижа и бонус x${gameData.prestigeBonus}!`);
+        }
     }
-    
+
+    // === ДОСТИЖЕНИЯ ===
+    const achievements = [
+        { id: "pop100", name: "🌆 Первый район", desc: "100 жителей", target: 100, type: "pop", reward: 500 },
+        { id: "pop1000", name: "🏙️ Город", desc: "1000 жителей", target: 1000, type: "pop", reward: 2000 },
+        { id: "pop5000", name: "🌃 Мегаполис", desc: "5000 жителей", target: 5000, type: "pop", reward: 10000 },
+        { id: "money50000", name: "💰 Миллионер", desc: "50000 монет", target: 50000, type: "money", reward: 5000 },
+        { id: "happiness90", name: "😊 Утопия", desc: "90% счастья", target: 90, type: "happiness", reward: 3000 },
+        { id: "prestige5", name: "👑 Легенда", desc: "5 престижа", target: 5, type: "prestige", reward: 20000 },
+        { id: "prestige10", name: "✨ Бог города", desc: "10 престижа", target: 10, type: "prestige", reward: 50000 }
+    ];
+
+    function checkAchievements() {
+        achievements.forEach(ach => {
+            if (gameData.achievements.includes(ach.id)) return;
+            let completed = false;
+            if (ach.type === "pop" && gameData.population >= ach.target) completed = true;
+            if (ach.type === "money" && gameData.stats.totalEarned >= ach.target) completed = true;
+            if (ach.type === "happiness" && gameData.happiness >= ach.target) completed = true;
+            if (ach.type === "prestige" && gameData.prestige >= ach.target) completed = true;
+            if (completed) {
+                gameData.achievements.push(ach.id);
+                gameData.money += ach.reward;
+                showNotif(`🏆 Достижение: ${ach.name}! +${ach.reward}💰`);
+                updateUI();
+                saveGame();
+            }
+        });
+    }
+
+    // === СЛУЧАЙНЫЕ СОБЫТИЯ ===
+    function triggerRandomEvent() {
+        const now = Date.now();
+        if (now - lastEventTime < 30000) return;
+        lastEventTime = now;
+        const crisisReduction = gameData.research.medicine ? 0.5 : 1;
+        const rand = Math.random();
+        let event = null;
+        for (let e of events) {
+            if (rand < e.chance * crisisReduction) { event = e; break; }
+        }
+        if (event) {
+            const msg = event.effect(gameData);
+            showEventNotification(`⚠️ ${event.name}: ${msg}`);
+            gameData.happiness = getHappiness();
+            updateUI();
+            saveGame();
+        }
+    }
+
+    function showEventNotification(msg) {
+        const div = document.createElement('div');
+        div.className = 'event-notification';
+        div.innerText = msg;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 4000);
+    }
+
+    // === ОБНОВЛЕНИЕ UI ===
     function updateUI() {
         document.getElementById('money').innerText = Math.floor(gameData.money);
         document.getElementById('population').innerText = gameData.population;
-        document.getElementById('happiness').innerText = Math.floor(gameData.happiness);
+        document.getElementById('happiness').innerText = gameData.happiness;
         document.getElementById('prestige').innerText = gameData.prestige;
         document.getElementById('happinessFill').style.width = gameData.happiness + '%';
-        let bg = document.getElementById('buildingsGrid'); if(bg) { bg.innerHTML = ''; for(let [t,b] of Object.entries(buildings)) { let price = getBuildingPrice(b.basePrice); bg.innerHTML += `<div class="building-card" onclick="buyBuilding('${t}')"><div class="building-icon">${b.icon}</div><div class="building-name">${b.name}</div><div class="building-stats">💰${b.income}/сек | 👥+${b.population}</div><div class="building-price">💰 ${price}</div><div class="building-count">${gameData.buildings[t]}</div></div>`; } }
-        let ug = document.getElementById('upgradesGrid'); if(ug) { ug.innerHTML = ''; for(let up of upgrades) { let lvl = gameData.upgrades[up.id]; let price = Math.floor(up.basePrice * (1 + lvl * 0.3)); ug.innerHTML += `<div class="upgrade-card" onclick="buyUpgrade('${up.id}')"><div class="upgrade-icon">${up.icon}</div><div class="upgrade-name">${up.name}</div><div class="upgrade-stats">${up.desc} (${lvl}/${up.maxLevel})</div><div class="upgrade-price">💰 ${price}</div><div class="upgrade-level">Ур.${lvl}</div></div>`; } }
-        let wg = document.getElementById('workersGrid'); if(wg) { wg.innerHTML = ''; for(let [t,w] of Object.entries(gameData.workers)) { let wt = workerTypes[t]; wg.innerHTML += `<div class="worker-card"><div class="worker-icon">${wt.name.split(' ')[0]}</div><div class="worker-name">${wt.name}</div><div class="building-stats">Ур.${w.level} | ${w.hired ? '✅ Нанят' : '❌ Не нанят'}</div><div class="building-price">💰 ${w.hired ? (wt.upgradeCost * w.level) : Math.floor(50000 * (1 + gameData.prestige * 0.1))}</div><button class="action-btn" style="margin-top:5px; padding:5px;" onclick="${w.hired ? `upgradeWorker('${t}')` : `hireWorker('${t}')`}">${w.hired ? '🔧 Улучшить' : '🤝 Нанять'}</button>${w.hired && t !== 'doctor' ? `<button class="action-btn" style="margin-top:5px; padding:5px;" onclick="startMining('${t}')">⛏️ Добывать</button><div>📦 ${w.inventory}/${wt.baseInventory * w.level}</div>` : ''}${t === 'doctor' ? `<div>❤️ +${(w.level * 0.3).toFixed(1)}% счастья</div>` : ''}</div>`; } }
-        let mg = document.getElementById('marketGrid'); if(mg) { mg.innerHTML = `<div class="leader-row"><div>🪨 Уголь: ${resources.coal} шт</div><button class="action-btn" style="width:auto; padding:5px 15px;" onclick="sellResource('coal')">Продать все за ${resources.coal * 1000}💰</button></div><div class="leader-row"><div>🍚 Рис: ${resources.rice} шт</div><button class="action-btn" style="width:auto; padding:5px 15px;" onclick="sellResource('rice')">Продать все за ${resources.rice * 1000}💰</button></div>`; }
-        let sc = document.getElementById('statsContainer'); if(sc) sc.innerHTML = `<div>💰 Всего заработано: ${Math.floor(gameData.stats.totalEarned)}</div><div>🏗️ Построено зданий: ${gameData.stats.totalBuildingsBuilt}</div><div>🎉 Фестивалей: ${gameData.stats.festivals}</div><div>⚠️ Автокликер предупреждений: ${gameData.stats.autoClickerWarnings}/3</div><div>💰 Следующий престиж (${gameData.prestige+1}): ${prestigeCosts[gameData.prestige+1] || 'MAX'}💰</div>`;
-        updateLeaderboard();
+        
+        document.getElementById('daysCount').innerText = Math.floor((Date.now() - gameData.lastIncomeTime) / 86400000);
+        document.getElementById('totalEarned').innerText = gameData.stats.totalEarned;
+        document.getElementById('totalBuildingsBuilt').innerText = gameData.stats.totalBuildingsBuilt;
+        document.getElementById('festivalsCount').innerText = gameData.stats.festivals;
+        document.getElementById('crisesCount').innerText = gameData.stats.crises;
+
+        // Здания
+        const buildingsGrid = document.getElementById('buildingsGrid');
+        buildingsGrid.innerHTML = '';
+        for (const [type, b] of Object.entries(buildings)) {
+            const price = getBuildingPrice(b.basePrice);
+            buildingsGrid.innerHTML += `
+                <div class="building-card" onclick="buyBuilding('${type}')">
+                    <div class="building-icon">${b.icon}</div>
+                    <div class="building-name">${b.name}</div>
+                    <div class="building-stats">${b.desc}</div>
+                    <div class="building-price">💰 ${price}</div>
+                    <div class="building-count">${gameData.buildings[type]}</div>
+                </div>
+            `;
+        }
+
+        // Улучшения
+        const upgradesGrid = document.getElementById('upgradesGrid');
+        upgradesGrid.innerHTML = '';
+        upgrades.forEach(up => {
+            const level = gameData.upgrades[up.id];
+            const price = Math.floor(up.basePrice * (1 + level * 0.3));
+            upgradesGrid.innerHTML += `
+                <div class="upgrade-card" onclick="buyUpgrade('${up.id}')">
+                    <div class="upgrade-icon">${up.icon}</div>
+                    <div class="upgrade-name">${up.name}</div>
+                    <div class="upgrade-stats">${up.desc} (ур.${level}/${up.maxLevel})</div>
+                    <div class="upgrade-price">💰 ${price}</div>
+                    <div class="upgrade-level">Ур.${level}</div>
+                </div>
+            `;
+        });
+
+        // Исследования
+        const researchGrid = document.getElementById('researchGrid');
+        researchGrid.innerHTML = '';
+        researchList.forEach(r => {
+            const unlocked = gameData.research[r.id];
+            researchGrid.innerHTML += `
+                <div class="research-card ${!unlocked && gameData.prestige >= r.requiredPrestige ? '' : 'locked'}" onclick="${!unlocked && gameData.prestige >= r.requiredPrestige ? `buyResearch('${r.id}')` : ''}">
+                    <div class="research-icon">${r.icon}</div>
+                    <div class="research-name">${r.name}</div>
+                    <div class="building-stats">${r.desc}</div>
+                    <div class="building-price">${unlocked ? '✅ Изучено' : `💰 ${r.price}`}</div>
+                    ${!unlocked && gameData.prestige < r.requiredPrestige ? `<div class="building-stats">🔒 Требуется престиж ${r.requiredPrestige}</div>` : ''}
+                </div>
+            `;
+        });
+
+        // Достижения
+        const achContainer = document.getElementById('achievementsList');
+        achContainer.innerHTML = '';
+        achievements.forEach(ach => {
+            const completed = gameData.achievements.includes(ach.id);
+            achContainer.innerHTML += `
+                <div style="background:rgba(255,255,255,0.05); border-radius:16px; padding:10px; display:flex; gap:10px; align-items:center; ${completed ? 'opacity:0.5' : ''}">
+                    <div style="font-size:1.5em;">${completed ? '✅' : '🔒'}</div>
+                    <div style="flex:1;"><strong>${ach.name}</strong><br><span style="font-size:0.7em;">${ach.desc} | Награда: ${ach.reward}💰</span></div>
+                </div>
+            `;
+        });
     }
-    
-    function saveGameToUser() { if(currentUser && users[currentUser]) { users[currentUser].gameData = gameData; users[currentUser].stats = { totalEarned: gameData.stats.totalEarned, prestige: gameData.prestige }; localStorage.setItem('mayor_users', JSON.stringify(users)); } }
-    function loadUserGame() { if(currentUser && users[currentUser]?.gameData) { gameData = users[currentUser].gameData; resources = { coal: gameData.workers.miner?.inventory || 0, rice: gameData.workers.farmer?.inventory || 0 }; updateUI(); } else initNewGame(); }
-    function initNewGame() { gameData = { money:1000, population:0, happiness:50, prestige:0, prestigeBonus:1, buildings:{ house:0, commercial:0, factory:0, park:0, school:0, stadium:0, hospital:0, police:0 }, upgrades:{ incomeBonus:0, happinessBonus:0, buildingDiscount:0, taxBonus:0 }, workers:{ miner:{ level:1, hired:false, lastPay:Date.now(), inventory:0, mining:false, miningEnd:0 }, farmer:{ level:1, hired:false, lastPay:Date.now(), inventory:0, farming:false, farmingEnd:0 }, doctor:{ level:1, hired:false, lastPay:Date.now() } }, stats:{ totalEarned:0, totalBuildingsBuilt:0, festivals:0, lastTaxTime:0, autoClickerWarnings:0 } }; resources = { coal:0, rice:0 }; updateUI(); saveGameToUser(); }
-    
-    function switchTab(tab) { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(tab + 'Tab').classList.add('active'); if(tab === 'leaders') updateLeaderboard(); }
-    function showNotif(msg) { let d = document.createElement('div'); d.innerText = msg; d.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ffd700;color:#000;padding:10px 20px;border-radius:40px;z-index:1001;animation:fadeOut 2s forwards;'; document.body.appendChild(d); setTimeout(()=>d.remove(),2000); }
-    
-    let incomeInt; function startIncomeLoop() { if(incomeInt) clearInterval(incomeInt); incomeInt = setInterval(() => { if(currentUser) { let inc = getIncome(); if(inc > 0) { gameData.money += inc; gameData.stats.totalEarned += inc; updateUI(); saveGameToUser(); } } }, 5000); }
+
+    // === ЦИКЛЫ ===
+    let incomeInterval;
+    function startIncomeLoop() {
+        if (incomeInterval) clearInterval(incomeInterval);
+        incomeInterval = setInterval(() => {
+            const income = getIncome();
+            if (income > 0) {
+                gameData.money += income;
+                gameData.stats.totalEarned += income;
+                gameData.stats.days++;
+                updateUI();
+                saveGame();
+            }
+            triggerRandomEvent();
+        }, 5000);
+    }
+
+    // === СОХРАНЕНИЕ ===
+    function saveGame() { localStorage.setItem('mayorGameFull', JSON.stringify(gameData)); }
+    function loadGame() {
+        const saved = localStorage.getItem('mayorGameFull');
+        if (saved) {
+            try {
+                const loaded = JSON.parse(saved);
+                gameData = { ...gameData, ...loaded };
+                if (!gameData.stats) gameData.stats = { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0 };
+                if (!gameData.research) gameData.research = {};
+                gameData.prestigeBonus = 1 + gameData.prestige * 0.1;
+                gameData.happiness = getHappiness();
+            } catch(e) {}
+        }
+        updateUI();
+    }
+
+    function resetGame() {
+        if (confirm("⚠️ Сбросить весь прогресс?")) {
+            localStorage.removeItem('mayorGameFull');
+            location.reload();
+        }
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tab + 'Tab').classList.add('active');
+        if (tab === 'buildings') document.querySelector('.tab-btn').classList.add('active');
+        else if (tab === 'upgrades') document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        else if (tab === 'research') document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        else if (tab === 'stats') document.querySelectorAll('.tab-btn')[3].classList.add('active');
+    }
+
+    function showNotif(msg) {
+        const div = document.createElement('div');
+        div.innerText = msg;
+        div.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.9);color:#000;padding:10px 20px;border-radius:40px;z-index:1001;animation:fadeOut 2s forwards;';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 2000);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = '@keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }';
+    document.head.appendChild(style);
+
     document.getElementById('collectTaxBtn').onclick = collectTax;
     document.getElementById('festivalBtn').onclick = festival;
-    document.getElementById('prestigeBtn').onclick = doPrestige;
-    document.getElementById('resetBtn').onclick = () => { if(confirm("Сбросить прогресс?")) { initNewGame(); saveGameToUser(); updateUI(); } };
-    window.buyBuilding = buyBuilding; window.buyUpgrade = buyUpgrade; window.hireWorker = hireWorker; window.upgradeWorker = upgradeWorker; window.startMining = startMining; window.sellResource = sellResource;
-    window.switchTab = switchTab; window.togglePassword = togglePassword; window.openAuthModal = openAuthModal; window.logout = logout;
-    let saved = localStorage.getItem('mayor_current_user');
-    if(saved && users[saved]) { currentUser = saved; loadUserGame(); } else { currentUser = null; initNewGame(); }
-    updateProfileUI(); startIncomeLoop();
-    let st = document.createElement('style'); st.textContent = '@keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }'; document.head.appendChild(st);
+    document.getElementById('prestigeBtn').onclick = prestige;
+    document.getElementById('resetBtn').onclick = resetGame;
+
+    window.buyBuilding = buyBuilding;
+    window.buyUpgrade = buyUpgrade;
+    window.buyResearch = buyResearch;
+    window.collectTax = collectTax;
+    window.festival = festival;
+    window.prestige = prestige;
+    window.switchTab = switchTab;
+
+    loadGame();
+    startIncomeLoop();
 </script>
 </body>
 </html>
