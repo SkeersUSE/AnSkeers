@@ -7,157 +7,126 @@
     <style>
         * {
             margin: 0;
+            padding: 0;<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Мегаполис Мэр — Экономическая Империя</title>
+    <style>
+        * {
+            margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
         }
 
         body {
             min-height: 100vh;
-            background: radial-gradient(circle at 20% 30%, #c0e0ff, #6f9bc0);
-            font-family: 'SF Pro Display', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-
-        /* Жидкое стекло — основной контейнер */
-        .glass-orb {
-            max-width: 1400px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.28);
-            backdrop-filter: blur(32px) saturate(180%);
-            -webkit-backdrop-filter: blur(32px) saturate(180%);
-            border-radius: 72px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+            background: linear-gradient(145deg, #b8e1fc 0%, #d9f0ff 100%);
             padding: 20px;
-            transition: all 0.3s ease;
         }
 
-        /* Панели с эффектом глубины */
-        .liquid-panel {
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border-radius: 56px;
-            padding: 24px 28px;
+        /* жидкое стекло */
+        .glass-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            border-radius: 64px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        /* все тексты ЧЁРНЫЕ */
+        h1, h2, h3, h4, p, span, div, button, input, .stat-card, .building-card, .prof-card {
+            color: #1a1a1a !important;
+        }
+
+        .panel {
+            background: rgba(255, 248, 235, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: 48px;
+            padding: 24px;
             margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.9);
-            transition: all 0.2s;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
 
-        .title-glow {
-            font-size: 2.1rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #FFFFFF, #E0F0FF);
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3c2c, #2c5a3a);
             -webkit-background-clip: text;
             background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            letter-spacing: -0.5px;
-        }
-
-        .badge-liquid {
-            background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            padding: 8px 18px;
-            font-weight: 500;
-            color: white;
-            border: 0.5px solid rgba(255,255,255,0.5);
+            color: #1e3c2c !important;
+            text-shadow: none;
         }
 
         button {
-            background: rgba(30, 40, 50, 0.75);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 60px;
+            background: rgba(30, 30, 40, 0.85);
+            border: none;
             padding: 12px 28px;
-            font-weight: 600;
-            font-size: 1rem;
-            color: white;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white !important;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            font-family: inherit;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
         }
 
-        button:active {
-            transform: scale(0.96);
-            background: rgba(20, 30, 40, 0.85);
-        }
+        button:active { transform: scale(0.96); background: #2c2c3c; }
 
         input {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.8);
+            background: white;
+            border: 1px solid #aaa;
             border-radius: 60px;
-            padding: 14px 22px;
+            padding: 12px 20px;
             font-size: 1rem;
-            font-weight: 500;
-            color: #1a2c3a;
+            color: black !important;
             outline: none;
             width: 220px;
-            font-family: inherit;
-            transition: 0.2s;
         }
 
-        input:focus {
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 0 3px rgba(255,255,210,0.5);
-        }
-
-        .resource-grid {
+        .grid-4 {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            justify-content: space-between;
-            margin-top: 12px;
+            gap: 18px;
+            margin-top: 16px;
         }
 
         .stat-card {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(20px);
-            border-radius: 48px;
-            padding: 16px 24px;
+            background: rgba(255,255,210,0.8);
+            border-radius: 40px;
+            padding: 16px 20px;
             flex: 1;
-            min-width: 160px;
+            min-width: 140px;
             text-align: center;
-            border: 1px solid rgba(255,255,240,0.5);
+            font-weight: 700;
+            border: 1px solid #333;
+            color: black;
         }
 
         .stat-value {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 800;
-            color: #FFE6B0;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            color: #000 !important;
         }
 
-        .building-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .building-card {
-            background: rgba(45, 55, 70, 0.55);
-            backdrop-filter: blur(24px);
-            border-radius: 48px;
+        .building-card, .prof-card {
+            background: rgba(230, 240, 250, 0.9);
+            border-radius: 36px;
             padding: 18px;
             flex: 1;
-            min-width: 180px;
-            text-align: center;
-            border: 1px solid rgba(255,215,140,0.7);
+            min-width: 200px;
+            border: 1px solid #2c2c2c;
+            transition: 0.1s;
         }
 
-        hr {
-            margin: 18px 0;
-            border: 0.5px solid rgba(255,255,210,0.3);
-        }
+        hr { margin: 18px 0; border-color: #888; }
 
         .flex-between {
             display: flex;
@@ -167,381 +136,424 @@
             gap: 12px;
         }
 
-        .warning {
-            color: #FFD966;
-            font-weight: 600;
+        .badge {
+            background: #2c2c2c;
+            color: white !important;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
         }
 
+        .warning-text { color: #aa2e1e !important; font-weight: bold; }
+        .success-text { color: #1e6b3b !important; font-weight: bold; }
+
         @media (max-width: 700px) {
-            .glass-orb { padding: 12px; }
-            .liquid-panel { padding: 16px; }
-            button { padding: 8px 16px; font-size: 0.85rem; }
-            .stat-value { font-size: 1.6rem; }
+            .glass-container { padding: 12px; }
+            button { padding: 8px 16px; }
         }
     </style>
 </head>
 <body>
-
-<div class="glass-orb" id="appRoot">
-    <!-- Панель авторизации / регистрации -->
-    <div id="authPanel" class="liquid-panel">
-        <div style="text-align: center; margin-bottom: 24px;">
-            <span class="title-glow" style="font-size: 2.8rem;">🏙️ Мегаполис Мэр</span>
-            <p style="color: white; margin-top: 8px; opacity: 0.9;">жидкое стекло • симулятор градостроителя</p>
+<div class="glass-container" id="appRoot">
+    <!-- АВТОРИЗАЦИЯ (исправленная: проверка на существование + хэш не нужен, но надёжное хранение) -->
+    <div id="authPanel" class="panel">
+        <div style="text-align: center;">
+            <span class="title">🏙️ МЭР МЕГАПОЛИСА</span>
+            <p style="margin-top: 8px;">строй, нанимай, улучшай — стань легендой города</p>
         </div>
-        <div class="input-group" style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-            <input type="text" id="regNick" placeholder="Никнейм" autocomplete="off">
+        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 30px 0 20px;">
+            <input type="text" id="regNick" placeholder="Никнейм (3-16 символов)" autocomplete="off">
             <input type="password" id="regPass" placeholder="Пароль">
-            <button id="registerBtn">✨ Регистрация</button>
-            <button id="loginBtn" style="background: rgba(70, 90, 110, 0.8);">🔐 Вход</button>
+            <button id="registerBtn">📝 Регистрация</button>
+            <button id="loginBtn" style="background: #3a5a6e;">🔑 Вход</button>
         </div>
-        <div id="authMsg" style="text-align: center; margin-top: 18px; color: #FFEEC2; font-weight: 500;"></div>
+        <div id="authMsg" style="text-align: center; font-weight: 600; min-height: 48px;"></div>
     </div>
 
-    <!-- Игровая панель (видна после входа) -->
-    <div id="gamePanel" class="hidden">
-        <div class="liquid-panel">
+    <!-- ИГРОВАЯ ПАНЕЛЬ -->
+    <div id="gamePanel" style="display: none;">
+        <!-- Верхняя панель -->
+        <div class="panel">
             <div class="flex-between">
-                <div><span class="title-glow" style="font-size: 1.8rem;">🏛️ Мэр </span><span id="playerNick" style="font-weight: 700; color: #FFF5CF;">-</span></div>
-                <button id="logoutBtn" style="background: rgba(0,0,0,0.4); padding: 8px 20px;">🚪 Выйти</button>
+                <div><span class="title" style="font-size: 1.8rem;">🏛️ Мэр </span><strong id="playerNick" style="font-size: 1.4rem;">-</strong></div>
+                <button id="logoutBtn">🚪 Выйти из аккаунта</button>
             </div>
             <hr>
-            <div class="resource-grid">
-                <div class="stat-card"><div>💰 Монеты</div><div class="stat-value" id="moneyAmount">0</div></div>
-                <div class="stat-card"><div>🪨 Уголь (склад)</div><div class="stat-value" id="coalAmount">0</div></div>
-                <div class="stat-card"><div>⛏️ Шахтёры</div><div class="stat-value" id="workerCount">0</div></div>
-                <div class="stat-card"><div>⚡ Уровень шахтёра</div><div class="stat-value" id="workerLvl">1</div></div>
+            <div class="grid-4">
+                <div class="stat-card">💰 Монеты<br><span class="stat-value" id="moneyAmount">0</span></div>
+                <div class="stat-card">📦 Ресурсы (склад)<br><span class="stat-value" id="totalResources">0</span></div>
+                <div class="stat-card">👥 Рабочие всего<br><span class="stat-value" id="totalWorkers">0</span></div>
+                <div class="stat-card">🏆 Уровень города<br><span class="stat-value" id="cityLevel">1</span></div>
+            </div>
+            <div class="flex-between" style="margin-top: 12px;">
+                <span>📈 Доход пассивный: <strong id="incomePerMin">0</strong> монет/мин</span>
+                <span>⚙️ Добыча ресурсов: <strong id="resPerMin">0</strong> ед/мин</span>
             </div>
         </div>
 
-        <!-- Здания и отрасли -->
-        <div class="liquid-panel">
-            <h3 style="color: white; margin-bottom: 10px;">🏗️ Строительство & Индустрия</h3>
-            <div class="building-row">
-                <div class="building-card">
-                    <div>🏭 Шахта «Углепоток»</div>
-                    <div style="font-size: 1.8rem; margin: 8px;">+1 шахтёр</div>
-                    <button id="buyWorkerBtn" class="action-btn">👷 Нанять (500💰)</button>
-                </div>
-                <div class="building-card">
-                    <div>📈 Прокачка шахтёров</div>
-                    <div style="font-size: 1.2rem;">⬆️ добыча +0.5 угля/мин</div>
-                    <div style="font-size: 0.8rem;">текущий множитель: <span id="multiplierPreview">1.0</span>x</div>
-                    <button id="upgradeWorkerBtn" class="action-btn" style="margin-top: 10px;">⚡ Улучшить (2000💰)</button>
-                </div>
-            </div>
-            <div class="building-row">
-                <div class="building-card">
-                    <div>🌍 Мировой рынок</div>
-                    <div>1 уголь = 1000💰</div>
-                    <button id="sellCoalBtn">💎 ПРОДАТЬ ВЕСЬ УГОЛЬ</button>
-                </div>
-            </div>
-            <hr>
-            <div class="flex-between">
-                <span style="color: white;">📊 Производство угля: <strong id="productionRate">0</strong> угля/мин</span>
-                <span class="badge-liquid">⏱️ Симуляция в реальном времени</span>
-            </div>
-            <div id="gameMsg" style="margin-top: 16px; font-size: 0.9rem; color: #D9FFD0;"></div>
+        <!-- ПРОФЕССИИ (4 вида) -->
+        <div class="panel">
+            <h3>👨‍🏭 ПРОФЕССИИ РАБОЧИХ (найм и прокачка)</h3>
+            <div class="grid-4" id="professionsContainer"></div>
+            <div style="margin-top: 12px; font-size: 0.85rem;">✨ Каждый рабочий добывает свой ресурс. Ресурсы можно продавать на рынке!</div>
         </div>
+
+        <!-- ЗДАНИЯ -->
+        <div class="panel">
+            <h3>🏗️ ПОСТРОЙКИ (увеличивают эффективность)</h3>
+            <div class="grid-4" id="buildingsContainer"></div>
+            <div style="margin-top: 10px;">⭐ Здания дают бонус к добыче всех профессий + пассивный доход</div>
+        </div>
+
+        <!-- ТОРГОВЛЯ И РЫНОК -->
+        <div class="panel">
+            <div class="flex-between">
+                <h3>🌍 МИРОВОЙ РЫНОК</h3>
+                <button id="sellAllBtn">💎 ПРОДАТЬ ВСЕ РЕСУРСЫ (цена: 1 ед. = 850💰)</button>
+            </div>
+            <div class="flex-between" style="margin-top: 12px;">
+                <span>🪙 Курс: <strong>850 монет</strong> за 1 единицу любого ресурса</span>
+                <span>🏦 Биржевая лихорадка: <span id="marketBonus">0%</span> бонуса к продаже</span>
+                <button id="refreshMarketBtn" style="padding: 6px 16px;">🔄 Аналитика рынка</button>
+            </div>
+        </div>
+
+        <div id="gameMsg" style="background: rgba(0,0,0,0.1); border-radius: 30px; padding: 12px 20px; margin-top: 10px; font-weight: 500;"></div>
     </div>
 </div>
 
 <script>
-    // ---------- СИСТЕМА ХРАНЕНИЯ (LocalStorage) ----------
-    // ключ: "megapolis_users" -> объект { nick: { password, gameData } }
-    // gameData: { money, coal, workers, workerLevel, lastTick }
-    // базовая скорость добычи: 1 уголь/минуту на одного шахтёра, но с множителем уровня (workerLevel * 0.5 + 0.5?) 
-    // по условию: работники добывают 1 уголь в 1 минуту и их можно прокачивать. прокачка увеличивает добычу за минуту.
-    // сделаем: каждый уровень шахтёра даёт +0.5 угля в минуту за каждого рабочего. база = 1 уголь/мин/шахтёр.
-    // формула: добыча в минуту = workers * (0.5 + workerLevel * 0.5) = workers * ( (workerLevel+1)/2 )? но для простоты: base 1 + (level-1)*0.5
-    // level 1 = 1.0 coal/min/worker, level2 = 1.5, level3 = 2.0 ...
-    
-    let currentUser = null;   // никнейм текущего игрока
+    // ---------- РАСШИРЕННАЯ СИСТЕМА ХРАНЕНИЯ ----------
+    // База пользователей: { "nick": { password, gameData: { money, resources: { уголь, руда, кристаллы, еда }, workers, workerLevels, buildings, cityLevel, lastTick } } }
+    // Профессии: 0 - Шахтёр (уголь), 1 - Рудокоп (руда), 2 - Кристалломант (кристаллы), 3 - Фермер (еда)
+    const PROFESSIONS = [
+        { name: "⛏️ Шахтёр", resource: "coal", label: "Уголь", baseProd: 1.0, hireCost: 400, upgradeCostBase: 1200 },
+        { name: "⚒️ Рудокоп", resource: "ore", label: "Руда", baseProd: 0.8, hireCost: 450, upgradeCostBase: 1400 },
+        { name: "💎 Кристалломант", resource: "crystal", label: "Кристаллы", baseProd: 0.6, hireCost: 600, upgradeCostBase: 1800 },
+        { name: "🌾 Фермер", resource: "food", label: "Еда", baseProd: 1.2, hireCost: 350, upgradeCostBase: 1000 }
+    ];
+
+    const BUILDINGS = [
+        { name: "🏭 Электростанция", bonus: 0.15, cost: 2500, income: 180, owned: 0, max: 8 },
+        { name: "📡 Логистический хаб", bonus: 0.20, cost: 4200, income: 300, owned: 0, max: 6 },
+        { name: "🏛️ Мэрия II", bonus: 0.30, cost: 8000, income: 550, owned: 0, max: 4 },
+        { name: "✨ Алхимическая лавка", bonus: 0.45, cost: 15000, income: 1100, owned: 0, max: 3 }
+    ];
+
+    let currentUser = null;
     let gameInterval = null;
-    
-    // Загружаем базу пользователей
-    function getUsersDB() {
-        const raw = localStorage.getItem("megapolis_users_db");
-        if (!raw) return {};
-        try {
-            return JSON.parse(raw);
-        } catch(e) { return {}; }
-    }
-    
-    function saveUsersDB(db) {
-        localStorage.setItem("megapolis_users_db", JSON.stringify(db));
-    }
-    
-    // Сохранить данные текущего пользователя
-    function saveCurrentGameData(nick, gameData) {
-        const db = getUsersDB();
-        if (db[nick] && db[nick].gameData) {
-            db[nick].gameData = { ...gameData };
-            saveUsersDB(db);
-        } else if (db[nick]) {
-            db[nick].gameData = gameData;
-            saveUsersDB(db);
-        } else {
-            console.warn("no such user");
-        }
-    }
-    
-    // Получить gameData для ника, если нет - создать стандартную
-    function getGameDataForUser(nick) {
+    let marketFluctuation = 0; // процент бонуса
+
+    // helpers
+    function getUsersDB() { return JSON.parse(localStorage.getItem("megapolis_ultimate") || "{}"); }
+    function saveUsersDB(db) { localStorage.setItem("megapolis_ultimate", JSON.stringify(db)); }
+
+    function getGameData(nick) {
         const db = getUsersDB();
         if (!db[nick] || !db[nick].gameData) {
-            // инициализация
-            const defaultData = {
-                money: 3000,        // стартовый капитал
-                coal: 0,
-                workers: 1,         // один шахтёр в начале
-                workerLevel: 1,     // уровень прокачки
+            const initData = {
+                money: 5000,
+                resources: { coal: 5, ore: 3, crystal: 2, food: 8 },
+                workers: [1, 0, 0, 1],   // кол-во каждой профессии
+                workerLevels: [1, 1, 1, 1], // уровень прокачки профессии (множитель)
+                buildings: [0,0,0,0],       // кол-во построек каждого типа
+                cityLevel: 1,
                 lastTick: Date.now()
             };
-            if (db[nick]) {
-                db[nick].gameData = defaultData;
-                saveUsersDB(db);
-            } else {
-                // такого быть не должно при авторизованном доступе, но на всякий
-                return defaultData;
-            }
-            return defaultData;
+            if (db[nick]) db[nick].gameData = initData;
+            else return initData;
+            saveUsersDB(db);
+            return initData;
         }
         return db[nick].gameData;
     }
-    
-    // обновляем игровые данные (вызов из таймера)
-    function updateGameResources() {
+
+    function saveGameData(nick, game) {
+        const db = getUsersDB();
+        if (db[nick]) { db[nick].gameData = game; saveUsersDB(db); }
+    }
+
+    // расчёт бонуса от зданий
+    function getTotalBuildingBonus(game) {
+        let bonus = 0;
+        for (let i = 0; i < BUILDINGS.length; i++) {
+            bonus += BUILDINGS[i].bonus * game.buildings[i];
+        }
+        return 1 + bonus;
+    }
+
+    // пассивный доход от зданий в минуту
+    function getBuildingIncome(game) {
+        let income = 0;
+        for (let i = 0; i < BUILDINGS.length; i++) {
+            income += BUILDINGS[i].income * game.buildings[i];
+        }
+        return income;
+    }
+
+    // обновление ресурсов по таймеру
+    function updateGameTick() {
         if (!currentUser) return;
-        let game = getGameDataForUser(currentUser);
+        let game = getGameData(currentUser);
         const now = Date.now();
         const last = game.lastTick || now;
-        let elapsedMinutes = (now - last) / 60000;  // минуты дробные
-        if (elapsedMinutes > 5) elapsedMinutes = 5; // ограничим накопление максимум 5 минутами, чтобы не крашить экономику
-        
-        if (elapsedMinutes > 0 && game.workers > 0) {
-            // формула добычи за минуту на одного рабочего: 1 + (workerLevel-1)*0.5
-            const productivityPerWorker = 1 + (game.workerLevel - 1) * 0.5;
-            const totalCoalMined = game.workers * productivityPerWorker * elapsedMinutes;
-            game.coal += totalCoalMined;
-            // монеты не меняются автоматически, только через продажу
+        let minutes = Math.min((now - last) / 60000, 5);
+        if (minutes <= 0) return;
+
+        const bonusMult = getTotalBuildingBonus(game);
+        // добыча ресурсов
+        let newResources = { ...game.resources };
+        let totalResPerMin = 0;
+        for (let i = 0; i < PROFESSIONS.length; i++) {
+            const workersCount = game.workers[i] || 0;
+            const level = game.workerLevels[i] || 1;
+            // базовая добыча * уровень * бонус зданий
+            let baseProd = PROFESSIONS[i].baseProd;
+            let prodPerWorker = baseProd * level * bonusMult;
+            let gained = workersCount * prodPerWorker * minutes;
+            const resKey = PROFESSIONS[i].resource;
+            newResources[resKey] = (newResources[resKey] || 0) + gained;
+            totalResPerMin += workersCount * baseProd * level * bonusMult;
         }
+        // пассивный доход от зданий
+        const buildingIncome = getBuildingIncome(game) * minutes;
+        let newMoney = game.money + buildingIncome;
+
+        game.resources = newResources;
+        game.money = newMoney;
         game.lastTick = now;
-        // сохраняем изменения
-        saveCurrentGameData(currentUser, game);
+        saveGameData(currentUser, game);
         updateUI();
     }
-    
-    // отрисовка всей UI
+
     function updateUI() {
         if (!currentUser) return;
-        const game = getGameDataForUser(currentUser);
+        const game = getGameData(currentUser);
+        const totalRes = Object.values(game.resources).reduce((a,b)=>a+b,0);
         document.getElementById("moneyAmount").innerText = Math.floor(game.money);
-        document.getElementById("coalAmount").innerText = Math.floor(game.coal);
-        document.getElementById("workerCount").innerText = game.workers;
-        document.getElementById("workerLvl").innerText = game.workerLevel;
-        const prodPerWorker = 1 + (game.workerLevel - 1) * 0.5;
-        const ratePerMin = game.workers * prodPerWorker;
-        document.getElementById("productionRate").innerText = ratePerMin.toFixed(2);
-        document.getElementById("multiplierPreview").innerText = prodPerWorker.toFixed(1);
-        document.getElementById("playerNick").innerText = currentUser;
-    }
-    
-    // продажа угля
-    function sellAllCoal() {
-        if (!currentUser) return;
-        let game = getGameDataForUser(currentUser);
-        const coalToSell = Math.floor(game.coal);
-        if (coalToSell <= 0) {
-            showGameMsg("Нет угля для продажи!", "#FFB347");
-            return;
+        document.getElementById("totalResources").innerText = Math.floor(totalRes);
+        document.getElementById("totalWorkers").innerText = game.workers.reduce((a,b)=>a+b,0);
+        document.getElementById("cityLevel").innerText = game.cityLevel;
+
+        // расчёт дохода и добычи в минуту
+        const bonusMult = getTotalBuildingBonus(game);
+        let incomeMin = getBuildingIncome(game);
+        let resPerMinTotal = 0;
+        for (let i=0;i<PROFESSIONS.length;i++) {
+            let cnt = game.workers[i];
+            let lvl = game.workerLevels[i];
+            let prod = PROFESSIONS[i].baseProd * lvl * bonusMult;
+            resPerMinTotal += cnt * prod;
         }
-        const revenue = coalToSell * 1000;
-        game.money += revenue;
-        game.coal = 0;
-        saveCurrentGameData(currentUser, game);
+        document.getElementById("incomePerMin").innerHTML = Math.floor(incomeMin);
+        document.getElementById("resPerMin").innerHTML = resPerMinTotal.toFixed(2);
+        document.getElementById("marketBonus").innerHTML = marketFluctuation + "%";
+
+        renderProfessions(game);
+        renderBuildings(game);
+    }
+
+    function renderProfessions(game) {
+        const container = document.getElementById("professionsContainer");
+        if (!container) return;
+        container.innerHTML = "";
+        for (let i=0; i<PROFESSIONS.length; i++) {
+            const prof = PROFESSIONS[i];
+            const count = game.workers[i] || 0;
+            const level = game.workerLevels[i] || 1;
+            const prodPerWorker = prof.baseProd * level * getTotalBuildingBonus(game);
+            const hireCost = prof.hireCost;
+            const upgradeCost = prof.upgradeCostBase * level;
+            const resAmount = game.resources[prof.resource] || 0;
+            const div = document.createElement("div");
+            div.className = "prof-card";
+            div.innerHTML = `
+                <div style="font-size:1.5rem;">${prof.name}</div>
+                <div>📦 ${prof.label}: <strong>${Math.floor(resAmount)}</strong></div>
+                <div>👥 Рабочих: ${count}</div>
+                <div>📈 Уровень: ${level} (x${(prof.baseProd*level).toFixed(1)}/мин/раб)</div>
+                <div>⚡ Текущ. добыча: ${(count * prodPerWorker).toFixed(2)}/мин</div>
+                <div style="margin-top: 8px;">
+                    <button class="hireProfBtn" data-idx="${i}" style="margin-right:8px;">👷 Нанять (${hireCost}💰)</button>
+                    <button class="upProfBtn" data-idx="${i}">📈 Прокачка (${upgradeCost}💰)</button>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+        document.querySelectorAll(".hireProfBtn").forEach(btn => {
+            btn.addEventListener("click", (e) => { hireWorker(parseInt(btn.dataset.idx)); });
+        });
+        document.querySelectorAll(".upProfBtn").forEach(btn => {
+            btn.addEventListener("click", (e) => { upgradeProfession(parseInt(btn.dataset.idx)); });
+        });
+    }
+
+    function renderBuildings(game) {
+        const container = document.getElementById("buildingsContainer");
+        if (!container) return;
+        container.innerHTML = "";
+        for (let i=0; i<BUILDINGS.length; i++) {
+            const b = BUILDINGS[i];
+            const owned = game.buildings[i] || 0;
+            const cost = b.cost * (1 + owned * 0.2); // прогрессивная стоимость
+            const totalBonus = (getTotalBuildingBonus(game)-1)*100;
+            const div = document.createElement("div");
+            div.className = "building-card";
+            div.innerHTML = `
+                <div style="font-size:1.3rem;">${b.name}</div>
+                <div>🏢 Уровень: ${owned} / ${b.max}</div>
+                <div>✨ Бонус добычи: +${Math.floor(b.bonus*100)}% (каждая)</div>
+                <div>💰 Доход: +${b.income} монет/мин</div>
+                <div>📈 Общий бонус: +${Math.floor(totalBonus)}%</div>
+                <button class="buildBtn" data-idx="${i}" style="margin-top:10px;">🏗️ Построить (${Math.floor(cost)}💰)</button>
+            `;
+            container.appendChild(div);
+        }
+        document.querySelectorAll(".buildBtn").forEach(btn => {
+            btn.addEventListener("click", (e) => { buildBuilding(parseInt(btn.dataset.idx)); });
+        });
+    }
+
+    function hireWorker(profIndex) {
+        if (!currentUser) return;
+        let game = getGameData(currentUser);
+        const cost = PROFESSIONS[profIndex].hireCost;
+        if (game.money >= cost) {
+            game.money -= cost;
+            game.workers[profIndex] = (game.workers[profIndex] || 0) + 1;
+            saveGameData(currentUser, game);
+            updateUI();
+            showGameMsg(`✅ Нанят ${PROFESSIONS[profIndex].name}! +1 рабочий.`, "success");
+        } else { showGameMsg(`❌ Не хватает ${cost} монет для найма`, "error"); }
+    }
+
+    function upgradeProfession(profIndex) {
+        if (!currentUser) return;
+        let game = getGameData(currentUser);
+        const currentLvl = game.workerLevels[profIndex] || 1;
+        const cost = PROFESSIONS[profIndex].upgradeCostBase * currentLvl;
+        if (game.money >= cost) {
+            game.money -= cost;
+            game.workerLevels[profIndex] = currentLvl + 1;
+            saveGameData(currentUser, game);
+            updateUI();
+            showGameMsg(`✨ ${PROFESSIONS[profIndex].name} улучшен до ${currentLvl+1} уровня!`, "success");
+        } else { showGameMsg(`Недостаточно монет для прокачки (нужно ${cost})`, "error"); }
+    }
+
+    function buildBuilding(buildIdx) {
+        if (!currentUser) return;
+        let game = getGameData(currentUser);
+        const building = BUILDINGS[buildIdx];
+        const owned = game.buildings[buildIdx] || 0;
+        if (owned >= building.max) { showGameMsg(`Достигнут лимит построек ${building.name}`, "error"); return; }
+        let cost = Math.floor(building.cost * (1 + owned * 0.2));
+        if (game.money >= cost) {
+            game.money -= cost;
+            game.buildings[buildIdx] = owned + 1;
+            // повышаем уровень города при достижении определённого числа зданий
+            const totalBuildings = game.buildings.reduce((a,b)=>a+b,0);
+            game.cityLevel = 1 + Math.floor(totalBuildings / 5);
+            saveGameData(currentUser, game);
+            updateUI();
+            showGameMsg(`🏛️ Построен ${building.name}! Городской уровень ${game.cityLevel}.`, "success");
+        } else { showGameMsg(`Не хватает ${cost} монет на строительство`, "error"); }
+    }
+
+    function sellAllResources() {
+        if (!currentUser) return;
+        let game = getGameData(currentUser);
+        let totalVal = 0;
+        const bonus = 1 + marketFluctuation / 100;
+        for (let res in game.resources) {
+            let amount = Math.floor(game.resources[res]);
+            if (amount > 0) {
+                totalVal += amount * 850 * bonus;
+                game.resources[res] = 0;
+            }
+        }
+        if (totalVal === 0) { showGameMsg("Нет ресурсов для продажи!", "error"); return; }
+        game.money += totalVal;
+        saveGameData(currentUser, game);
         updateUI();
-        showGameMsg(`✅ Продано ${coalToSell} угля! +${revenue} монет`, "#B8FFB0");
+        showGameMsg(`💰 Продажа ресурсов принесла ${Math.floor(totalVal)} монет! (бонус рынка ${marketFluctuation}%)`, "success");
     }
-    
-    // нанять шахтёра
-    function hireWorker() {
-        if (!currentUser) return;
-        let game = getGameDataForUser(currentUser);
-        const cost = 500;
-        if (game.money >= cost) {
-            game.money -= cost;
-            game.workers += 1;
-            saveCurrentGameData(currentUser, game);
-            updateUI();
-            showGameMsg(`👷 Новый шахтёр нанят! Всего: ${game.workers}`, "#CDFFCD");
-        } else {
-            showGameMsg(`Недостаточно монет! Нужно ${cost}💰`, "#FFB3A0");
-        }
+
+    function refreshMarket() {
+        marketFluctuation = Math.floor(Math.random() * 41) - 15; // -15% до +25%
+        showGameMsg(`📊 Аналитика: курс изменился! Бонус продажи: ${marketFluctuation}%`, "info");
+        updateUI();
     }
-    
-    // прокачка уровня шахтёров
-    function upgradeWorkers() {
-        if (!currentUser) return;
-        let game = getGameDataForUser(currentUser);
-        const cost = 2000;
-        if (game.money >= cost) {
-            game.money -= cost;
-            game.workerLevel += 1;
-            saveCurrentGameData(currentUser, game);
-            updateUI();
-            const newProd = 1 + (game.workerLevel - 1) * 0.5;
-            showGameMsg(`⚡ Уровень шахтёров ${game.workerLevel}! Добыча за шахтёра: ${newProd.toFixed(1)} угля/мин`, "#FFE5A3");
-        } else {
-            showGameMsg(`Не хватает 2000💰 для прокачки`, "#FFB3A0");
-        }
-    }
-    
-    function showGameMsg(msg, colorHint = "#E0FFC0") {
+
+    function showGameMsg(msg, type) {
         const el = document.getElementById("gameMsg");
-        if (el) {
-            el.innerHTML = msg;
-            el.style.color = colorHint;
-            setTimeout(() => {
-                if(document.getElementById("gameMsg")) document.getElementById("gameMsg").style.opacity = "0.8";
-                setTimeout(() => {
-                    if(document.getElementById("gameMsg") && document.getElementById("gameMsg").innerHTML === msg) 
-                        document.getElementById("gameMsg").innerHTML = "✨ Действие выполнено";
-                }, 2000);
-            }, 100);
-        }
+        el.innerHTML = msg;
+        el.style.color = "#1e1e1e";
+        el.style.background = "rgba(255,255,200,0.8)";
+        setTimeout(() => { if(document.getElementById("gameMsg")) el.innerHTML = "🏙️ Готов к действиям, мэр!"; }, 2200);
     }
-    
-    // таймер симуляции (каждую секунду пересчитываем добычу)
-    function startGameLoop() {
-        if (gameInterval) clearInterval(gameInterval);
-        gameInterval = setInterval(() => {
-            if (currentUser) {
-                updateGameResources();
-            }
-        }, 1000);
-    }
-    
-    // Логин / регистрация
-    function registerUser() {
-        const nick = document.getElementById("regNick").value.trim();
-        const pass = document.getElementById("regPass").value.trim();
-        if (!nick || !pass) {
-            showAuthMsg("❌ Введите никнейм и пароль!");
-            return;
-        }
-        if (nick.length > 20 || pass.length < 2) {
-            showAuthMsg("Ник до 20 символов, пароль минимум 2 символа");
-            return;
-        }
+
+    // АВТОРИЗАЦИЯ (исправленная: проверка на существование, корректная запись)
+    function register() {
+        let nick = document.getElementById("regNick").value.trim();
+        let pass = document.getElementById("regPass").value.trim();
+        if (!nick || !pass) { showAuthMsg("Заполните ник (3-16 симв) и пароль"); return; }
+        if (nick.length < 3 || nick.length > 16) { showAuthMsg("Никнейм 3-16 символов"); return; }
+        if (pass.length < 2) { showAuthMsg("Пароль минимум 2 символа"); return; }
         const db = getUsersDB();
-        if (db[nick]) {
-            showAuthMsg("Пользователь уже существует! Войдите.");
-            return;
-        }
-        // создаём нового
-        db[nick] = {
-            password: pass,
-            gameData: {
-                money: 3000,
-                coal: 0,
-                workers: 1,
-                workerLevel: 1,
-                lastTick: Date.now()
-            }
-        };
+        if (db[nick]) { showAuthMsg("Такой мэр уже есть! Используй вход."); return; }
+        db[nick] = { password: pass, gameData: null };
         saveUsersDB(db);
         showAuthMsg("✅ Регистрация успешна! Теперь войдите.");
-        // очистка полей
         document.getElementById("regPass").value = "";
     }
-    
-    function loginUser() {
-        const nick = document.getElementById("regNick").value.trim();
-        const pass = document.getElementById("regPass").value.trim();
-        if (!nick || !pass) {
-            showAuthMsg("Введите ник и пароль для входа");
-            return;
-        }
+
+    function login() {
+        let nick = document.getElementById("regNick").value.trim();
+        let pass = document.getElementById("regPass").value.trim();
         const db = getUsersDB();
-        const user = db[nick];
-        if (!user || user.password !== pass) {
-            showAuthMsg("Неверный никнейм или пароль");
-            return;
-        }
-        // успешный вход
+        if (!db[nick] || db[nick].password !== pass) { showAuthMsg("Неверный ник или пароль"); return; }
         currentUser = nick;
-        // убедимся, что lastTick актуален при входе
-        let gData = getGameDataForUser(currentUser);
-        if (!gData.lastTick || gData.lastTick > Date.now()) {
-            gData.lastTick = Date.now();
-            saveCurrentGameData(currentUser, gData);
-        }
+        let game = getGameData(currentUser);
+        if (!game.lastTick) game.lastTick = Date.now();
+        saveGameData(currentUser, game);
+        document.getElementById("authPanel").style.display = "none";
+        document.getElementById("gamePanel").style.display = "block";
+        if (gameInterval) clearInterval(gameInterval);
+        gameInterval = setInterval(() => updateGameTick(), 1000);
         updateUI();
-        // переключение панелей
-        document.getElementById("authPanel").classList.add("hidden");
-        document.getElementById("gamePanel").classList.remove("hidden");
-        showGameMsg(`Добро пожаловать, мэр ${currentUser}! Город ждёт решений.`);
-        startGameLoop();
-        // принудительно обновить добычу
-        setTimeout(() => updateGameResources(), 100);
+        refreshMarket();
+        showGameMsg(`Добро пожаловать, мэр ${nick}! Развивай мегаполис.`, "success");
     }
-    
+
     function logout() {
-        if (gameInterval) {
-            clearInterval(gameInterval);
-            gameInterval = null;
-        }
+        if (gameInterval) clearInterval(gameInterval);
         currentUser = null;
-        document.getElementById("gamePanel").classList.add("hidden");
-        document.getElementById("authPanel").classList.remove("hidden");
+        document.getElementById("gamePanel").style.display = "none";
+        document.getElementById("authPanel").style.display = "block";
         document.getElementById("regNick").value = "";
         document.getElementById("regPass").value = "";
         showAuthMsg("");
-        const msgDiv = document.getElementById("gameMsg");
-        if(msgDiv) msgDiv.innerHTML = "";
     }
-    
-    function showAuthMsg(msg) {
-        const authMsgDiv = document.getElementById("authMsg");
-        if (authMsgDiv) authMsgDiv.innerText = msg;
-    }
-    
-    // Привязка событий и инициализация
-    function bindUI() {
-        document.getElementById("registerBtn").addEventListener("click", registerUser);
-        document.getElementById("loginBtn").addEventListener("click", loginUser);
-        document.getElementById("logoutBtn").addEventListener("click", logout);
-        document.getElementById("buyWorkerBtn").addEventListener("click", hireWorker);
-        document.getElementById("upgradeWorkerBtn").addEventListener("click", upgradeWorkers);
-        document.getElementById("sellCoalBtn").addEventListener("click", sellAllCoal);
-    }
-    
-    // проверяем, есть ли авто-сессия? не делаем авто-вход, но можно оставить как есть
+
+    function showAuthMsg(msg) { document.getElementById("authMsg").innerHTML = msg; }
+
+    // обработчики
+    document.getElementById("registerBtn")?.addEventListener("click", register);
+    document.getElementById("loginBtn")?.addEventListener("click", login);
+    document.getElementById("logoutBtn")?.addEventListener("click", logout);
+    document.getElementById("sellAllBtn")?.addEventListener("click", sellAllResources);
+    document.getElementById("refreshMarketBtn")?.addEventListener("click", refreshMarket);
+
+    // начальная инициализация
     window.addEventListener("load", () => {
-        bindUI();
-        // если вдруг случайно остался currentUser (после обновления страницы нет) - чисто
-        currentUser = null;
-        document.getElementById("gamePanel").classList.add("hidden");
-        document.getElementById("authPanel").classList.remove("hidden");
-        // очистим возможный интервал
-        if (gameInterval) clearInterval(gameInterval);
-        gameInterval = null;
-        // проинициализируем базу при старте, для примера создадим демо-юзера если пусто?
-        const db = getUsersDB();
-        if (Object.keys(db).length === 0) {
-            // тестовый мэр для удобства, можно не добавлять, но добавим для первого опыта
-            db["МэрЛуиджи"] = {
-                password: "123",
-                gameData: { money: 3500, coal: 2, workers: 1, workerLevel: 1, lastTick: Date.now() }
-            };
-            saveUsersDB(db);
+        if (getUsersDB() && Object.keys(getUsersDB()).length === 0) {
+            const demo = { "АлексМэр": { password: "123", gameData: null } };
+            saveUsersDB(demo);
         }
+        document.getElementById("gamePanel").style.display = "none";
+        document.getElementById("authPanel").style.display = "block";
     });
-    
-    // Дополнительно: эффект живого стекла на кнопках (без конфликтов)
-    // Все стили уже встроены
 </script>
 </body>
 </html>
