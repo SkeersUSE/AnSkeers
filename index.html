@@ -50,6 +50,58 @@
             backdrop-filter: blur(20px);
             border-radius: 24px;
             padding: 12px;
+            text-align: center;<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Мэр Мегаполиса — Полная версия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', 'Segoe UI', Helvetica, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.6em;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 55px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+        }
+
+        /* Ресурсы */
+        .resources-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .resource-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 12px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -234,6 +286,7 @@
             <div>🏗️ Всего построено: <strong id="totalBuildingsBuilt">0</strong></div>
             <div>🎉 Фестивалей проведено: <strong id="festivalsCount">0</strong></div>
             <div>⚠️ Кризисов пережито: <strong id="crisesCount">0</strong></div>
+            <div>⚠️ Нарушений (автокликер): <strong id="autoClickerWarnings">0</strong>/3</div>
         </div>
         <button class="action-btn" id="prestigeBtn" style="background:rgba(255,85,85,0.2); color:#ff6b6b;">🔄 ПЕРЕРОДИТЬСЯ (+1 престиж, сброс прогресса с бонусом)</button>
         <button class="reset-btn" id="resetBtn" style="margin-top:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); padding:10px; border-radius:30px; width:100%; cursor:pointer;">🔄 СБРОСИТЬ ПРОГРЕСС</button>
@@ -254,10 +307,14 @@
         upgrades: { incomeBonus: 0, happinessBonus: 0, buildingDiscount: 0, taxBonus: 0 },
         research: { recycling: false, solar: false, transport: false, education: false, medicine: false, robotics: false },
         achievements: [],
-        stats: { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0 },
+        stats: { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0, autoClickerWarnings: 0, lastTaxTime: 0 },
         lastIncomeTime: Date.now(),
         lastEventTime: Date.now()
     };
+
+    // === ЗАЩИТА ОТ АВТОКЛИКЕРА И КУЛДАУН ===
+    let taxCooldown = false;
+    let lastTaxClickTime = 0;
 
     // Конфигурация зданий
     const buildings = {
@@ -381,8 +438,38 @@
         } else showNotif("❌ Недостаточно денег!");
     }
 
-    // === ДЕЙСТВИЯ ===
+    // === ДЕЙСТВИЯ С ЗАЩИТОЙ ОТ АВТОКЛИКЕРА ===
     function collectTax() {
+        // Кулдаун 2 секунды
+        if (taxCooldown) {
+            showNotif("⏳ Налоги можно собирать раз в 2 секунды!");
+            return;
+        }
+        
+        const now = Date.now();
+        
+        // Проверка на автокликер (если интервал между кликами меньше 200 мс)
+        if (lastTaxClickTime && (now - lastTaxClickTime) < 200) {
+            gameData.stats.autoClickerWarnings++;
+            updateUI();
+            saveGame();
+            showNotif(`⚠️ Обнаружена подозрительная активность! Предупреждение ${gameData.stats.autoClickerWarnings}/3`);
+            
+            if (gameData.stats.autoClickerWarnings >= 3) {
+                showNotif("🚫 АВТОКЛИКЕР ОБНАРУЖЕН! Вы были кикнуты с сайта.");
+                setTimeout(() => {
+                    // Полный сброс игры при кике
+                    localStorage.removeItem('mayorGameFull');
+                    location.reload();
+                }, 1500);
+                return;
+            }
+        }
+        
+        lastTaxClickTime = now;
+        taxCooldown = true;
+        setTimeout(() => { taxCooldown = false; }, 2000);
+        
         let income = getIncome();
         let bonus = 1 + (gameData.upgrades.taxBonus * 0.15);
         if (gameData.research.robotics) bonus *= 1.5;
@@ -422,7 +509,7 @@
             gameData.buildings = { house: 0, commercial: 0, factory: 0, park: 0, school: 0, stadium: 0, hospital: 0, police: 0 };
             gameData.upgrades = { incomeBonus: 0, happinessBonus: 0, buildingDiscount: 0, taxBonus: 0 };
             gameData.research = { recycling: false, solar: false, transport: false, education: false, medicine: false, robotics: false };
-            gameData.stats = { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0 };
+            gameData.stats = { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0, autoClickerWarnings: 0, lastTaxTime: 0 };
             updateUI();
             saveGame();
             showNotif(`✨ Перерождение! Теперь у вас ${gameData.prestige} престижа и бонус x${gameData.prestigeBonus}!`);
@@ -499,6 +586,7 @@
         document.getElementById('totalBuildingsBuilt').innerText = gameData.stats.totalBuildingsBuilt;
         document.getElementById('festivalsCount').innerText = gameData.stats.festivals;
         document.getElementById('crisesCount').innerText = gameData.stats.crises;
+        document.getElementById('autoClickerWarnings').innerText = gameData.stats.autoClickerWarnings;
 
         // Здания
         const buildingsGrid = document.getElementById('buildingsGrid');
@@ -588,7 +676,7 @@
             try {
                 const loaded = JSON.parse(saved);
                 gameData = { ...gameData, ...loaded };
-                if (!gameData.stats) gameData.stats = { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0 };
+                if (!gameData.stats) gameData.stats = { days: 0, totalEarned: 0, totalBuildingsBuilt: 0, festivals: 0, crises: 0, autoClickerWarnings: 0, lastTaxTime: 0 };
                 if (!gameData.research) gameData.research = {};
                 gameData.prestigeBonus = 1 + gameData.prestige * 0.1;
                 gameData.happiness = getHappiness();
