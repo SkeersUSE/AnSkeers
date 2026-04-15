@@ -3,259 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Liquid Snap — облачные анонимные вопросы</title>
+    <title>Liquid Clicker — iOS 26 стиль</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
 
         body {
             min-height: 100vh;
-            background: radial-gradient(circle at 30% 10%, #1a1a2e, #0a0a15, #05050a);
+            background: radial-gradient(circle at 30% 20%, #1a1a2e, #0a0a15, #030308);
             font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
+        /* iOS 26 Liquid Glass */
         .glass {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 48px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            border: 0.5px solid rgba(255, 255, 255, 0.25);
+            border-radius: 64px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .menu {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .menu-btn {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(40px);
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            padding: 14px;
-            border-radius: 60px;
-            color: white;
-            font-weight: 500;
+            width: 340px;
             text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
+            padding: 32px 24px 40px;
         }
 
-        .search-box {
-            padding: 20px;
-            margin-bottom: 20px;
+        h1 {
+            font-size: 32px;
+            font-weight: 590;
+            background: linear-gradient(135deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
-        .search-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.08);
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 60px;
-            padding: 14px 20px;
+        .sub {
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        /* Счётчик */
+        .counter {
+            font-size: 88px;
+            font-weight: 590;
+            font-feature-settings: "tnum";
             color: white;
-            font-size: 16px;
-            outline: none;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin: 20px 0;
+            letter-spacing: 4px;
         }
 
-        .profile-header {
-            text-align: center;
-            padding: 32px 20px;
-            margin-bottom: 20px;
-        }
-
-        .avatar {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            border-radius: 50%;
-            margin: 0 auto 16px;
+        /* Главная кнопка клика */
+        .click-btn {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            border-radius: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .username {
-            font-size: 28px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .bio {
-            color: rgba(255,255,255,0.6);
-            font-size: 14px;
-        }
-
-        .edit-bio {
-            margin-top: 12px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            padding: 6px 16px;
-            border-radius: 40px;
-            color: rgba(255,255,255,0.6);
-            font-size: 12px;
+            font-size: 80px;
             cursor: pointer;
+            transition: all 0.08s linear;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            border: 0.5px solid rgba(255,255,255,0.3);
         }
 
-        .link-box {
-            margin-top: 16px;
-            background: rgba(255,255,255,0.1);
+        .click-btn:active {
+            transform: scale(0.94);
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+        }
+
+        /* Бонусы */
+        .bonus-panel {
+            margin: 24px 0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .bonus-btn {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255,255,255,0.2);
             padding: 12px;
             border-radius: 60px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .link-box input {
-            flex: 1;
-            background: transparent;
-            border: none;
             color: white;
-            font-size: 14px;
-            padding: 0 12px;
-            outline: none;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.1s;
         }
 
-        .copy-btn {
+        .bonus-btn:active {
+            transform: scale(0.96);
             background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 8px 20px;
-            border-radius: 40px;
-            color: white;
-            cursor: pointer;
         }
 
-        .question-card {
-            padding: 24px;
-            margin-bottom: 16px;
-            cursor: pointer;
-            transition: 0.2s;
+        .bonus-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
         }
 
-        .question-text {
-            color: white;
-            font-size: 17px;
-            margin-bottom: 12px;
-        }
-
-        .question-meta {
-            display: flex;
-            justify-content: space-between;
-            color: rgba(255,255,255,0.4);
-            font-size: 12px;
-        }
-
-        .answer-area {
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 0.5px solid rgba(255,255,255,0.1);
-            display: none;
-        }
-
-        .answer-area.show {
+        /* Донат и реклама */
+        .donate {
             display: block;
-        }
-
-        .answer-input {
-            width: 100%;
-            background: rgba(255,255,255,0.1);
-            border: 0.5px solid rgba(255,255,255,0.2);
-            border-radius: 28px;
-            padding: 12px 16px;
-            color: white;
-            resize: none;
-            font-family: inherit;
-            outline: none;
-        }
-
-        .answer-btn {
-            margin-top: 12px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 10px 24px;
-            border-radius: 40px;
-            color: white;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .ask-form {
-            padding: 24px;
-            margin-top: 20px;
-        }
-
-        .ask-form textarea {
-            width: 100%;
-            background: rgba(255,255,255,0.08);
-            border: 0.5px solid rgba(255,255,255,0.2);
-            border-radius: 28px;
-            padding: 16px;
-            color: white;
-            resize: none;
-            font-family: inherit;
-            outline: none;
-        }
-
-        .send-btn {
-            margin-top: 16px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
-            border: 0.5px solid rgba(255,255,255,0.3);
-            padding: 14px;
-            border-radius: 60px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 48px 24px;
-            color: rgba(255,255,255,0.4);
-        }
-
-        .owner-badge {
-            background: rgba(255,255,255,0.1);
-            padding: 8px 16px;
-            border-radius: 60px;
-            font-size: 12px;
-            color: #4ecdc4;
-            display: inline-block;
-            margin-top: 12px;
-        }
-
-        .donate-btn {
-            display: block;
-            text-align: center;
-            padding: 14px;
-            margin: 20px 0;
-            background: rgba(255,215,0,0.15);
+            background: rgba(255,215,0,0.12);
             border: 0.5px solid rgba(255,215,0,0.3);
             border-radius: 60px;
+            padding: 12px;
+            margin-top: 20px;
             color: #ffd966;
             text-decoration: none;
+            font-size: 14px;
         }
 
         .ads-space {
             margin-top: 20px;
-            padding: 16px;
-            text-align: center;
+            padding-top: 16px;
+            border-top: 0.5px solid rgba(255,255,255,0.1);
             font-size: 10px;
             color: rgba(255,255,255,0.3);
-            border-top: 0.5px solid rgba(255,255,255,0.1);
+            text-align: center;
         }
 
         .toast {
@@ -265,415 +147,234 @@
             transform: translateX(-50%);
             background: rgba(0,0,0,0.8);
             backdrop-filter: blur(20px);
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 60px;
             color: white;
+            font-size: 14px;
             z-index: 1000;
             display: none;
+            white-space: nowrap;
         }
 
-        .my-id-info {
-            background: rgba(255,255,255,0.05);
-            padding: 12px;
-            border-radius: 32px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            color: rgba(255,255,255,0.5);
-            text-align: center;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: rgba(255,255,255,0.5);
+        .reset {
+            margin-top: 12px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.3);
+            font-size: 12px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-<div class="container" id="app">
-    <div class="loading">🍃 загрузка...</div>
+<div class="glass container">
+    <h1>Liquid Clicker</h1>
+    <div class="sub">нажимай на стекло ✨</div>
+
+    <div class="counter" id="counter">0</div>
+
+    <div class="click-btn" id="clickBtn">
+        💎
+    </div>
+
+    <div class="bonus-panel">
+        <div class="bonus-btn" id="bonus2x">⚡ x2 (10)</div>
+        <div class="bonus-btn" id="bonusAuto">🤖 авто (50)</div>
+    </div>
+
+    <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate">
+        ☕️ Поддержать проект
+    </a>
+
+    <div class="ads-space">
+        📱 здесь будет реклама (AdSense)
+    </div>
+
+    <button class="reset" id="resetBtn">🔄 сбросить</button>
 </div>
+
 <div id="toast" class="toast"></div>
 
 <script>
-    // ========== НАСТРОЙКИ ==========
-    // ВСТАВЬТЕ СЮДА ВАШ URL ИЗ GOOGLE APPS SCRIPT:
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzjmnT18w-cfGUzkrkySmjEyIZ_vHKOtsoVLL3bDkrW_yuV_pN0p1elHaaOkBvI61Di/exec';  // <--- ЗАМЕНИТЕ!!!
+    // === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
+    let clicks = 0;
+    let clickPower = 1;
+    let autoIncome = 0;
+    let autoInterval = null;
     
-    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
-    let currentUserId = null;
-    let currentView = 'menu';
-    let viewedProfileId = null;
-    let currentUserData = null;
+    // Цены
+    const PRICE_2X = 10;
+    const PRICE_AUTO = 50;
     
-    // ========== РАБОТА С API ==========
-    async function callAPI(action, data = {}) {
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ action, ...data })
-            });
-            const result = await response.json();
-            return result;
-        } catch (error) {
-            console.error('API Error:', error);
-            showToast('Ошибка соединения с сервером');
-            return { success: false, error: error.message };
-        }
-    }
+    // DOM элементы
+    const counterEl = document.getElementById('counter');
+    const clickBtn = document.getElementById('clickBtn');
+    const bonus2xBtn = document.getElementById('bonus2x');
+    const bonusAutoBtn = document.getElementById('bonusAuto');
+    const resetBtn = document.getElementById('resetBtn');
+    const toastEl = document.getElementById('toast');
     
-    async function createUserInCloud(userId, username, avatar, bio) {
-        return await callAPI('createUser', { userId, username, avatar, bio });
-    }
-    
-    async function getUserFromCloud(userId) {
-        return await callAPI('getUser', { userId });
-    }
-    
-    async function getQuestionsFromCloud(toUserId) {
-        return await callAPI('getQuestions', { toUserId });
-    }
-    
-    async function addQuestionToCloud(toUserId, fromUserId, questionText) {
-        return await callAPI('addQuestion', { toUserId, fromUserId, questionText });
-    }
-    
-    async function addAnswerToCloud(questionId, answerText) {
-        return await callAPI('addAnswer', { questionId, answerText });
-    }
-    
-    // ========== ЛОКАЛЬНАЯ ИНИЦИАЛИЗАЦИЯ ==========
-    async function initCurrentUser() {
-        let userId = localStorage.getItem('liquid_user_id');
-        
-        if (!userId) {
-            userId = 'user_' + Math.random().toString(36).substr(2, 8);
-            localStorage.setItem('liquid_user_id', userId);
-        }
-        
-        currentUserId = userId;
-        
-        // Проверяем, есть ли пользователь в облаке
-        const result = await getUserFromCloud(userId);
-        
-        if (!result.success || !result.user) {
-            // Создаём нового пользователя
-            await createUserInCloud(userId, userId, '😎', 'задавай вопросы анонимно ✨');
-            currentUserData = {
-                userId: userId,
-                username: userId,
-                avatar: '😎',
-                bio: 'задавай вопросы анонимно ✨'
-            };
-        } else {
-            currentUserData = result.user;
-        }
-        
-        return true;
-    }
-    
-    // ========== РАБОТА С ВОПРОСАМИ ==========
-    async function loadProfile(userId) {
-        // Загружаем данные пользователя
-        const userResult = await getUserFromCloud(userId);
-        if (!userResult.success || !userResult.user) {
-            // Создаём пользователя, если его нет
-            await createUserInCloud(userId, userId, '🍃', 'спрашивай что угодно ✨');
-            viewedProfileData = {
-                userId: userId,
-                username: userId,
-                avatar: '🍃',
-                bio: 'спрашивай что угодно ✨'
-            };
-        } else {
-            viewedProfileData = userResult.user;
-        }
-        
-        // Загружаем вопросы
-        const questionsResult = await getQuestionsFromCloud(userId);
-        viewedProfileQuestions = questionsResult.success ? questionsResult.questions : [];
-        
-        render();
-    }
-    
-    async function sendQuestionToUser(toUserId, questionText) {
-        const result = await addQuestionToCloud(toUserId, currentUserId, questionText);
-        if (result.success) {
-            showToast('Вопрос отправлен анонимно!');
-            // Перезагружаем профиль, чтобы показать новый вопрос (если это владелец)
-            if (viewedProfileId === toUserId) {
-                await loadProfile(toUserId);
-            }
-        } else {
-            showToast('Ошибка при отправке вопроса');
-        }
-    }
-    
-    async function sendAnswerToQuestion(questionId, answerText) {
-        const result = await addAnswerToCloud(questionId, answerText);
-        if (result.success) {
-            showToast('Ответ опубликован!');
-            await loadProfile(viewedProfileId);
-        } else {
-            showToast('Ошибка при отправке ответа');
-        }
-    }
-    
-    // ========== НАВИГАЦИЯ ==========
-    async function searchUser(searchId) {
-        viewedProfileId = searchId;
-        currentView = 'profile';
-        await loadProfile(searchId);
-    }
-    
-    async function showMyProfile() {
-        viewedProfileId = currentUserId;
-        currentView = 'profile';
-        await loadProfile(currentUserId);
-    }
-    
-    function showSearchMenu() {
-        currentView = 'search';
-        render();
-    }
-    
-    function showMainMenu() {
-        currentView = 'menu';
-        render();
-    }
-    
-    function copyLink() {
-        const link = `${window.location.href.split('#')[0]}#${viewedProfileId || currentUserId}`;
-        navigator.clipboard.writeText(link);
-        showToast('ссылка скопирована!');
-    }
-    
-    async function editBio() {
-        const newBio = prompt('Новое описание:', viewedProfileData?.bio || '');
-        if (newBio !== null && viewedProfileId === currentUserId) {
-            // Обновляем в облаке
-            await createUserInCloud(currentUserId, currentUserId, viewedProfileData?.avatar || '😎', newBio);
-            await loadProfile(currentUserId);
-        }
-    }
-    
-    function toggleAnswer(questionId) {
-        const area = document.getElementById(`answer-area-${questionId}`);
-        if (area) area.classList.toggle('show');
-    }
-    
-    async function submitAnswer(questionId) {
-        const input = document.getElementById(`answer-text-${questionId}`);
-        const answer = input.value.trim();
-        if (!answer) {
-            showToast('напиши ответ');
-            return;
-        }
-        await sendAnswerToQuestion(questionId, answer);
-    }
-    
-    async function sendQuestion() {
-        const input = document.getElementById('question-input');
-        const text = input.value.trim();
-        if (!text) {
-            showToast('напиши вопрос');
-            return;
-        }
-        if (text.length > 300) {
-            showToast('максимум 300 символов');
-            return;
-        }
-        await sendQuestionToUser(viewedProfileId, text);
-        document.getElementById('question-input').value = '';
-    }
-    
-    function showToast(msg) {
-        const toast = document.getElementById('toast');
-        toast.textContent = msg;
-        toast.style.display = 'block';
+    // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+    function showToast(msg, duration = 1500) {
+        toastEl.textContent = msg;
+        toastEl.style.display = 'block';
         setTimeout(() => {
-            toast.style.display = 'none';
-        }, 2000);
+            toastEl.style.display = 'none';
+        }, duration);
     }
     
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+    function saveGame() {
+        localStorage.setItem('liquid_clicks', JSON.stringify({
+            clicks: clicks,
+            clickPower: clickPower,
+            autoIncome: autoIncome
+        }));
     }
     
-    // ========== ПЕРЕМЕННЫЕ ДЛЯ РЕНДЕРА ==========
-    let viewedProfileData = null;
-    let viewedProfileQuestions = [];
-    
-    // ========== ОТРИСОВКА ==========
-    function render() {
-        const app = document.getElementById('app');
-        
-        if (currentView === 'menu') {
-            app.innerHTML = `
-                <div class="glass" style="padding: 32px 24px; text-align: center;">
-                    <div style="font-size: 64px; margin-bottom: 16px;">🍃</div>
-                    <h1 style="color: white; margin-bottom: 8px;">Liquid Snap</h1>
-                    <p style="color: rgba(255,255,255,0.5); margin-bottom: 32px;">анонимные вопросы в стиле iOS 26</p>
-                    
-                    <div class="my-id-info">
-                        🆔 Ваш ID: <strong>${escapeHtml(currentUserId)}</strong><br>
-                        <span style="font-size: 11px;">поделитесь им с друзьями!</span>
-                    </div>
-                    
-                    <div class="menu">
-                        <div class="menu-btn" onclick="showMyProfile()">👤 Мой профиль</div>
-                        <div class="menu-btn" onclick="showSearchMenu()">🔍 Найти друга</div>
-                    </div>
-                    
-                    <div class="link-box" style="margin-top: 24px;">
-                        <input type="text" id="shareLink" readonly value="${window.location.href.split('#')[0]}#${currentUserId}">
-                        <button class="copy-btn" onclick="copyLink()">Копировать</button>
-                    </div>
-                </div>
-                
-                <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate-btn">
-                    ☕️ Поддержать проект
-                </a>
-                
-                <div class="ads-space">
-                    <div style="min-height: 90px;">📱 реклама будет здесь</div>
-                    <div style="margin-top: 8px;">Liquid Snap • iOS 26 Liquid Glass</div>
-                </div>
-            `;
-            return;
+    function loadGame() {
+        const saved = localStorage.getItem('liquid_clicks');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                clicks = data.clicks || 0;
+                clickPower = data.clickPower || 1;
+                autoIncome = data.autoIncome || 0;
+            } catch(e) {}
         }
-        
-        if (currentView === 'search') {
-            app.innerHTML = `
-                <div class="glass search-box">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Введите userId..." onkeypress="if(event.key==='Enter') searchUser(document.getElementById('searchInput').value)">
-                    <button class="send-btn" style="margin-top: 12px;" onclick="searchUser(document.getElementById('searchInput').value)">🔍 Найти</button>
-                </div>
-                
-                <div class="menu" style="margin-top: 20px;">
-                    <div class="menu-btn" onclick="showMainMenu()">🏠 Главное меню</div>
-                </div>
-            `;
-            return;
-        }
-        
-        if (currentView === 'profile' && viewedProfileData) {
-            const isOwner = (viewedProfileId === currentUserId);
-            const questions = viewedProfileQuestions || [];
-            
-            let questionsHtml = '';
-            if (questions.length === 0) {
-                questionsHtml = `<div class="glass empty-state">🤫 пока нет вопросов</div>`;
-            } else {
-                questionsHtml = questions.map(q => `
-                    <div class="glass question-card" onclick="toggleAnswer('${q.id}')">
-                        <div class="question-text">❓ ${escapeHtml(q.questionText)}</div>
-                        <div class="question-meta">
-                            <span>📨 анонимно</span>
-                            <span>${q.answered === true || q.answered === 'true' ? '✅ есть ответ' : '⏳ ждёт ответа'}</span>
-                        </div>
-                        <div class="answer-area" id="answer-area-${q.id}">
-                            ${q.answered === true || q.answered === 'true' ? `
-                                <div style="background:rgba(255,255,255,0.05); border-radius:24px; padding:12px; color:#aaa;">
-                                    💬 ${escapeHtml(q.answerText)}
-                                </div>
-                            ` : (isOwner ? `
-                                <textarea class="answer-input" id="answer-text-${q.id}" rows="2" placeholder="написать ответ..."></textarea>
-                                <button class="answer-btn" onclick="event.stopPropagation(); submitAnswer('${q.id}')">✏️ Ответить</button>
-                            ` : `
-                                <div style="color:rgba(255,255,255,0.3); text-align:center; padding:12px;">
-                                    ⏳ владелец скоро ответит
-                                </div>
-                            `)}
-                        </div>
-                    </div>
-                `).join('');
-            }
-            
-            app.innerHTML = `
-                <div class="glass profile-header">
-                    <div class="avatar">${viewedProfileData.avatar || '🍃'}</div>
-                    <div class="username">${escapeHtml(viewedProfileData.username)}</div>
-                    <div class="bio">${escapeHtml(viewedProfileData.bio || 'спрашивай что угодно ✨')}</div>
-                    ${isOwner ? `<button class="edit-bio" onclick="editBio()">✏️ изменить описание</button>` : ''}
-                    ${isOwner ? `<div class="owner-badge">🔒 это вы — можете отвечать на вопросы</div>` : ''}
-                    <div class="link-box">
-                        <input type="text" id="profileLink" readonly value="${window.location.href.split('#')[0]}#${viewedProfileId}">
-                        <button class="copy-btn" onclick="copyLink()">Копировать</button>
-                    </div>
-                </div>
-                
-                <div id="questionsList">${questionsHtml}</div>
-                
-                ${!isOwner ? `
-                    <div class="glass ask-form">
-                        <textarea id="question-input" rows="3" placeholder="Спросить ${escapeHtml(viewedProfileData.username)} анонимно..."></textarea>
-                        <button class="send-btn" onclick="sendQuestion()">📩 Отправить анонимно</button>
-                    </div>
-                ` : ''}
-                
-                <div class="menu" style="margin-top: 20px;">
-                    <div class="menu-btn" onclick="showMainMenu()">🏠 Главное меню</div>
-                </div>
-                
-                <a href="https://www.donationalerts.com/r/skeers" target="_blank" class="donate-btn">
-                    ☕️ Поддержать проект
-                </a>
-                
-                <div class="ads-space">
-                    <div style="min-height: 90px;">📱 реклама будет здесь</div>
-                    <div style="margin-top: 8px;">Liquid Snap • iOS 26 Liquid Glass</div>
-                </div>
-            `;
-            return;
-        }
-        
-        app.innerHTML = `<div class="glass empty-state">👤 загрузка...</div>`;
+        updateUI();
+        restartAuto();
     }
     
-    // ========== ОБРАБОТКА ССЫЛОК ==========
-    async function handleHash() {
-        const hash = window.location.hash.substring(1);
+    function updateUI() {
+        counterEl.textContent = Math.floor(clicks);
         
-        if (hash) {
-            viewedProfileId = hash;
-            currentView = 'profile';
-            await loadProfile(hash);
+        // Обновляем кнопки
+        if (clicks >= PRICE_2X) {
+            bonus2xBtn.classList.remove('disabled');
         } else {
-            currentView = 'menu';
-            render();
+            bonus2xBtn.classList.add('disabled');
+        }
+        
+        if (clicks >= PRICE_AUTO) {
+            bonusAutoBtn.classList.remove('disabled');
+        } else {
+            bonusAutoBtn.classList.add('disabled');
+        }
+        
+        // Текст кнопок с ценами
+        if (clickPower === 1) {
+            bonus2xBtn.innerHTML = `⚡ x2 (${PRICE_2X})`;
+        } else {
+            bonus2xBtn.innerHTML = `⚡ x2 (куплено)`;
+        }
+        
+        if (autoIncome === 0) {
+            bonusAutoBtn.innerHTML = `🤖 авто (${PRICE_AUTO})`;
+        } else {
+            bonusAutoBtn.innerHTML = `🤖 авто +${autoIncome}/сек`;
+        }
+        
+        saveGame();
+    }
+    
+    function restartAuto() {
+        if (autoInterval) {
+            clearInterval(autoInterval);
+            autoInterval = null;
+        }
+        
+        if (autoIncome > 0) {
+            autoInterval = setInterval(() => {
+                clicks += autoIncome;
+                updateUI();
+                // Эффект при авто-клике
+                counterEl.style.transform = 'scale(1.05)';
+                setTimeout(() => { counterEl.style.transform = 'scale(1)'; }, 100);
+            }, 1000);
         }
     }
     
-    // ========== ИНИЦИАЛИЗАЦИЯ ==========
-    async function init() {
-        await initCurrentUser();
+    // === ИГРОВЫЕ ДЕЙСТВИЯ ===
+    function addClick() {
+        clicks += clickPower;
+        updateUI();
         
-        window.searchUser = searchUser;
-        window.showMyProfile = showMyProfile;
-        window.showSearchMenu = showSearchMenu;
-        window.showMainMenu = showMainMenu;
-        window.copyLink = copyLink;
-        window.editBio = editBio;
-        window.toggleAnswer = toggleAnswer;
-        window.submitAnswer = submitAnswer;
-        window.sendQuestion = sendQuestion;
+        // Анимация кнопки и счётчика
+        clickBtn.style.transform = 'scale(0.94)';
+        counterEl.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            clickBtn.style.transform = 'scale(1)';
+            counterEl.style.transform = 'scale(1)';
+        }, 80);
         
-        window.addEventListener('hashchange', handleHash);
-        await handleHash();
+        // Лёгкая вибрация (если есть)
+        if (navigator.vibrate) navigator.vibrate(20);
     }
     
-    init();
+    function buy2x() {
+        if (clickPower > 1) {
+            showToast('x2 уже куплен!');
+            return;
+        }
+        if (clicks >= PRICE_2X) {
+            clicks -= PRICE_2X;
+            clickPower = 2;
+            updateUI();
+            showToast('💪 Мощность клика x2!');
+        } else {
+            showToast(`Нужно ${PRICE_2X} кликов`);
+        }
+    }
+    
+    function buyAuto() {
+        if (autoIncome > 0) {
+            showToast('Автокликер уже работает!');
+            return;
+        }
+        if (clicks >= PRICE_AUTO) {
+            clicks -= PRICE_AUTO;
+            autoIncome = 1;
+            updateUI();
+            restartAuto();
+            showToast('🤖 Автокликер активен! +1 в секунду');
+        } else {
+            showToast(`Нужно ${PRICE_AUTO} кликов`);
+        }
+    }
+    
+    function resetGame() {
+        if (confirm('Сбросить весь прогресс?')) {
+            clicks = 0;
+            clickPower = 1;
+            autoIncome = 0;
+            restartAuto();
+            updateUI();
+            showToast('Прогресс сброшен');
+        }
+    }
+    
+    // === ПРЕМИУМ КОД (как вы просили) ===
+    window.addPremiumCode = function(code) {
+        console.log('Premium код активирован:', code);
+        // Даём бонус за премиум код
+        clicks += 100;
+        updateUI();
+        showToast('✨ Премиум активирован! +100 кликов');
+    };
+    
+    // === ПОДСКАЗКА В КОНСОЛИ ===
+    console.log('💎 Liquid Clicker запущен!');
+    console.log('💡 Введите addPremiumCode("ЛЮБОЙ_КОД") для бонуса');
+    
+    // === СОБЫТИЯ ===
+    clickBtn.addEventListener('click', addClick);
+    bonus2xBtn.addEventListener('click', buy2x);
+    bonusAutoBtn.addEventListener('click', buyAuto);
+    resetBtn.addEventListener('click', resetGame);
+    
+    // === ЗАПУСК ===
+    loadGame();
+    restartAuto();
 </script>
 </body>
 </html>
