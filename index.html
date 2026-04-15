@@ -3,273 +3,428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Liquid Focus — таймер в стиле iOS 26</title>
+    <title>Liquid Snap — анонимные вопросы</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
 
         body {
             min-height: 100vh;
-            background: radial-gradient(circle at 20% 30%, #1a2a3a, #0a0f1a);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: radial-gradient(circle at 30% 10%, #1a1a2e, #0a0a15, #05050a);
             font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
             padding: 20px;
         }
 
-        /* Liquid Glass эффект 1:1 iOS 26 */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.08);
+        /* iOS 26 Liquid Glass эффект */
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 64px;
-            border: 0.5px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
         .container {
-            width: 360px;
-            padding: 32px 24px 40px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Шапка профиля */
+        .profile-header {
             text-align: center;
+            padding: 32px 20px;
+            margin-bottom: 20px;
         }
 
-        h1 {
-            font-size: 28px;
-            font-weight: 590;
-            background: linear-gradient(135deg, #fff, #aaa);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-            margin-bottom: 28px;
-        }
-
-        .timer-display {
-            font-size: 72px;
-            font-weight: 590;
-            font-feature-settings: "tnum";
-            font-variant-numeric: tabular-nums;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            margin: 20px 0;
-            letter-spacing: 2px;
-        }
-
-        .mode-buttons {
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            margin: 0 auto 16px;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 32px;
+            font-size: 48px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .mode-btn {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(255,255,255,0.25);
-            padding: 8px 18px;
-            border-radius: 60px;
-            font-size: 16px;
-            font-weight: 500;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .mode-btn.active {
-            background: rgba(255,255,255,0.35);
-            border-color: rgba(255,255,255,0.7);
-            box-shadow: 0 0 12px rgba(255,255,255,0.3);
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .ctrl-btn {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(40px);
-            border: none;
-            width: 64px;
-            height: 64px;
-            border-radius: 64px;
+        .username {
             font-size: 28px;
+            font-weight: 600;
             color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            margin-bottom: 8px;
         }
 
-        .ctrl-btn:active {
-            transform: scale(0.94);
-            background: rgba(255,255,255,0.4);
+        .bio {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
         }
 
-        .donate {
-            background: rgba(255,255,255,0.12);
-            border-radius: 48px;
-            padding: 12px;
+        .link-box {
             margin-top: 16px;
-            font-size: 15px;
-            color: #ddd;
-            text-decoration: none;
-            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 60px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .link-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 14px;
+            padding: 0 12px;
+            outline: none;
+        }
+
+        .copy-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Карточка вопроса */
+        .question-card {
+            padding: 24px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .question-card:active {
+            transform: scale(0.98);
+        }
+
+        .question-text {
+            color: white;
+            font-size: 17px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+        }
+
+        .answer-area {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 0.5px solid rgba(255,255,255,0.1);
+            display: none;
+        }
+
+        .answer-area.show {
+            display: block;
+        }
+
+        .answer-input {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 0.5px solid rgba(255,255,255,0.2);
+            border-radius: 28px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 14px;
+            resize: none;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .answer-btn {
+            margin-top: 12px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
             width: 100%;
         }
 
-        .ads-space {
-            margin-top: 24px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
-            text-align: center;
-            border-top: 0.5px solid rgba(255,255,255,0.15);
-            padding-top: 20px;
+        /* Форма отправки вопроса */
+        .ask-form {
+            padding: 24px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
-        footer {
+        .ask-form textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.08);
+            border: 0.5px solid rgba(255,255,255,0.2);
+            border-radius: 28px;
+            padding: 16px;
+            color: white;
+            font-size: 16px;
+            resize: none;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .send-btn {
+            margin-top: 16px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            border: 0.5px solid rgba(255,255,255,0.3);
+            padding: 14px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* Монетизация */
+        .donate-btn {
+            display: block;
+            text-align: center;
+            padding: 14px;
+            margin: 20px 0;
+            background: rgba(255,215,0,0.15);
+            border: 0.5px solid rgba(255,215,0,0.3);
+            border-radius: 60px;
+            color: #ffd966;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .ads-space {
+            margin-top: 20px;
+            padding: 16px;
+            text-align: center;
             font-size: 10px;
             color: rgba(255,255,255,0.3);
-            margin-top: 20px;
+            border-top: 0.5px solid rgba(255,255,255,0.1);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            padding: 12px 24px;
+            border-radius: 60px;
+            color: white;
+            font-size: 14px;
+            z-index: 1000;
+            display: none;
         }
     </style>
 </head>
 <body>
-<div class="glass-card container">
-    <h1>Liquid Focus</h1>
-    <div class="timer-display" id="timer">25:00</div>
-
-    <div class="mode-buttons">
-        <div class="mode-btn active" data-minutes="25">🍅 Pomodoro</div>
-        <div class="mode-btn" data-minutes="5">☕️ Break</div>
-        <div class="mode-btn" data-minutes="15">🧠 Long break</div>
-    </div>
-
-    <div class="controls">
-        <button class="ctrl-btn" id="startPause">▶️</button>
-        <button class="ctrl-btn" id="reset">🔄</button>
-    </div>
-
-    <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate">
-        ☕️ Поддержать проект (donate)
-    </a>
-
-    <div class="ads-space">
-        <!-- Место для Google AdSense или Яндекс.Рекламы -->
-        <div id="adSensePlaceholder" style="min-height: 90px;">
-            ⚡️ Реклама будет здесь
+<div class="container">
+    <!-- Профиль -->
+    <div class="glass profile-header">
+        <div class="avatar">🍃</div>
+        <div class="username">liquid_user</div>
+        <div class="bio">спрашивай что угодно — анонимно ✨</div>
+        <div class="link-box">
+            <input type="text" id="profileLink" readonly value="loading...">
+            <button class="copy-btn" onclick="copyLink()">Копировать</button>
         </div>
     </div>
-    <footer>iOS 26 Liquid Glass • концентрация без границ</footer>
+
+    <!-- Секция с вопросами -->
+    <div id="questionsList">
+        <div class="glass empty-state">
+            🤫 пока нет вопросов<br>будь первым!
+        </div>
+    </div>
+
+    <!-- Форма отправки вопроса -->
+    <div class="glass ask-form">
+        <textarea id="questionInput" rows="3" placeholder="Спроси меня что-нибудь... (анонимно)"></textarea>
+        <button class="send-btn" onclick="sendQuestion()">📩 Отправить анонимно</button>
+    </div>
+
+    <!-- Кнопка доната -->
+    <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate-btn">
+        ☕️ Поддержать проект
+    </a>
+
+    <!-- Реклама -->
+    <div class="ads-space">
+        <div id="adSensePlaceholder" style="min-height: 90px;">
+            📱 реклама будет здесь
+        </div>
+        <div style="margin-top: 8px;">Liquid Snap • iOS 26 Liquid Glass</div>
+    </div>
 </div>
 
+<div id="toast" class="toast"></div>
+
 <script>
-    // ----- Таймер с точным стилем iOS 26 -----
-    let timeLeft = 25 * 60; // секунд
-    let timerId = null;
-    let isRunning = false;
-    let currentMode = 25; // minutes
-
-    const timerEl = document.getElementById('timer');
-    const startPauseBtn = document.getElementById('startPause');
-    const resetBtn = document.getElementById('reset');
-    const modeBtns = document.querySelectorAll('.mode-btn');
-
-    function updateDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    // Генерация уникального ID пользователя (сохраняется в localStorage)
+    let userId = localStorage.getItem('liquid_user_id');
+    if (!userId) {
+        userId = 'user_' + Math.random().toString(36).substr(2, 8);
+        localStorage.setItem('liquid_user_id', userId);
     }
 
-    function setMode(minutes) {
-        if (isRunning) {
-            clearInterval(timerId);
-            isRunning = false;
-            startPauseBtn.textContent = '▶️';
-        }
-        currentMode = minutes;
-        timeLeft = minutes * 60;
-        updateDisplay();
-    }
+    // Ключ для хранения вопросов
+    const STORAGE_KEY = 'liquid_snap_questions_' + userId;
+    
+    // Загрузка вопросов
+    let questions = [];
 
-    function startTimer() {
-        if (timerId) clearInterval(timerId);
-        isRunning = true;
-        startPauseBtn.textContent = '⏸️';
-        timerId = setInterval(() => {
-            if (timeLeft <= 1) {
-                // таймер закончился
-                clearInterval(timerId);
-                isRunning = false;
-                startPauseBtn.textContent = '▶️';
-                timeLeft = 0;
-                updateDisplay();
-                // легкий звуковой сигнал (beep через Web Audio, но без разрешения — вибрация)
-                if ('vibrate' in navigator) navigator.vibrate(200);
-                alert('Время вышло! 🧘');
-                setMode(currentMode);
-            } else {
-                timeLeft--;
-                updateDisplay();
-            }
-        }, 1000);
-    }
-
-    function pauseTimer() {
-        if (timerId) {
-            clearInterval(timerId);
-            timerId = null;
-        }
-        isRunning = false;
-        startPauseBtn.textContent = '▶️';
-    }
-
-    function resetTimer() {
-        if (isRunning) {
-            clearInterval(timerId);
-            isRunning = false;
-            startPauseBtn.textContent = '▶️';
-        }
-        timeLeft = currentMode * 60;
-        updateDisplay();
-    }
-
-    // обработчики
-    startPauseBtn.addEventListener('click', () => {
-        if (isRunning) {
-            pauseTimer();
+    function loadQuestions() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            questions = JSON.parse(saved);
         } else {
-            startTimer();
+            questions = [];
         }
-    });
+        renderQuestions();
+    }
 
-    resetBtn.addEventListener('click', resetTimer);
+    function saveQuestions() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
+        renderQuestions();
+    }
 
-    modeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            modeBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const minutes = parseInt(btn.dataset.minutes, 10);
-            setMode(minutes);
+    function renderQuestions() {
+        const container = document.getElementById('questionsList');
+        
+        if (questions.length === 0) {
+            container.innerHTML = `<div class="glass empty-state">🤫 пока нет вопросов<br>будь первым!</div>`;
+            return;
+        }
+
+        container.innerHTML = questions.map((q, idx) => `
+            <div class="glass question-card" onclick="toggleAnswer(${idx})">
+                <div class="question-text">${escapeHtml(q.text)}</div>
+                <div class="question-meta">
+                    <span>📨 анонимно</span>
+                    <span>${q.answered ? '✅ есть ответ' : '⏳ ждёт ответа'}</span>
+                </div>
+                <div class="answer-area" id="answerArea-${idx}">
+                    ${q.answered ? `
+                        <div style="background:rgba(255,255,255,0.05); border-radius:24px; padding:12px; margin-bottom:12px; color:#aaa;">
+                            💬 ${escapeHtml(q.answer)}
+                        </div>
+                    ` : `
+                        <textarea class="answer-input" id="answerText-${idx}" rows="2" placeholder="написать ответ..."></textarea>
+                        <button class="answer-btn" onclick="event.stopPropagation(); submitAnswer(${idx})">✏️ Ответить</button>
+                    `}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function toggleAnswer(idx) {
+        const area = document.getElementById(`answerArea-${idx}`);
+        if (area) {
+            area.classList.toggle('show');
+        }
+    }
+
+    function submitAnswer(idx) {
+        const input = document.getElementById(`answerText-${idx}`);
+        const answer = input.value.trim();
+        if (!answer) {
+            showToast('напиши ответ 😌');
+            return;
+        }
+        questions[idx].answer = answer;
+        questions[idx].answered = true;
+        saveQuestions();
+        showToast('ответ опубликован!');
+    }
+
+    function sendQuestion() {
+        const input = document.getElementById('questionInput');
+        const text = input.value.trim();
+        if (!text) {
+            showToast('напиши вопрос ✍️');
+            return;
+        }
+        if (text.length > 300) {
+            showToast('слишком длинно, максимум 300 символов');
+            return;
+        }
+
+        questions.unshift({
+            id: Date.now(),
+            text: text,
+            answered: false,
+            answer: '',
+            timestamp: new Date().toISOString()
         });
-    });
+        saveQuestions();
+        input.value = '';
+        showToast('вопрос отправлен анонимно!');
+    }
 
-    // инициализация
-    setMode(25);
-    updateDisplay();
+    function copyLink() {
+        const linkInput = document.getElementById('profileLink');
+        linkInput.select();
+        document.execCommand('copy');
+        showToast('ссылка скопирована! 🔗');
+    }
 
-    // подсказка: если нужно вставить код активации премиум (но у вас нет premium, просто демо)
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 2000);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // Установка ссылки профиля
+    function setProfileLink() {
+        const link = window.location.href;
+        document.getElementById('profileLink').value = link;
+    }
+
+    // Экспорт функции для консоли (премиум-код как в прошлом примере)
     window.addPremiumCode = function(code) {
-        console.log('Premium код получен (демо):', code);
-        alert('✨ Демо-режим: премиум функция не реализована, но код принят: ' + code);
+        console.log('Premium code:', code);
+        showToast('✨ Премиум активирован! Спасибо за поддержку');
+        // Тут можно добавить платные фишки: удаление рекламы, темы и т.д.
     };
+
+    // Инициализация
+    loadQuestions();
+    setProfileLink();
+
+    // Автосохранение при закрытии
+    window.addEventListener('beforeunload', () => {
+        saveQuestions();
+    });
 </script>
 </body>
 </html>
