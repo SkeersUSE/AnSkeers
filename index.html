@@ -18,7 +18,6 @@
             padding: 20px;
         }
 
-        /* iOS 26 Liquid Glass эффект */
         .glass {
             background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(40px) saturate(180%);
@@ -33,7 +32,6 @@
             margin: 0 auto;
         }
 
-        /* Шапка профиля */
         .profile-header {
             text-align: center;
             padding: 32px 20px;
@@ -65,6 +63,17 @@
             font-size: 14px;
         }
 
+        .edit-bio {
+            margin-top: 12px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
         .link-box {
             margin-top: 16px;
             background: rgba(255,255,255,0.1);
@@ -94,7 +103,6 @@
             font-weight: 500;
         }
 
-        /* Карточка вопроса */
         .question-card {
             padding: 24px;
             margin-bottom: 16px;
@@ -155,7 +163,6 @@
             width: 100%;
         }
 
-        /* Форма отправки вопроса */
         .ask-form {
             padding: 24px;
             margin-top: 20px;
@@ -193,7 +200,16 @@
             color: rgba(255,255,255,0.4);
         }
 
-        /* Монетизация */
+        .owner-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 60px;
+            font-size: 12px;
+            color: #4ecdc4;
+            display: inline-block;
+            margin-top: 12px;
+        }
+
         .donate-btn {
             display: block;
             text-align: center;
@@ -233,126 +249,223 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <!-- Профиль -->
-    <div class="glass profile-header">
-        <div class="avatar">🍃</div>
-        <div class="username">liquid_user</div>
-        <div class="bio">спрашивай что угодно — анонимно ✨</div>
-        <div class="link-box">
-            <input type="text" id="profileLink" readonly value="loading...">
-            <button class="copy-btn" onclick="copyLink()">Копировать</button>
-        </div>
-    </div>
-
-    <!-- Секция с вопросами -->
-    <div id="questionsList">
-        <div class="glass empty-state">
-            🤫 пока нет вопросов<br>будь первым!
-        </div>
-    </div>
-
-    <!-- Форма отправки вопроса -->
-    <div class="glass ask-form">
-        <textarea id="questionInput" rows="3" placeholder="Спроси меня что-нибудь... (анонимно)"></textarea>
-        <button class="send-btn" onclick="sendQuestion()">📩 Отправить анонимно</button>
-    </div>
-
-    <!-- Кнопка доната -->
-    <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate-btn">
-        ☕️ Поддержать проект
-    </a>
-
-    <!-- Реклама -->
-    <div class="ads-space">
-        <div id="adSensePlaceholder" style="min-height: 90px;">
-            📱 реклама будет здесь
-        </div>
-        <div style="margin-top: 8px;">Liquid Snap • iOS 26 Liquid Glass</div>
-    </div>
-</div>
-
+<div class="container" id="app"></div>
 <div id="toast" class="toast"></div>
 
 <script>
-    // Генерация уникального ID пользователя (сохраняется в localStorage)
-    let userId = localStorage.getItem('liquid_user_id');
-    if (!userId) {
-        userId = 'user_' + Math.random().toString(36).substr(2, 8);
-        localStorage.setItem('liquid_user_id', userId);
-    }
+    // ========== ГЛОБАЛЬНЫЕ ДАННЫЕ ==========
+    // Хранилище всех пользователей (в реальном проекте — база данных)
+    // В демо-версии используем localStorage с ключом 'liquid_snap_all_users'
+    let allUsers = {};
 
-    // Ключ для хранения вопросов
-    const STORAGE_KEY = 'liquid_snap_questions_' + userId;
-    
-    // Загрузка вопросов
-    let questions = [];
+    // Текущий пользователь, чей профиль открыт
+    let currentProfileId = null;
+    // Является ли текущий пользователь владельцем профиля?
+    let isOwner = false;
 
-    function loadQuestions() {
-        const saved = localStorage.getItem(STORAGE_KEY);
+    // ========== ЗАГРУЗКА/СОХРАНЕНИЕ ==========
+    function loadAllUsers() {
+        const saved = localStorage.getItem('liquid_snap_all_users');
         if (saved) {
-            questions = JSON.parse(saved);
+            allUsers = JSON.parse(saved);
         } else {
-            questions = [];
+            // Стартовые пользователи для примера
+            allUsers = {
+                'alex': {
+                    username: 'alex',
+                    avatar: '🏄',
+                    bio: 'спрашивай что угодно!',
+                    questions: []
+                },
+                'lisa': {
+                    username: 'lisa',
+                    avatar: '🎨',
+                    bio: 'арт-блогер ✨',
+                    questions: []
+                },
+                'max': {
+                    username: 'max',
+                    avatar: '🎮',
+                    bio: 'геймер и стример',
+                    questions: []
+                }
+            };
         }
-        renderQuestions();
     }
 
-    function saveQuestions() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
-        renderQuestions();
+    function saveAllUsers() {
+        localStorage.setItem('liquid_snap_all_users', JSON.stringify(allUsers));
     }
 
-    function renderQuestions() {
-        const container = document.getElementById('questionsList');
+    // ========== РАБОТА С ПРОФИЛЕМ ==========
+    function getProfileIdFromURL() {
+        // Поддерживаем форматы: #alex или ?user=alex
+        let hash = window.location.hash.substring(1);
+        if (hash) return hash;
         
-        if (questions.length === 0) {
-            container.innerHTML = `<div class="glass empty-state">🤫 пока нет вопросов<br>будь первым!</div>`;
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('user')) return params.get('user');
+        
+        return null;
+    }
+
+    function getOrCreateMyProfile() {
+        // Свой профиль (если захочешь создать свой)
+        let myId = localStorage.getItem('my_liquid_id');
+        if (myId && allUsers[myId]) return myId;
+        
+        // Создаём новый профиль
+        myId = 'user_' + Math.random().toString(36).substr(2, 6);
+        allUsers[myId] = {
+            username: myId,
+            avatar: '😎',
+            bio: 'задавай вопросы анонимно',
+            questions: []
+        };
+        localStorage.setItem('my_liquid_id', myId);
+        saveAllUsers();
+        return myId;
+    }
+
+    function updateProfile(updates) {
+        if (!currentProfileId) return;
+        if (!allUsers[currentProfileId]) allUsers[currentProfileId] = {
+            username: currentProfileId,
+            avatar: '😎',
+            bio: '',
+            questions: []
+        };
+        Object.assign(allUsers[currentProfileId], updates);
+        saveAllUsers();
+        render();
+    }
+
+    // ========== ВОПРОСЫ ==========
+    function addQuestion(profileId, questionText) {
+        if (!allUsers[profileId]) {
+            showToast('профиль не найден');
+            return false;
+        }
+        allUsers[profileId].questions = allUsers[profileId].questions || [];
+        allUsers[profileId].questions.unshift({
+            id: Date.now(),
+            text: questionText,
+            answered: false,
+            answer: '',
+            timestamp: new Date().toISOString()
+        });
+        saveAllUsers();
+        return true;
+    }
+
+    function addAnswer(profileId, questionIndex, answerText) {
+        if (!allUsers[profileId]) return false;
+        const q = allUsers[profileId].questions[questionIndex];
+        if (q) {
+            q.answer = answerText;
+            q.answered = true;
+            saveAllUsers();
+            return true;
+        }
+        return false;
+    }
+
+    // ========== ОТРИСОВКА ==========
+    function render() {
+        const app = document.getElementById('app');
+        if (!currentProfileId || !allUsers[currentProfileId]) {
+            app.innerHTML = `<div class="glass empty-state">👤 профиль не найден</div>`;
             return;
         }
-
-        container.innerHTML = questions.map((q, idx) => `
-            <div class="glass question-card" onclick="toggleAnswer(${idx})">
-                <div class="question-text">${escapeHtml(q.text)}</div>
-                <div class="question-meta">
-                    <span>📨 анонимно</span>
-                    <span>${q.answered ? '✅ есть ответ' : '⏳ ждёт ответа'}</span>
+        
+        const profile = allUsers[currentProfileId];
+        const questions = profile.questions || [];
+        
+        let questionsHtml = '';
+        if (questions.length === 0) {
+            questionsHtml = `<div class="glass empty-state">🤫 пока нет вопросов<br>будь первым!</div>`;
+        } else {
+            questionsHtml = questions.map((q, idx) => `
+                <div class="glass question-card" onclick="toggleAnswer(${idx})">
+                    <div class="question-text">${escapeHtml(q.text)}</div>
+                    <div class="question-meta">
+                        <span>📨 анонимно</span>
+                        <span>${q.answered ? '✅ есть ответ' : '⏳ ждёт ответа'}</span>
+                    </div>
+                    <div class="answer-area" id="answerArea-${idx}">
+                        ${q.answered ? `
+                            <div style="background:rgba(255,255,255,0.05); border-radius:24px; padding:12px; margin-bottom:12px; color:#aaa;">
+                                💬 ${escapeHtml(q.answer)}
+                            </div>
+                        ` : (isOwner ? `
+                            <textarea class="answer-input" id="answerText-${idx}" rows="2" placeholder="написать ответ..."></textarea>
+                            <button class="answer-btn" onclick="event.stopPropagation(); submitAnswer(${idx})">✏️ Ответить</button>
+                        ` : `
+                            <div style="color:rgba(255,255,255,0.3); text-align:center; padding:12px;">
+                                ⏳ владелец скоро ответит
+                            </div>
+                        `)}
+                    </div>
                 </div>
-                <div class="answer-area" id="answerArea-${idx}">
-                    ${q.answered ? `
-                        <div style="background:rgba(255,255,255,0.05); border-radius:24px; padding:12px; margin-bottom:12px; color:#aaa;">
-                            💬 ${escapeHtml(q.answer)}
-                        </div>
-                    ` : `
-                        <textarea class="answer-input" id="answerText-${idx}" rows="2" placeholder="написать ответ..."></textarea>
-                        <button class="answer-btn" onclick="event.stopPropagation(); submitAnswer(${idx})">✏️ Ответить</button>
-                    `}
+            `).join('');
+        }
+        
+        const ownerBadge = isOwner ? `<div class="owner-badge">🔒 это ваш профиль — вы можете отвечать</div>` : '';
+        
+        const askFormHtml = !isOwner ? `
+            <div class="glass ask-form">
+                <textarea id="questionInput" rows="3" placeholder="Спросить ${profile.username} анонимно..."></textarea>
+                <button class="send-btn" onclick="sendQuestion()">📩 Отправить анонимно</button>
+            </div>
+        ` : '';
+        
+        app.innerHTML = `
+            <div class="glass profile-header">
+                <div class="avatar">${profile.avatar || '🍃'}</div>
+                <div class="username">${escapeHtml(profile.username)}</div>
+                <div class="bio">${escapeHtml(profile.bio || 'спрашивай что угодно ✨')}</div>
+                ${isOwner ? `<button class="edit-bio" onclick="editBio()">✏️ изменить описание</button>` : ''}
+                ${ownerBadge}
+                <div class="link-box">
+                    <input type="text" id="profileLink" readonly value="${window.location.href.split('#')[0]}#${currentProfileId}">
+                    <button class="copy-btn" onclick="copyLink()">Копировать</button>
                 </div>
             </div>
-        `).join('');
+            <div id="questionsList">${questionsHtml}</div>
+            ${askFormHtml}
+            <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate-btn">
+                ☕️ Поддержать проект
+            </a>
+            <div class="ads-space">
+                <div style="min-height: 90px;">📱 реклама будет здесь</div>
+                <div style="margin-top: 8px;">Liquid Snap • iOS 26 Liquid Glass</div>
+            </div>
+        `;
+        
+        // Обновляем ссылку в поле ввода
+        const linkInput = document.getElementById('profileLink');
+        if (linkInput) linkInput.value = window.location.href.split('#')[0] + '#' + currentProfileId;
     }
-
-    function toggleAnswer(idx) {
+    
+    // Глобальные функции для onclick
+    window.toggleAnswer = function(idx) {
         const area = document.getElementById(`answerArea-${idx}`);
-        if (area) {
-            area.classList.toggle('show');
-        }
-    }
-
-    function submitAnswer(idx) {
+        if (area) area.classList.toggle('show');
+    };
+    
+    window.submitAnswer = function(idx) {
         const input = document.getElementById(`answerText-${idx}`);
         const answer = input.value.trim();
         if (!answer) {
             showToast('напиши ответ 😌');
             return;
         }
-        questions[idx].answer = answer;
-        questions[idx].answered = true;
-        saveQuestions();
+        addAnswer(currentProfileId, idx, answer);
         showToast('ответ опубликован!');
-    }
-
-    function sendQuestion() {
+        render();
+    };
+    
+    window.sendQuestion = function() {
         const input = document.getElementById('questionInput');
         const text = input.value.trim();
         if (!text) {
@@ -363,26 +476,26 @@
             showToast('слишком длинно, максимум 300 символов');
             return;
         }
-
-        questions.unshift({
-            id: Date.now(),
-            text: text,
-            answered: false,
-            answer: '',
-            timestamp: new Date().toISOString()
-        });
-        saveQuestions();
+        addQuestion(currentProfileId, text);
         input.value = '';
         showToast('вопрос отправлен анонимно!');
-    }
-
-    function copyLink() {
+        render();
+    };
+    
+    window.copyLink = function() {
         const linkInput = document.getElementById('profileLink');
         linkInput.select();
         document.execCommand('copy');
         showToast('ссылка скопирована! 🔗');
-    }
-
+    };
+    
+    window.editBio = function() {
+        const newBio = prompt('Введите новое описание:', allUsers[currentProfileId]?.bio || '');
+        if (newBio !== null) {
+            updateProfile({ bio: newBio });
+        }
+    };
+    
     function showToast(msg) {
         const toast = document.getElementById('toast');
         toast.textContent = msg;
@@ -391,7 +504,7 @@
             toast.style.display = 'none';
         }, 2000);
     }
-
+    
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -399,32 +512,52 @@
             if (m === '<') return '&lt;';
             if (m === '>') return '&gt;';
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
         });
     }
-
-    // Установка ссылки профиля
-    function setProfileLink() {
-        const link = window.location.href;
-        document.getElementById('profileLink').value = link;
+    
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    function init() {
+        loadAllUsers();
+        
+        // Определяем, чей профиль открыт
+        const urlProfile = getProfileIdFromURL();
+        const myProfile = getOrCreateMyProfile();
+        
+        if (urlProfile && allUsers[urlProfile]) {
+            currentProfileId = urlProfile;
+            isOwner = (currentProfileId === myProfile);
+        } else if (urlProfile && !allUsers[urlProfile]) {
+            // Создаём профиль, если перешли по ссылке на несуществующего
+            allUsers[urlProfile] = {
+                username: urlProfile,
+                avatar: '✨',
+                bio: 'задавай вопросы анонимно',
+                questions: []
+            };
+            saveAllUsers();
+            currentProfileId = urlProfile;
+            isOwner = (currentProfileId === myProfile);
+        } else {
+            // Нет профиля в URL — показываем свой
+            currentProfileId = myProfile;
+            isOwner = true;
+            // Обновляем URL без перезагрузки
+            window.history.replaceState({}, '', window.location.href.split('#')[0] + '#' + myProfile);
+        }
+        
+        render();
     }
-
-    // Экспорт функции для консоли (премиум-код как в прошлом примере)
-    window.addPremiumCode = function(code) {
-        console.log('Premium code:', code);
-        showToast('✨ Премиум активирован! Спасибо за поддержку');
-        // Тут можно добавить платные фишки: удаление рекламы, темы и т.д.
-    };
-
-    // Инициализация
-    loadQuestions();
-    setProfileLink();
-
-    // Автосохранение при закрытии
-    window.addEventListener('beforeunload', () => {
-        saveQuestions();
+    
+    // Слушаем изменения хэша (если пользователь перешёл по другой ссылке)
+    window.addEventListener('hashchange', () => {
+        init();
     });
+    
+    window.addPremiumCode = function(code) {
+        showToast('✨ Премиум активирован! Спасибо за поддержку');
+    };
+    
+    init();
 </script>
 </body>
 </html>
