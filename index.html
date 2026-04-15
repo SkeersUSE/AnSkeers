@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Liquid Snap — анонимные вопросы</title>
+    <title>Liquid Snap — облачные анонимные вопросы</title>
     <style>
         * {
             margin: 0;
@@ -50,11 +50,6 @@
             text-align: center;
             cursor: pointer;
             transition: 0.2s;
-        }
-
-        .menu-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .search-box {
@@ -286,126 +281,159 @@
             color: rgba(255,255,255,0.5);
             text-align: center;
         }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.5);
+        }
     </style>
 </head>
 <body>
 <div class="container" id="app">
-    <div class="loading" style="text-align:center; padding:40px; color:white;">загрузка...</div>
+    <div class="loading">🍃 загрузка...</div>
 </div>
 <div id="toast" class="toast"></div>
 
 <script>
-    // ========== ДАННЫЕ ==========
-    let allUsers = {};
+    // ========== НАСТРОЙКИ ==========
+    // ВСТАВЬТЕ СЮДА ВАШ URL ИЗ GOOGLE APPS SCRIPT:
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzjmnT18w-cfGUzkrkySmjEyIZ_vHKOtsoVLL3bDkrW_yuV_pN0p1elHaaOkBvI61Di/exec';  // <--- ЗАМЕНИТЕ!!!
+    
+    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
     let currentUserId = null;
     let currentView = 'menu';
     let viewedProfileId = null;
-
-    // ========== РАБОТА С ХРАНИЛИЩЕМ ==========
-    function loadLocalData() {
-        const saved = localStorage.getItem('liquid_snap_data');
-        if (saved) {
-            const data = JSON.parse(saved);
-            allUsers = data.allUsers || {};
-            currentUserId = data.currentUserId || null;
+    let currentUserData = null;
+    
+    // ========== РАБОТА С API ==========
+    async function callAPI(action, data = {}) {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action, ...data })
+            });
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('API Error:', error);
+            showToast('Ошибка соединения с сервером');
+            return { success: false, error: error.message };
         }
-        
-        // Создаём текущего пользователя, если его нет
-        if (!currentUserId) {
-            currentUserId = 'user_' + Math.random().toString(36).substr(2, 8);
-        }
-        
-        // Создаём профиль текущего пользователя, если его нет в allUsers
-        if (!allUsers[currentUserId]) {
-            allUsers[currentUserId] = {
-                userId: currentUserId,
-                username: currentUserId,
-                avatar: '😎',
-                bio: 'задавай вопросы анонимно ✨',
-                createdAt: new Date().toISOString(),
-                questions: []
-            };
-        }
-        
-        saveLocalData();
     }
     
-    function saveLocalData() {
-        localStorage.setItem('liquid_snap_data', JSON.stringify({
-            allUsers: allUsers,
-            currentUserId: currentUserId
-        }));
+    async function createUserInCloud(userId, username, avatar, bio) {
+        return await callAPI('createUser', { userId, username, avatar, bio });
     }
     
-    // СОЗДАНИЕ ПРОФИЛЯ ПРИ ПЕРВОМ ПЕРЕХОДЕ ПО ССЫЛКЕ
-    function ensureUserExists(userId) {
-        if (!allUsers[userId]) {
-            allUsers[userId] = {
+    async function getUserFromCloud(userId) {
+        return await callAPI('getUser', { userId });
+    }
+    
+    async function getQuestionsFromCloud(toUserId) {
+        return await callAPI('getQuestions', { toUserId });
+    }
+    
+    async function addQuestionToCloud(toUserId, fromUserId, questionText) {
+        return await callAPI('addQuestion', { toUserId, fromUserId, questionText });
+    }
+    
+    async function addAnswerToCloud(questionId, answerText) {
+        return await callAPI('addAnswer', { questionId, answerText });
+    }
+    
+    // ========== ЛОКАЛЬНАЯ ИНИЦИАЛИЗАЦИЯ ==========
+    async function initCurrentUser() {
+        let userId = localStorage.getItem('liquid_user_id');
+        
+        if (!userId) {
+            userId = 'user_' + Math.random().toString(36).substr(2, 8);
+            localStorage.setItem('liquid_user_id', userId);
+        }
+        
+        currentUserId = userId;
+        
+        // Проверяем, есть ли пользователь в облаке
+        const result = await getUserFromCloud(userId);
+        
+        if (!result.success || !result.user) {
+            // Создаём нового пользователя
+            await createUserInCloud(userId, userId, '😎', 'задавай вопросы анонимно ✨');
+            currentUserData = {
                 userId: userId,
                 username: userId,
-                avatar: '🍃',
-                bio: 'спрашивай что угодно ✨',
-                createdAt: new Date().toISOString(),
-                questions: []
+                avatar: '😎',
+                bio: 'задавай вопросы анонимно ✨'
             };
-            saveLocalData();
-            return true;
+        } else {
+            currentUserData = result.user;
         }
-        return false;
-    }
-    
-    // ========== ВОПРОСЫ ==========
-    function addQuestion(toUserId, questionText) {
-        ensureUserExists(toUserId);
         
-        const question = {
-            id: Date.now(),
-            toUserId: toUserId,
-            fromUserId: currentUserId,
-            questionText: questionText,
-            answerText: '',
-            answered: false,
-            createdAt: new Date().toISOString()
-        };
-        
-        allUsers[toUserId].questions = allUsers[toUserId].questions || [];
-        allUsers[toUserId].questions.unshift(question);
-        saveLocalData();
         return true;
     }
     
-    function addAnswer(toUserId, questionId, answerText) {
-        if (!allUsers[toUserId]) return false;
-        
-        const questions = allUsers[toUserId].questions || [];
-        const qIndex = questions.findIndex(q => q.id == questionId);
-        if (qIndex !== -1) {
-            questions[qIndex].answerText = answerText;
-            questions[qIndex].answered = true;
-            saveLocalData();
-            return true;
+    // ========== РАБОТА С ВОПРОСАМИ ==========
+    async function loadProfile(userId) {
+        // Загружаем данные пользователя
+        const userResult = await getUserFromCloud(userId);
+        if (!userResult.success || !userResult.user) {
+            // Создаём пользователя, если его нет
+            await createUserInCloud(userId, userId, '🍃', 'спрашивай что угодно ✨');
+            viewedProfileData = {
+                userId: userId,
+                username: userId,
+                avatar: '🍃',
+                bio: 'спрашивай что угодно ✨'
+            };
+        } else {
+            viewedProfileData = userResult.user;
         }
-        return false;
+        
+        // Загружаем вопросы
+        const questionsResult = await getQuestionsFromCloud(userId);
+        viewedProfileQuestions = questionsResult.success ? questionsResult.questions : [];
+        
+        render();
+    }
+    
+    async function sendQuestionToUser(toUserId, questionText) {
+        const result = await addQuestionToCloud(toUserId, currentUserId, questionText);
+        if (result.success) {
+            showToast('Вопрос отправлен анонимно!');
+            // Перезагружаем профиль, чтобы показать новый вопрос (если это владелец)
+            if (viewedProfileId === toUserId) {
+                await loadProfile(toUserId);
+            }
+        } else {
+            showToast('Ошибка при отправке вопроса');
+        }
+    }
+    
+    async function sendAnswerToQuestion(questionId, answerText) {
+        const result = await addAnswerToCloud(questionId, answerText);
+        if (result.success) {
+            showToast('Ответ опубликован!');
+            await loadProfile(viewedProfileId);
+        } else {
+            showToast('Ошибка при отправке ответа');
+        }
     }
     
     // ========== НАВИГАЦИЯ ==========
-    function searchUser(searchId) {
-        // При поиске тоже создаём пользователя, если его нет
-        ensureUserExists(searchId);
-        
-        if (allUsers[searchId]) {
-            viewedProfileId = searchId;
-            currentView = 'profile';
-            render();
-        } else {
-            showToast('пользователь не найден');
-        }
+    async function searchUser(searchId) {
+        viewedProfileId = searchId;
+        currentView = 'profile';
+        await loadProfile(searchId);
     }
     
-    function showMyProfile() {
+    async function showMyProfile() {
         viewedProfileId = currentUserId;
         currentView = 'profile';
-        render();
+        await loadProfile(currentUserId);
     }
     
     function showSearchMenu() {
@@ -424,12 +452,12 @@
         showToast('ссылка скопирована!');
     }
     
-    function editBio() {
-        const newBio = prompt('Новое описание:', allUsers[viewedProfileId]?.bio || '');
+    async function editBio() {
+        const newBio = prompt('Новое описание:', viewedProfileData?.bio || '');
         if (newBio !== null && viewedProfileId === currentUserId) {
-            allUsers[currentUserId].bio = newBio;
-            saveLocalData();
-            render();
+            // Обновляем в облаке
+            await createUserInCloud(currentUserId, currentUserId, viewedProfileData?.avatar || '😎', newBio);
+            await loadProfile(currentUserId);
         }
     }
     
@@ -438,19 +466,17 @@
         if (area) area.classList.toggle('show');
     }
     
-    function submitAnswer(questionId) {
+    async function submitAnswer(questionId) {
         const input = document.getElementById(`answer-text-${questionId}`);
         const answer = input.value.trim();
         if (!answer) {
             showToast('напиши ответ');
             return;
         }
-        addAnswer(viewedProfileId, questionId, answer);
-        render();
-        showToast('ответ опубликован!');
+        await sendAnswerToQuestion(questionId, answer);
     }
     
-    function sendQuestion() {
+    async function sendQuestion() {
         const input = document.getElementById('question-input');
         const text = input.value.trim();
         if (!text) {
@@ -461,10 +487,8 @@
             showToast('максимум 300 символов');
             return;
         }
-        addQuestion(viewedProfileId, text);
+        await sendQuestionToUser(viewedProfileId, text);
         document.getElementById('question-input').value = '';
-        render();
-        showToast('вопрос отправлен анонимно!');
     }
     
     function showToast(msg) {
@@ -486,11 +510,14 @@
         });
     }
     
+    // ========== ПЕРЕМЕННЫЕ ДЛЯ РЕНДЕРА ==========
+    let viewedProfileData = null;
+    let viewedProfileQuestions = [];
+    
     // ========== ОТРИСОВКА ==========
     function render() {
         const app = document.getElementById('app');
         
-        // Меню
         if (currentView === 'menu') {
             app.innerHTML = `
                 <div class="glass" style="padding: 32px 24px; text-align: center;">
@@ -526,11 +553,10 @@
             return;
         }
         
-        // Поиск
         if (currentView === 'search') {
             app.innerHTML = `
                 <div class="glass search-box">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Введите userId... например: user_a3f2k1" onkeypress="if(event.key==='Enter') searchUser(document.getElementById('searchInput').value)">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Введите userId..." onkeypress="if(event.key==='Enter') searchUser(document.getElementById('searchInput').value)">
                     <button class="send-btn" style="margin-top: 12px;" onclick="searchUser(document.getElementById('searchInput').value)">🔍 Найти</button>
                 </div>
                 
@@ -541,31 +567,29 @@
             return;
         }
         
-        // Профиль
-        if (currentView === 'profile' && viewedProfileId && allUsers[viewedProfileId]) {
-            const profile = allUsers[viewedProfileId];
-            const questions = profile.questions || [];
+        if (currentView === 'profile' && viewedProfileData) {
             const isOwner = (viewedProfileId === currentUserId);
+            const questions = viewedProfileQuestions || [];
             
             let questionsHtml = '';
             if (questions.length === 0) {
                 questionsHtml = `<div class="glass empty-state">🤫 пока нет вопросов</div>`;
             } else {
                 questionsHtml = questions.map(q => `
-                    <div class="glass question-card" onclick="toggleAnswer(${q.id})">
+                    <div class="glass question-card" onclick="toggleAnswer('${q.id}')">
                         <div class="question-text">❓ ${escapeHtml(q.questionText)}</div>
                         <div class="question-meta">
                             <span>📨 анонимно</span>
-                            <span>${q.answered ? '✅ есть ответ' : '⏳ ждёт ответа'}</span>
+                            <span>${q.answered === true || q.answered === 'true' ? '✅ есть ответ' : '⏳ ждёт ответа'}</span>
                         </div>
                         <div class="answer-area" id="answer-area-${q.id}">
-                            ${q.answered ? `
+                            ${q.answered === true || q.answered === 'true' ? `
                                 <div style="background:rgba(255,255,255,0.05); border-radius:24px; padding:12px; color:#aaa;">
                                     💬 ${escapeHtml(q.answerText)}
                                 </div>
                             ` : (isOwner ? `
                                 <textarea class="answer-input" id="answer-text-${q.id}" rows="2" placeholder="написать ответ..."></textarea>
-                                <button class="answer-btn" onclick="event.stopPropagation(); submitAnswer(${q.id})">✏️ Ответить</button>
+                                <button class="answer-btn" onclick="event.stopPropagation(); submitAnswer('${q.id}')">✏️ Ответить</button>
                             ` : `
                                 <div style="color:rgba(255,255,255,0.3); text-align:center; padding:12px;">
                                     ⏳ владелец скоро ответит
@@ -578,9 +602,9 @@
             
             app.innerHTML = `
                 <div class="glass profile-header">
-                    <div class="avatar">${profile.avatar || '🍃'}</div>
-                    <div class="username">${escapeHtml(profile.username)}</div>
-                    <div class="bio">${escapeHtml(profile.bio || 'спрашивай что угодно ✨')}</div>
+                    <div class="avatar">${viewedProfileData.avatar || '🍃'}</div>
+                    <div class="username">${escapeHtml(viewedProfileData.username)}</div>
+                    <div class="bio">${escapeHtml(viewedProfileData.bio || 'спрашивай что угодно ✨')}</div>
                     ${isOwner ? `<button class="edit-bio" onclick="editBio()">✏️ изменить описание</button>` : ''}
                     ${isOwner ? `<div class="owner-badge">🔒 это вы — можете отвечать на вопросы</div>` : ''}
                     <div class="link-box">
@@ -593,7 +617,7 @@
                 
                 ${!isOwner ? `
                     <div class="glass ask-form">
-                        <textarea id="question-input" rows="3" placeholder="Спросить ${escapeHtml(profile.username)} анонимно..."></textarea>
+                        <textarea id="question-input" rows="3" placeholder="Спросить ${escapeHtml(viewedProfileData.username)} анонимно..."></textarea>
                         <button class="send-btn" onclick="sendQuestion()">📩 Отправить анонимно</button>
                     </div>
                 ` : ''}
@@ -602,7 +626,7 @@
                     <div class="menu-btn" onclick="showMainMenu()">🏠 Главное меню</div>
                 </div>
                 
-                <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate-btn">
+                <a href="https://www.donationalerts.com/r/skeers" target="_blank" class="donate-btn">
                     ☕️ Поддержать проект
                 </a>
                 
@@ -614,20 +638,17 @@
             return;
         }
         
-        app.innerHTML = `<div class="glass empty-state">👤 профиль не найден</div>`;
+        app.innerHTML = `<div class="glass empty-state">👤 загрузка...</div>`;
     }
     
     // ========== ОБРАБОТКА ССЫЛОК ==========
-    function handleHash() {
+    async function handleHash() {
         const hash = window.location.hash.substring(1);
         
         if (hash) {
-            // КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: создаём пользователя, если его нет
-            ensureUserExists(hash);
-            
             viewedProfileId = hash;
             currentView = 'profile';
-            render();
+            await loadProfile(hash);
         } else {
             currentView = 'menu';
             render();
@@ -635,10 +656,9 @@
     }
     
     // ========== ИНИЦИАЛИЗАЦИЯ ==========
-    function init() {
-        loadLocalData();
+    async function init() {
+        await initCurrentUser();
         
-        // Делаем функции глобальными
         window.searchUser = searchUser;
         window.showMyProfile = showMyProfile;
         window.showSearchMenu = showSearchMenu;
@@ -649,11 +669,8 @@
         window.submitAnswer = submitAnswer;
         window.sendQuestion = sendQuestion;
         
-        // Обработчик изменения хэша
         window.addEventListener('hashchange', handleHash);
-        
-        // Запускаем
-        handleHash();
+        await handleHash();
     }
     
     init();
