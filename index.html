@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Liquid Snap — анонимные вопросы с облаком</title>
+    <title>Liquid Snap — анонимные вопросы</title>
     <style>
         * {
             margin: 0;
@@ -32,7 +32,6 @@
             margin: 0 auto;
         }
 
-        /* Меню */
         .menu {
             display: flex;
             gap: 12px;
@@ -58,7 +57,6 @@
             border-color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Поиск */
         .search-box {
             padding: 20px;
             margin-bottom: 20px;
@@ -75,15 +73,6 @@
             outline: none;
         }
 
-        .search-result {
-            margin-top: 16px;
-            padding: 16px;
-            border-radius: 32px;
-            background: rgba(255, 255, 255, 0.05);
-            cursor: pointer;
-        }
-
-        /* Профиль */
         .profile-header {
             text-align: center;
             padding: 32px 20px;
@@ -288,12 +277,6 @@
             display: none;
         }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: rgba(255,255,255,0.5);
-        }
-
         .my-id-info {
             background: rgba(255,255,255,0.05);
             padding: 12px;
@@ -307,43 +290,32 @@
 </head>
 <body>
 <div class="container" id="app">
-    <div class="loading">загрузка...</div>
+    <div class="loading" style="text-align:center; padding:40px; color:white;">загрузка...</div>
 </div>
 <div id="toast" class="toast"></div>
 
 <script>
-    // ========== НАСТРОЙКИ GOOGLE SHEETS ==========
-    // ВСТАВЬТЕ СЮДА ВАШ ID ТАБЛИЦЫ:
-    const SPREADSHEET_ID = 'ВАШ_ID_ТАБЛИЦЫ';  // <--- ЗАМЕНИТЕ!!!
-    
-    // API для работы с Google Sheets
-    const SHEETS_API = `https://script.google.com/macros/s/AKfycbx-ваш_скрипт/exec`; 
-    // ВНИМАНИЕ: Вам нужно развернуть Web App через Google Apps Script.
-    // Проще: я дам готовый скрипт для развертывания ниже.
-    
-    // ВРЕМЕННОЕ РЕШЕНИЕ: Используем localStorage + имитацию облака для демо
-    // Чтобы вы сразу могли протестировать функционал, я сделаю гибрид:
-    // - Данные хранятся в localStorage, но синхронизируются через Google Sheets при желании
-    
-    // ========== ЛОКАЛЬНОЕ ХРАНИЛИЩЕ (для теста синхронизации) ==========
+    // ========== ДАННЫЕ ==========
     let allUsers = {};
     let currentUserId = null;
-    let currentView = 'menu'; // menu, profile, search
+    let currentView = 'menu';
     let viewedProfileId = null;
-    
-    // Загрузка из localStorage
+
+    // ========== РАБОТА С ХРАНИЛИЩЕМ ==========
     function loadLocalData() {
-        const saved = localStorage.getItem('liquid_snap_cloud');
+        const saved = localStorage.getItem('liquid_snap_data');
         if (saved) {
             const data = JSON.parse(saved);
             allUsers = data.allUsers || {};
             currentUserId = data.currentUserId || null;
         }
         
+        // Создаём текущего пользователя, если его нет
         if (!currentUserId) {
             currentUserId = 'user_' + Math.random().toString(36).substr(2, 8);
         }
         
+        // Создаём профиль текущего пользователя, если его нет в allUsers
         if (!allUsers[currentUserId]) {
             allUsers[currentUserId] = {
                 userId: currentUserId,
@@ -359,18 +331,32 @@
     }
     
     function saveLocalData() {
-        localStorage.setItem('liquid_snap_cloud', JSON.stringify({
+        localStorage.setItem('liquid_snap_data', JSON.stringify({
             allUsers: allUsers,
             currentUserId: currentUserId
         }));
     }
     
-    // Добавить вопрос пользователю
-    function addQuestion(toUserId, questionText) {
-        if (!allUsers[toUserId]) {
-            showToast('пользователь не найден');
-            return false;
+    // СОЗДАНИЕ ПРОФИЛЯ ПРИ ПЕРВОМ ПЕРЕХОДЕ ПО ССЫЛКЕ
+    function ensureUserExists(userId) {
+        if (!allUsers[userId]) {
+            allUsers[userId] = {
+                userId: userId,
+                username: userId,
+                avatar: '🍃',
+                bio: 'спрашивай что угодно ✨',
+                createdAt: new Date().toISOString(),
+                questions: []
+            };
+            saveLocalData();
+            return true;
         }
+        return false;
+    }
+    
+    // ========== ВОПРОСЫ ==========
+    function addQuestion(toUserId, questionText) {
+        ensureUserExists(toUserId);
         
         const question = {
             id: Date.now(),
@@ -385,14 +371,9 @@
         allUsers[toUserId].questions = allUsers[toUserId].questions || [];
         allUsers[toUserId].questions.unshift(question);
         saveLocalData();
-        
-        // Пытаемся синхронизировать с Google Sheets (если настроено)
-        syncToCloud();
-        
         return true;
     }
     
-    // Ответить на вопрос
     function addAnswer(toUserId, questionId, answerText) {
         if (!allUsers[toUserId]) return false;
         
@@ -402,29 +383,16 @@
             questions[qIndex].answerText = answerText;
             questions[qIndex].answered = true;
             saveLocalData();
-            syncToCloud();
             return true;
         }
         return false;
     }
     
-    // Синхронизация с Google Sheets (отправка данных)
-    async function syncToCloud() {
-        if (SPREADSHEET_ID === 'ВАШ_ID_ТАБЛИЦЫ') return; // не настроено
-        
-        try {
-            const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/users:append?valueInputOption=RAW`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    values: [[currentUserId, allUsers[currentUserId]?.username, allUsers[currentUserId]?.avatar, allUsers[currentUserId]?.bio, new Date().toISOString()]]
-                })
-            });
-        } catch(e) { console.log('sync error', e); }
-    }
-    
-    // Поиск пользователя
+    // ========== НАВИГАЦИЯ ==========
     function searchUser(searchId) {
+        // При поиске тоже создаём пользователя, если его нет
+        ensureUserExists(searchId);
+        
         if (allUsers[searchId]) {
             viewedProfileId = searchId;
             currentView = 'profile';
@@ -434,14 +402,12 @@
         }
     }
     
-    // Показать свой профиль
     function showMyProfile() {
         viewedProfileId = currentUserId;
         currentView = 'profile';
         render();
     }
     
-    // Показать меню поиска
     function showSearchMenu() {
         currentView = 'search';
         render();
@@ -453,7 +419,7 @@
     }
     
     function copyLink() {
-        const link = `${window.location.href.split('#')[0]}#${viewedProfileId}`;
+        const link = `${window.location.href.split('#')[0]}#${viewedProfileId || currentUserId}`;
         navigator.clipboard.writeText(link);
         showToast('ссылка скопирована!');
     }
@@ -520,9 +486,11 @@
         });
     }
     
+    // ========== ОТРИСОВКА ==========
     function render() {
         const app = document.getElementById('app');
         
+        // Меню
         if (currentView === 'menu') {
             app.innerHTML = `
                 <div class="glass" style="padding: 32px 24px; text-align: center;">
@@ -558,6 +526,7 @@
             return;
         }
         
+        // Поиск
         if (currentView === 'search') {
             app.innerHTML = `
                 <div class="glass search-box">
@@ -572,6 +541,7 @@
             return;
         }
         
+        // Профиль
         if (currentView === 'profile' && viewedProfileId && allUsers[viewedProfileId]) {
             const profile = allUsers[viewedProfileId];
             const questions = profile.questions || [];
@@ -647,16 +617,16 @@
         app.innerHTML = `<div class="glass empty-state">👤 профиль не найден</div>`;
     }
     
-    // Обработка URL хэша
+    // ========== ОБРАБОТКА ССЫЛОК ==========
     function handleHash() {
         const hash = window.location.hash.substring(1);
-        if (hash && allUsers[hash]) {
+        
+        if (hash) {
+            // КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: создаём пользователя, если его нет
+            ensureUserExists(hash);
+            
             viewedProfileId = hash;
             currentView = 'profile';
-            render();
-        } else if (hash) {
-            showToast('пользователь не найден');
-            currentView = 'menu';
             render();
         } else {
             currentView = 'menu';
@@ -664,33 +634,29 @@
         }
     }
     
-    // Инициализация
-    loadLocalData();
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    function init() {
+        loadLocalData();
+        
+        // Делаем функции глобальными
+        window.searchUser = searchUser;
+        window.showMyProfile = showMyProfile;
+        window.showSearchMenu = showSearchMenu;
+        window.showMainMenu = showMainMenu;
+        window.copyLink = copyLink;
+        window.editBio = editBio;
+        window.toggleAnswer = toggleAnswer;
+        window.submitAnswer = submitAnswer;
+        window.sendQuestion = sendQuestion;
+        
+        // Обработчик изменения хэша
+        window.addEventListener('hashchange', handleHash);
+        
+        // Запускаем
+        handleHash();
+    }
     
-    window.addEventListener('hashchange', () => {
-        const hash = window.location.hash.substring(1);
-        if (hash && allUsers[hash]) {
-            viewedProfileId = hash;
-            currentView = 'profile';
-            render();
-        } else {
-            currentView = 'menu';
-            render();
-        }
-    });
-    
-    // Делаем функции глобальными
-    window.searchUser = searchUser;
-    window.showMyProfile = showMyProfile;
-    window.showSearchMenu = showSearchMenu;
-    window.showMainMenu = showMainMenu;
-    window.copyLink = copyLink;
-    window.editBio = editBio;
-    window.toggleAnswer = toggleAnswer;
-    window.submitAnswer = submitAnswer;
-    window.sendQuestion = sendQuestion;
-    
-    handleHash();
+    init();
 </script>
 </body>
 </html>
