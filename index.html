@@ -3,141 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Liquid Clicker — iOS 26 стиль</title>
+    <title>Liquid Rumors — правда или действие</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
 
         body {
             min-height: 100vh;
             background: radial-gradient(circle at 30% 20%, #1a1a2e, #0a0a15, #030308);
             font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
-        /* iOS 26 Liquid Glass */
         .glass {
-            background: rgba(255, 255, 255, 0.07);
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 0.5px solid rgba(255, 255, 255, 0.25);
-            border-radius: 64px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
         .container {
-            width: 340px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Хедер */
+        .header {
             text-align: center;
-            padding: 32px 24px 40px;
+            padding: 24px 20px;
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 32px;
+            font-size: 34px;
             font-weight: 590;
             background: linear-gradient(135deg, #fff, #aaa);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 8px;
             letter-spacing: -0.5px;
         }
 
         .sub {
             color: rgba(255,255,255,0.5);
             font-size: 14px;
-            margin-bottom: 32px;
+            margin-top: 6px;
         }
 
-        /* Счётчик */
-        .counter {
-            font-size: 88px;
-            font-weight: 590;
-            font-feature-settings: "tnum";
-            color: white;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            margin: 20px 0;
-            letter-spacing: 4px;
-        }
-
-        /* Главная кнопка клика */
-        .click-btn {
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-            border-radius: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 80px;
-            cursor: pointer;
-            transition: all 0.08s linear;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
-            border: 0.5px solid rgba(255,255,255,0.3);
-        }
-
-        .click-btn:active {
-            transform: scale(0.94);
-            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
-        }
-
-        /* Бонусы */
-        .bonus-panel {
-            margin: 24px 0;
+        /* Выбор режима */
+        .mode-selector {
             display: flex;
             gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .bonus-btn {
+        .mode-btn {
             flex: 1;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(255,255,255,0.2);
-            padding: 12px;
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            padding: 16px;
+            border-radius: 60px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+
+        .mode-emoji {
+            font-size: 32px;
+            margin-bottom: 6px;
+        }
+
+        .mode-title {
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        /* Карточка задания */
+        .task-card {
+            padding: 40px 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .task-emoji {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .task-text {
+            color: white;
+            font-size: 22px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .task-category {
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Кнопки */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .spin-btn {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            border: 0.5px solid rgba(255,255,255,0.3);
+            padding: 16px;
             border-radius: 60px;
             color: white;
-            font-size: 13px;
+            font-weight: 600;
+            font-size: 18px;
             cursor: pointer;
             transition: 0.1s;
         }
 
-        .bonus-btn:active {
+        .spin-btn:active {
             transform: scale(0.96);
-            background: rgba(255,255,255,0.2);
         }
 
-        .bonus-btn.disabled {
-            opacity: 0.4;
-            pointer-events: none;
+        .second-btn {
+            background: rgba(255,255,255,0.08);
+            border: 0.5px solid rgba(255,255,255,0.2);
         }
 
-        /* Донат и реклама */
-        .donate {
-            display: block;
-            background: rgba(255,215,0,0.12);
-            border: 0.5px solid rgba(255,215,0,0.3);
-            border-radius: 60px;
-            padding: 12px;
+        /* Добавление своего вопроса */
+        .add-section {
+            padding: 20px;
             margin-top: 20px;
-            color: #ffd966;
-            text-decoration: none;
+        }
+
+        .add-title {
+            color: white;
+            font-weight: 500;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-input {
+            width: 100%;
+            background: rgba(255,255,255,0.08);
+            border: 0.5px solid rgba(255,255,255,0.2);
+            border-radius: 28px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 15px;
+            resize: none;
+            font-family: inherit;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .add-submit {
+            background: rgba(255,255,255,0.12);
+            border: 0.5px solid rgba(255,255,255,0.25);
+            padding: 12px;
+            border-radius: 60px;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Рейтинг */
+        .rating-section {
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .rating-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .rating-text {
+            flex: 1;
             font-size: 14px;
         }
 
+        .rating-votes {
+            color: #ffd966;
+            font-weight: 500;
+        }
+
+        .donate {
+            display: block;
+            text-align: center;
+            padding: 14px;
+            margin: 20px 0;
+            background: rgba(255,215,0,0.12);
+            border: 0.5px solid rgba(255,215,0,0.3);
+            border-radius: 60px;
+            color: #ffd966;
+            text-decoration: none;
+        }
+
         .ads-space {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 0.5px solid rgba(255,255,255,0.1);
+            margin-top: 16px;
+            padding: 12px;
+            text-align: center;
             font-size: 10px;
             color: rgba(255,255,255,0.3);
-            text-align: center;
+            border-top: 0.5px solid rgba(255,255,255,0.1);
         }
 
         .toast {
@@ -145,236 +240,310 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             backdrop-filter: blur(20px);
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 60px;
             color: white;
-            font-size: 14px;
             z-index: 1000;
             display: none;
-            white-space: nowrap;
-        }
-
-        .reset {
-            margin-top: 12px;
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.3);
-            font-size: 12px;
-            cursor: pointer;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-<div class="glass container">
-    <h1>Liquid Clicker</h1>
-    <div class="sub">нажимай на стекло ✨</div>
-
-    <div class="counter" id="counter">0</div>
-
-    <div class="click-btn" id="clickBtn">
-        💎
+<div class="container">
+    <div class="glass header">
+        <h1>Liquid Rumors</h1>
+        <div class="sub">правда или действие • играй с друзьями</div>
     </div>
 
-    <div class="bonus-panel">
-        <div class="bonus-btn" id="bonus2x">⚡ x2 (10)</div>
-        <div class="bonus-btn" id="bonusAuto">🤖 авто (50)</div>
+    <!-- Выбор режима -->
+    <div class="mode-selector">
+        <div class="mode-btn active" id="modeTruth">
+            <div class="mode-emoji">🎤</div>
+            <div class="mode-title">Правда</div>
+        </div>
+        <div class="mode-btn" id="ModeDare">
+            <div class="mode-emoji">⚡</div>
+            <div class="mode-title">Действие</div>
+        </div>
     </div>
 
+    <!-- Карточка с заданием -->
+    <div class="glass task-card" id="taskCard">
+        <div class="task-emoji" id="taskEmoji">🎲</div>
+        <div class="task-text" id="taskText">Нажми «Крутить» чтобы начать</div>
+        <div class="task-category" id="taskCategory">готов?</div>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="action-buttons">
+        <button class="spin-btn" id="spinBtn">🎲 Крутить</button>
+        <button class="spin-btn second-btn" id="randomBtn">🎯 Рандом</button>
+    </div>
+
+    <!-- Добавление своих вопросов -->
+    <div class="glass add-section">
+        <div class="add-title">
+            <span>✏️</span> Добавить свой вопрос
+        </div>
+        <textarea class="add-input" id="newQuestion" rows="2" placeholder="Например: Какой самый стыдный момент в твоей жизни?"></textarea>
+        <select id="questionType" style="width:100%; background:rgba(255,255,255,0.08); border:0.5px solid rgba(255,255,255,0.2); border-radius:28px; padding:12px; color:white; margin-bottom:12px;">
+            <option value="truth">Правда</option>
+            <option value="dare">Действие</option>
+        </select>
+        <button class="add-submit" id="addBtn">➕ Добавить в игру</button>
+    </div>
+
+    <!-- Рейтинг популярных -->
+    <div class="glass rating-section">
+        <div class="add-title">🏆 Топ вопросов</div>
+        <div id="ratingList"></div>
+    </div>
+
+    <!-- Донат -->
     <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate">
         ☕️ Поддержать проект
     </a>
 
     <div class="ads-space">
-        📱 здесь будет реклама (AdSense)
+        📱 реклама будет здесь (AdSense)
     </div>
-
-    <button class="reset" id="resetBtn">🔄 сбросить</button>
 </div>
 
 <div id="toast" class="toast"></div>
 
 <script>
-    // === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
-    let clicks = 0;
-    let clickPower = 1;
-    let autoIncome = 0;
-    let autoInterval = null;
+    // ========== БАЗА ВОПРОСОВ И ДЕЙСТВИЙ ==========
+    let truthQuestions = [
+        { text: "Кто из присутствующих тебе нравится больше всего?", votes: 0 },
+        { text: "Какую глупость ты совершал(а) ради лайков?", votes: 0 },
+        { text: "Кому ты завидовал(а) в этой компании?", votes: 0 },
+        { text: "Что бы ты изменил(а) в своей внешности?", votes: 0 },
+        { text: "Какой самый дорогой подарок ты просил(а) у родителей?", votes: 0 },
+        { text: "С кем из учителей ты хотел(а) бы подраться?", votes: 0 },
+        { text: "Какую тайну ты никогда не расскажешь родителям?", votes: 0 },
+        { text: "Кого из друзей ты считаешь самым красивым/красивой?", votes: 0 }
+    ];
     
-    // Цены
-    const PRICE_2X = 10;
-    const PRICE_AUTO = 50;
+    let dareActions = [
+        { text: "Сделай 10 отжиманий прямо сейчас", votes: 0 },
+        { text: "Отправь смешное фото в общий чат", votes: 0 },
+        { text: "Станцуй 10 секунд под любой трек", votes: 0 },
+        { text: "Назови 3 своих недостатка", votes: 0 },
+        { text: "Позвони маме и скажи 'я тебя люблю'", votes: 0 },
+        { text: "Сделай комплимент человеку справа", votes: 0 },
+        { text: "Покажи последнее фото в галерее", votes: 0 },
+        { text: "Спой припев любимой песни", votes: 0 }
+    ];
     
-    // DOM элементы
-    const counterEl = document.getElementById('counter');
-    const clickBtn = document.getElementById('clickBtn');
-    const bonus2xBtn = document.getElementById('bonus2x');
-    const bonusAutoBtn = document.getElementById('bonusAuto');
-    const resetBtn = document.getElementById('resetBtn');
-    const toastEl = document.getElementById('toast');
+    let currentMode = "truth";
+    let currentTask = null;
     
-    // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
-    function showToast(msg, duration = 1500) {
-        toastEl.textContent = msg;
-        toastEl.style.display = 'block';
-        setTimeout(() => {
-            toastEl.style.display = 'none';
-        }, duration);
-    }
-    
-    function saveGame() {
-        localStorage.setItem('liquid_clicks', JSON.stringify({
-            clicks: clicks,
-            clickPower: clickPower,
-            autoIncome: autoIncome
-        }));
-    }
-    
-    function loadGame() {
-        const saved = localStorage.getItem('liquid_clicks');
+    // ========== ЗАГРУЗКА/СОХРАНЕНИЕ ==========
+    function loadData() {
+        const saved = localStorage.getItem('liquid_rumors');
         if (saved) {
             try {
                 const data = JSON.parse(saved);
-                clicks = data.clicks || 0;
-                clickPower = data.clickPower || 1;
-                autoIncome = data.autoIncome || 0;
+                if (data.truthQuestions) truthQuestions = data.truthQuestions;
+                if (data.dareActions) dareActions = data.dareActions;
             } catch(e) {}
         }
-        updateUI();
-        restartAuto();
+        updateRating();
     }
     
-    function updateUI() {
-        counterEl.textContent = Math.floor(clicks);
-        
-        // Обновляем кнопки
-        if (clicks >= PRICE_2X) {
-            bonus2xBtn.classList.remove('disabled');
-        } else {
-            bonus2xBtn.classList.add('disabled');
-        }
-        
-        if (clicks >= PRICE_AUTO) {
-            bonusAutoBtn.classList.remove('disabled');
-        } else {
-            bonusAutoBtn.classList.add('disabled');
-        }
-        
-        // Текст кнопок с ценами
-        if (clickPower === 1) {
-            bonus2xBtn.innerHTML = `⚡ x2 (${PRICE_2X})`;
-        } else {
-            bonus2xBtn.innerHTML = `⚡ x2 (куплено)`;
-        }
-        
-        if (autoIncome === 0) {
-            bonusAutoBtn.innerHTML = `🤖 авто (${PRICE_AUTO})`;
-        } else {
-            bonusAutoBtn.innerHTML = `🤖 авто +${autoIncome}/сек`;
-        }
-        
-        saveGame();
+    function saveData() {
+        localStorage.setItem('liquid_rumors', JSON.stringify({
+            truthQuestions: truthQuestions,
+            dareActions: dareActions
+        }));
     }
     
-    function restartAuto() {
-        if (autoInterval) {
-            clearInterval(autoInterval);
-            autoInterval = null;
+    // ========== РЕЙТИНГ ==========
+    function updateRating() {
+        const ratingList = document.getElementById('ratingList');
+        const allItems = [
+            ...truthQuestions.map(q => ({ text: q.text, votes: q.votes, type: "truth" })),
+            ...dareActions.map(d => ({ text: d.text, votes: d.votes, type: "dare" }))
+        ];
+        allItems.sort((a, b) => b.votes - a.votes);
+        const top5 = allItems.slice(0, 5);
+        
+        if (top5.length === 0) {
+            ratingList.innerHTML = '<div class="rating-item"><span style="color:rgba(255,255,255,0.3);">пока нет голосов</span></div>';
+            return;
         }
         
-        if (autoIncome > 0) {
-            autoInterval = setInterval(() => {
-                clicks += autoIncome;
-                updateUI();
-                // Эффект при авто-клике
-                counterEl.style.transform = 'scale(1.05)';
-                setTimeout(() => { counterEl.style.transform = 'scale(1)'; }, 100);
-            }, 1000);
+        ratingList.innerHTML = top5.map(item => `
+            <div class="rating-item">
+                <span class="rating-text">${item.type === "truth" ? "🎤" : "⚡"} ${escapeHtml(item.text.length > 35 ? item.text.slice(0,35)+"..." : item.text)}</span>
+                <span class="rating-votes">👍 ${item.votes}</span>
+            </div>
+        `).join('');
+    }
+    
+    function voteForTask(taskText, isTruth) {
+        if (isTruth) {
+            const q = truthQuestions.find(t => t.text === taskText);
+            if (q) q.votes++;
+        } else {
+            const d = dareActions.find(t => t.text === taskText);
+            if (d) d.votes++;
+        }
+        saveData();
+        updateRating();
+    }
+    
+    // ========== ГЕНЕРАЦИЯ ЗАДАНИЯ ==========
+    function getRandomTask() {
+        let list = currentMode === "truth" ? truthQuestions : dareActions;
+        if (list.length === 0) return null;
+        const randomIndex = Math.floor(Math.random() * list.length);
+        return { ...list[randomIndex], isTruth: currentMode === "truth", index: randomIndex };
+    }
+    
+    function displayTask(task) {
+        if (!task) {
+            document.getElementById('taskEmoji').textContent = "❌";
+            document.getElementById('taskText').textContent = "Нет заданий! Добавьте свои";
+            document.getElementById('taskCategory').textContent = "пусто";
+            return;
+        }
+        
+        currentTask = task;
+        document.getElementById('taskEmoji').textContent = currentMode === "truth" ? "🎤" : "⚡";
+        document.getElementById('taskText').textContent = task.text;
+        document.getElementById('taskCategory').textContent = currentMode === "truth" ? "ПРАВДА • ответь честно" : "ДЕЙСТВИЕ • выполни сейчас";
+    }
+    
+    function spin() {
+        const task = getRandomTask();
+        if (task) {
+            displayTask(task);
+            showToast(currentMode === "truth" ? "🎤 Вопрос выпал!" : "⚡ Действие выпало!");
+        } else {
+            showToast("Добавьте вопросы в игру!");
         }
     }
     
-    // === ИГРОВЫЕ ДЕЙСТВИЯ ===
-    function addClick() {
-        clicks += clickPower;
-        updateUI();
+    function randomMode() {
+        const modes = ["truth", "dare"];
+        const newMode = modes[Math.floor(Math.random() * 2)];
+        if (newMode === "truth") {
+            document.getElementById('modeTruth').classList.add('active');
+            document.getElementById('ModeDare').classList.remove('active');
+            currentMode = "truth";
+        } else {
+            document.getElementById('ModeDare').classList.add('active');
+            document.getElementById('modeTruth').classList.remove('active');
+            currentMode = "dare";
+        }
+        spin();
+        showToast(`🎲 Режим: ${currentMode === "truth" ? "Правда" : "Действие"}`);
+    }
+    
+    // ========== ДОБАВЛЕНИЕ СВОИХ ВОПРОСОВ ==========
+    function addCustomQuestion() {
+        const input = document.getElementById('newQuestion');
+        const text = input.value.trim();
+        const type = document.getElementById('questionType').value;
         
-        // Анимация кнопки и счётчика
-        clickBtn.style.transform = 'scale(0.94)';
-        counterEl.style.transform = 'scale(1.1)';
+        if (!text) {
+            showToast("Напиши вопрос или действие!");
+            return;
+        }
+        if (text.length > 150) {
+            showToast("Слишком длинно, максимум 150 символов");
+            return;
+        }
+        
+        if (type === "truth") {
+            truthQuestions.push({ text: text, votes: 0 });
+            showToast("➕ Вопрос добавлен в 'Правда'!");
+        } else {
+            dareActions.push({ text: text, votes: 0 });
+            showToast("➕ Действие добавлено в 'Действие'!");
+        }
+        
+        input.value = "";
+        saveData();
+        updateRating();
+    }
+    
+    // ========== ЛАЙК ТЕКУЩЕГО ЗАДАНИЯ ==========
+    function likeCurrentTask() {
+        if (currentTask) {
+            voteForTask(currentTask.text, currentTask.isTruth);
+            showToast("👍 Спасибо за оценку!");
+        } else {
+            showToast("Сначала выбери задание");
+        }
+    }
+    
+    // ========== ВСПОМОГАТЕЛЬНЫЕ ==========
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
         setTimeout(() => {
-            clickBtn.style.transform = 'scale(1)';
-            counterEl.style.transform = 'scale(1)';
-        }, 80);
-        
-        // Лёгкая вибрация (если есть)
-        if (navigator.vibrate) navigator.vibrate(20);
+            toast.style.display = 'none';
+        }, 1800);
     }
     
-    function buy2x() {
-        if (clickPower > 1) {
-            showToast('x2 уже куплен!');
-            return;
-        }
-        if (clicks >= PRICE_2X) {
-            clicks -= PRICE_2X;
-            clickPower = 2;
-            updateUI();
-            showToast('💪 Мощность клика x2!');
-        } else {
-            showToast(`Нужно ${PRICE_2X} кликов`);
-        }
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
     
-    function buyAuto() {
-        if (autoIncome > 0) {
-            showToast('Автокликер уже работает!');
-            return;
-        }
-        if (clicks >= PRICE_AUTO) {
-            clicks -= PRICE_AUTO;
-            autoIncome = 1;
-            updateUI();
-            restartAuto();
-            showToast('🤖 Автокликер активен! +1 в секунду');
-        } else {
-            showToast(`Нужно ${PRICE_AUTO} кликов`);
-        }
-    }
-    
-    function resetGame() {
-        if (confirm('Сбросить весь прогресс?')) {
-            clicks = 0;
-            clickPower = 1;
-            autoIncome = 0;
-            restartAuto();
-            updateUI();
-            showToast('Прогресс сброшен');
-        }
-    }
-    
-    // === ПРЕМИУМ КОД (как вы просили) ===
+    // ========== ПРЕМИУМ КОД ==========
     window.addPremiumCode = function(code) {
-        console.log('Premium код активирован:', code);
-        // Даём бонус за премиум код
-        clicks += 100;
-        updateUI();
-        showToast('✨ Премиум активирован! +100 кликов');
+        console.log("Premium код:", code);
+        showToast("✨ Премиум активирован! Добавлен топ-вопрос");
+        truthQuestions.unshift({ text: "ЭКСКЛЮЗИВ: Твой самый смелый поступок за месяц?", votes: 50 });
+        saveData();
+        updateRating();
     };
     
-    // === ПОДСКАЗКА В КОНСОЛИ ===
-    console.log('💎 Liquid Clicker запущен!');
-    console.log('💡 Введите addPremiumCode("ЛЮБОЙ_КОД") для бонуса');
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    function init() {
+        loadData();
+        
+        document.getElementById('modeTruth').addEventListener('click', () => {
+            document.getElementById('modeTruth').classList.add('active');
+            document.getElementById('ModeDare').classList.remove('active');
+            currentMode = "truth";
+            spin();
+        });
+        
+        document.getElementById('ModeDare').addEventListener('click', () => {
+            document.getElementById('ModeDare').classList.add('active');
+            document.getElementById('modeTruth').classList.remove('active');
+            currentMode = "dare";
+            spin();
+        });
+        
+        document.getElementById('spinBtn').addEventListener('click', spin);
+        document.getElementById('randomBtn').addEventListener('click', randomMode);
+        document.getElementById('addBtn').addEventListener('click', addCustomQuestion);
+        
+        // Двойной тап по карточке = лайк
+        document.getElementById('taskCard').addEventListener('dblclick', likeCurrentTask);
+        
+        // Первый запуск
+        spin();
+        
+        console.log("🎮 Liquid Rumors запущен! Двойной тап по карточке = лайк");
+        console.log("💡 addPremiumCode('код') для эксклюзивного вопроса");
+    }
     
-    // === СОБЫТИЯ ===
-    clickBtn.addEventListener('click', addClick);
-    bonus2xBtn.addEventListener('click', buy2x);
-    bonusAutoBtn.addEventListener('click', buyAuto);
-    resetBtn.addEventListener('click', resetGame);
-    
-    // === ЗАПУСК ===
-    loadGame();
-    restartAuto();
+    init();
 </script>
 </body>
 </html>
