@@ -2,584 +2,642 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>Skeers Stars — новости и товары | Telegram бот</title>
-    <!-- Google Fonts + Font Awesome 6 (без эмодзи) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3D Parkour Bunny Hop | Плавная камера + FPS</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: radial-gradient(circle at 10% 20%, #0a0f1e, #03060c);
-            color: #f0f3fa;
-            line-height: 1.5;
-            scroll-behavior: smooth;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Impact', system-ui, monospace;
         }
-
-        /* liquid glass core styles */
-        .glass-card, .glass-nav, .glass-footer, .hero-glass, .filter-btn, .price-card, .news-card, .modal-content {
-            background: rgba(20, 28, 40, 0.55);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-radius: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-            transition: all 0.25s ease;
-        }
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 1rem 1.5rem;
-        }
-
-        /* header */
-        .glass-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 0.9rem 2rem;
-            margin: 1.2rem 0 2rem;
-            gap: 1rem;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #FFFFFF, #b9c8ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.3px;
-        }
-        .logo p {
-            font-size: 0.8rem;
-            color: #b0c4ff;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.2rem;
-            flex-wrap: wrap;
-        }
-        .nav-links a {
-            color: #eef5ff;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.4rem 0.8rem;
-            border-radius: 2rem;
-            transition: 0.2s;
-        }
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        /* hero */
-        .hero-glass {
-            padding: 2.5rem 2rem;
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        .hero-glass h2 {
-            font-size: 2.4rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-        .hero-glass p {
-            margin-top: 1rem;
-            font-size: 1.1rem;
-            color: #cddeff;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .btn-bot {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #2c3e66;
-            border: none;
-            padding: 0.9rem 2rem;
-            margin-top: 1.8rem;
-            border-radius: 3rem;
-            font-weight: 600;
-            font-size: 1rem;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            text-decoration: none;
-        }
-        .btn-bot i {
-            font-size: 1.2rem;
-        }
-        .btn-bot:hover {
-            background: #1f2c4b;
-            transform: scale(0.97);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        /* filters */
-        .filters-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.8rem;
-            margin-bottom: 2rem;
-        }
-        .filter-btn {
-            background: rgba(30, 38, 58, 0.65);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,240,0.25);
-            padding: 0.6rem 1.4rem;
-            font-weight: 500;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #ecf3ff;
-        }
-        .filter-btn.active {
-            background: #3c5a9a;
-            border-color: #80adff;
-            box-shadow: 0 6px 14px rgba(60,90,154,0.3);
-        }
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.8rem;
-            margin-bottom: 3rem;
-        }
-        .news-card {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-        }
-        .news-card:hover {
-            transform: translateY(-6px);
-            background: rgba(35, 45, 65, 0.7);
-            border-color: rgba(255,215,150,0.6);
-        }
-        .news-category {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #b9d0ff;
-            margin-bottom: 0.7rem;
-        }
-        .news-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-        .news-date {
-            font-size: 0.75rem;
-            color: #9baed6;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .news-descr {
-            color: #e0eaff;
-            font-size: 0.9rem;
-            line-height: 1.45;
-            margin-bottom: 1.2rem;
-            flex: 1;
-        }
-        .read-more {
-            background: none;
-            border: none;
-            color: #ffd966;
-            font-weight: 500;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-        }
-
-        /* price section */
-        .prices-section {
-            margin: 3rem 0;
-        }
-        .section-title {
-            font-size: 1.9rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        .price-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-        }
-        .price-card {
-            padding: 1.8rem 1.2rem;
-            text-align: center;
-        }
-        .price-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #ffcd7e;
-        }
-        .price-card h3 {
-            font-size: 1.6rem;
-            margin-bottom: 0.5rem;
-        }
-        .price-desc {
-            color: #cbddfa;
-            margin: 0.8rem 0;
-            font-size: 0.9rem;
-        }
-        .price-value {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: #ffcd94;
-            margin: 0.8rem 0;
-        }
-        .price-btn {
-            background: rgba(255,255,245,0.2);
-            border: 1px solid rgba(255,200,100,0.5);
-            padding: 0.6rem 1.2rem;
-            border-radius: 40px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 0.5rem;
-            color: white;
-        }
-
-        /* features */
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-        .feature-item {
-            flex: 1;
-            background: rgba(20, 28, 48, 0.5);
-            backdrop-filter: blur(8px);
-            border-radius: 1.8rem;
-            padding: 1.5rem;
-            text-align: center;
-            border: 1px solid rgba(255,255,210,0.2);
-        }
-
-        /* modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(12px);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            max-width: 500px;
-            width: 90%;
-            padding: 2rem;
-            border-radius: 2rem;
-            position: relative;
-        }
-        .modal-close {
+        #info {
             position: absolute;
-            top: 1rem;
-            right: 1.5rem;
-            font-size: 1.8rem;
-            cursor: pointer;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            padding: 8px 18px;
+            border-radius: 30px;
+            color: #ffefb9;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 10;
+            font-size: 1rem;
+            border: 1px solid #ffbb55;
+            box-shadow: 0 4px 15px black;
         }
-
-        footer {
-            margin-top: 3rem;
-            text-align: center;
-            padding: 2rem 1rem;
+        #scorePanel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #ffd966;
+            font-weight: bold;
+            font-size: 1.3rem;
+            font-family: monospace;
+            pointer-events: none;
+            z-index: 10;
+            letter-spacing: 1px;
+            border: 1px solid #ffaa44;
+        }
+        #fps {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: #000000aa;
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: #aaffdd;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            z-index: 10;
+        }
+        #controlsHint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #000000aa;
+            padding: 8px 15px;
+            border-radius: 30px;
+            color: #ccc;
             font-size: 0.8rem;
-            border-top: 1px solid rgba(255,255,200,0.15);
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            font-family: monospace;
+            text-align: right;
         }
-
-        @media (max-width: 720px) {
-            .container {
-                padding: 0.8rem 1rem;
-            }
-            .glass-nav {
-                flex-direction: column;
-                text-align: center;
-            }
-            .hero-glass h2 {
-                font-size: 1.8rem;
-            }
-            .news-grid {
-                grid-template-columns: 1fr;
-            }
-            .price-grid {
-                grid-template-columns: 1fr;
-            }
-            .features {
-                flex-direction: column;
-            }
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000000cc;
+            backdrop-filter: blur(12px);
+            padding: 20px 40px;
+            border-radius: 60px;
+            color: #ffc285;
+            font-weight: bold;
+            font-size: 2rem;
+            text-align: center;
+            z-index: 20;
+            border: 2px solid #ffaa55;
+            pointer-events: none;
+            white-space: nowrap;
+            font-family: monospace;
         }
-
-        button, .price-btn, .filter-btn, .read-more, .btn-bot {
-            user-select: none;
+        button {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f0a34b;
+            border: none;
+            font-size: 1.2rem;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 25;
+            font-family: inherit;
+            box-shadow: 0 5px 0 #6b3f12;
+            transition: 0.05s linear;
+            display: none;
         }
-        i, .fa, .fas, .far {
-            font-style: normal;
+        button:active {
+            transform: translateX(-50%) translateY(2px);
+            box-shadow: 0 2px 0 #6b3f12;
+        }
+        @media (max-width: 700px) {
+            #scorePanel { font-size: 1rem; top: 12px; right: 12px; }
+            #info { font-size: 0.8rem; top: 12px; left: 12px; }
+            .game-over { font-size: 1.3rem; white-space: normal; padding: 15px 25px; width: 80%; text-align: center; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <header class="glass-nav">
-        <div class="logo">
-            <h1>SKEERS STARS</h1>
-            <p>Telegram бот | Звёзды | Premium | Подарки</p>
-        </div>
-        <div class="nav-links">
-            <a href="#news">Новости</a>
-            <a href="#prices">Товары</a>
-            <a href="#info">О боте</a>
-            <a href="#" id="openBotLink">Перейти в бот</a>
-        </div>
-    </header>
+    <div id="info">🏆 БАННИ ХОП ПАРКУР 🏆</div>
+    <div id="scorePanel">⭐ SCORE: <span id="scoreValue">0</span></div>
+    <div id="fps">FPS: <span id="fpsValue">--</span></div>
+    <div id="controlsHint">🖱️ МЫШЬ: поворот камеры<br>🔼 ПРОБЕЛ: прыжок<br>🔄 A / D: поворот</div>
+    <div class="game-over" id="gameOverMsg" style="display: none;">💀 GAME OVER 💀<br><span style="font-size:1rem;">Нажмите R для рестарта</span></div>
+    <button id="restartBtn">🔄 НОВАЯ ИГРА</button>
 
-    <div class="hero-glass">
-        <h2>Твой источник звезд и премиум-статуса</h2>
-        <p>Пополняйте Telegram Stars, покупайте Premium подписки и редкие подарки через бота Skeers Stars. Надёжно, мгновенно, круглосуточно.</p>
-        <a href="#" id="heroBotBtn" class="btn-bot"><i class="fab fa-telegram"></i> Открыть бота →</a>
-    </div>
-
-    <section id="news">
-        <div class="filters-row" id="filterContainer">
-            <button class="filter-btn active" data-filter="all">Все новости</button>
-            <button class="filter-btn" data-filter="promo">Акции</button>
-            <button class="filter-btn" data-filter="update">Обновления</button>
-            <button class="filter-btn" data-filter="guide">Гайды</button>
-        </div>
-        <div class="news-grid" id="newsGrid"></div>
-    </section>
-
-    <section id="prices" class="prices-section">
-        <div class="section-title">Товары и цены</div>
-        <div class="price-grid">
-            <div class="price-card">
-                <div class="price-icon"><i class="fab fa-telegram-plane"></i></div>
-                <h3>Telegram Stars</h3>
-                <div class="price-desc">Для покупок внутри Telegram, поддержки авторов, контента</div>
-                <div class="price-value">от 100 звезд — 199 ₽</div>
-                <div class="price-value">500 звезд — 899 ₽</div>
-                <button class="price-btn" data-product="stars">Запросить в боте</button>
-            </div>
-            <div class="price-card">
-                <div class="price-icon"><i class="fas fa-crown"></i></div>
-                <h3>Telegram Premium</h3>
-                <div class="price-desc">Увеличенные лимиты, стикеры, реакции, голосовые фишки</div>
-                <div class="price-value">1 месяц — 149 ₽</div>
-                <div class="price-value">6 месяцев — 799 ₽</div>
-                <button class="price-btn" data-product="premium">Уточнить детали</button>
-            </div>
-            <div class="price-card">
-                <div class="price-icon"><i class="fas fa-gift"></i></div>
-                <h3>Обычные подарки</h3>
-                <div class="price-desc">Коллекционные аватары, уникальные подарки для друзей</div>
-                <div class="price-value">от 49 ₽ за штуку</div>
-                <div class="price-value">Редкие наборы — от 199 ₽</div>
-                <button class="price-btn" data-product="gifts">Смотреть ассортимент</button>
-            </div>
-        </div>
-    </section>
-
-    <div class="features" id="info">
-        <div class="feature-item"><i class="fas fa-bolt" style="font-size:2rem;"></i><h3>Мгновенная выдача</h3><p>После оплаты звезды и премиум придут в течение 2-5 минут.</p></div>
-        <div class="feature-item"><i class="fas fa-shield-alt" style="font-size:2rem;"></i><h3>Безопасная сделка</h3><p>Более 2500 подтвержденных отзывов, автоматическая защита.</p></div>
-        <div class="feature-item"><i class="fas fa-headset" style="font-size:2rem;"></i><h3>Поддержка 24/7</h3><p>Ответим в Telegram на любые вопросы о пополнении.</p></div>
-    </div>
-
-    <footer class="glass-footer">
-        <p>Skeers Stars — неофициальный сервис помощи в приобретении звезд и премиума. Работаем через Telegram-бота @skeers_stars_bot</p>
-        <p style="margin-top: 0.6rem;">© 2025 Все новости и предложения актуальны на момент публикации.</p>
-    </footer>
-</div>
-
-<div id="newsModal" class="modal">
-    <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <h3 id="modalTitle"></h3>
-        <div id="modalDate" style="font-size:0.75rem; color:#bbb; margin: 8px 0;"></div>
-        <p id="modalText" style="margin-top: 1rem;"></p>
-        <button class="price-btn" id="modalBotBtn" style="margin-top: 1.5rem;">Перейти в бот</button>
-    </div>
-</div>
-
-<script>
-    // НОВОСТИ (без эмодзи, только текст)
-    const newsData = [
-        { id: 1, title: "Акция: Купи 20 звезд — получи 5 в подарок", category: "promo", date: "28 апреля 2025", description: "Только до 5 мая: при заказе от 200 звезд автоматически добавляем бонус. Успейте пополнить баланс для покупок в Telegram.", fullText: "С 28 апреля по 5 мая каждый, кто приобретёт пакет звезд от 200 штук, получает 5 дополнительных звезд бесплатно. Акция распространяется на всех новых и постоянных клиентов. Напишите боту слово БОНУС для участия." },
-        { id: 2, title: "Telegram Premium со скидкой 15%", category: "promo", date: "25 апреля 2025", description: "Подписка на 6 месяцев дешевле на 15% по промокоду PREMIUM25. Предложение ограничено.", fullText: "В рамках майских праздников скидка на полугодовую подписку Telegram Premium. Промокод PREMIUM25 активируется в боте при покупке. Цена снижена до 679 рублей. Количество активаций: 500." },
-        { id: 3, title: "Новые коллекционные подарки: серия Киберпанк", category: "update", date: "22 апреля 2025", description: "Добавлены эксклюзивные подарки с анимацией. Доступны для отправки в Telegram.", fullText: "В ассортименте подарков появилась новая тематическая серия «Киберпанк 2077». В набор входят 5 уникальных анимированных подарков. Приобрести можно как поштучно, так и полным комплектом со скидкой." },
-        { id: 4, title: "Как передать звезды другу через бота", category: "guide", date: "20 апреля 2025", description: "Пошаговая инструкция: перевод звезд между пользователями Telegram через наш сервис.", fullText: "Перевод звёзд возможен через команду /transfer в боте. Укажите username получателя и количество звезд. Комиссия сервиса — 3% от суммы. Подробный гайд внутри бота." },
-        { id: 5, title: "Технические работы 30 апреля 2025", category: "update", date: "19 апреля 2025", description: "Плановое обновление с 02:00 до 04:00 МСК. Бот будет недоступен 2 часа.", fullText: "30 апреля с 2 до 4 утра по московскому времени будут проводиться технические работы на сервере. Выдача заказов временно приостановлена. Приносим извинения за неудобства." },
-        { id: 6, title: "Спецпредложение: Подарок + Премиум за 999 ₽", category: "promo", date: "16 апреля 2025", description: "Набор из Premium на месяц и редкого подарка по сниженной цене.", fullText: "Комбо-пакет: Telegram Premium 1 месяц + эксклюзивный подарок «Золотая звезда». Суммарная цена 999 рублей вместо 1390. Для заказа отправьте команду /combo в боте." }
-    ];
-
-    let currentFilter = "all";
-    let currentNewsItem = null;
-
-    function renderNews() {
-        const container = document.getElementById("newsGrid");
-        let filtered = newsData;
-        if (currentFilter !== "all") {
-            filtered = newsData.filter(n => n.category === currentFilter);
+    <!-- Подключаем Three.js и дополнения -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
         }
-        if (filtered.length === 0) {
-            container.innerHTML = `<div class="glass-card" style="grid-column:1/-1; text-align:center; padding:2rem;">Новостей нет, но скоро появятся</div>`;
-            return;
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; // не используем, своя камера
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+        // ---------- ИНИЦИАЛИЗАЦИЯ ----------
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x071a3b);
+        scene.fog = new THREE.FogExp2(0x071a3b, 0.008); // туман для оптимизации
+
+        // Камера (от третьего лица)
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 3.5, 8);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true; // тени для атмосферы
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+        
+        // Освещение
+        // Ambient
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
+        // Directional light
+        const dirLight = new THREE.DirectionalLight(0xfff5d1, 1.2);
+        dirLight.position.set(5, 12, 3);
+        dirLight.castShadow = true;
+        dirLight.receiveShadow = true;
+        dirLight.shadow.mapSize.width = 1024;
+        dirLight.shadow.mapSize.height = 1024;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 25;
+        dirLight.shadow.camera.left = -10;
+        dirLight.shadow.camera.right = 10;
+        dirLight.shadow.camera.top = 10;
+        dirLight.shadow.camera.bottom = -10;
+        scene.add(dirLight);
+        // Fill light
+        const fillLight = new THREE.PointLight(0x5577aa, 0.4);
+        fillLight.position.set(0, 3, 2);
+        scene.add(fillLight);
+        // Rim light
+        const rimLight = new THREE.PointLight(0xffaa66, 0.5);
+        rimLight.position.set(-2, 4, -4);
+        scene.add(rimLight);
+        
+        // Вспомогательная сетка (для референса, но не влияет)
+        const gridHelper = new THREE.GridHelper(200, 30, 0x88aaff, 0x335588);
+        gridHelper.position.y = -0.8;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.3;
+        scene.add(gridHelper);
+        
+        // ----- ПЕРЕМЕННЫЕ ИГРЫ -----
+        let player = null;          // объект игрока (куб)
+        let playerVelocityY = 0;
+        let isGrounded = true;
+        let score = 0;
+        let gameActive = true;
+        
+        // Параметры бега / движения
+        let forwardSpeed = 7.5;     // скорость бега вперед (м/с)
+        let currentForwardSpeed = forwardSpeed;
+        let rotationYaw = 0;        // угол поворота камеры (в радианах)
+        let targetYaw = 0;
+        
+        // Управление мышью
+        let mouseX = 0, mouseY = 0;
+        let mouseSensitivity = 0.0022;
+        let lookEnabled = true;
+        
+        // Клавиши
+        const keyState = {
+            ArrowLeft: false,
+            ArrowRight: false,
+            KeyA: false,
+            KeyD: false,
+            Space: false
+        };
+        
+        // Массивы объектов уровня
+        let platforms = [];         // платформы (основа)
+        let obstacles = [];         // препятствия (блоки)
+        let coins = [];             // монеты (сбор)
+        let activeObjects = [];      // для удаления
+        let lastGenZ = 0;
+        const GEN_INTERVAL = 4.5;    // интервал генерации сегментов (м)
+        let nextGenZ = 5;
+        
+        // расстояние удаления объектов позади игрока
+        const DESPAWN_DIST = -12;
+        
+        // Физика прыжка
+        const GRAVITY = 22;
+        const JUMP_FORCE = 8.2;
+        
+        // Для FPS
+        let frameCount = 0;
+        let lastTime = performance.now();
+        const fpsSpan = document.getElementById('fpsValue');
+        const scoreSpan = document.getElementById('scoreValue');
+        const gameOverDiv = document.getElementById('gameOverMsg');
+        const restartBtn = document.getElementById('restartBtn');
+        
+        // Вспомогательные текстуры/материалы
+        const platformMat = new THREE.MeshStandardMaterial({ color: 0x5c6e5e, roughness: 0.6, metalness: 0.1 });
+        const obstacleMat = new THREE.MeshStandardMaterial({ color: 0xbc5a3c, roughness: 0.4, emissive: 0x331100 });
+        const coinMat = new THREE.MeshStandardMaterial({ color: 0xffcc44, emissive: 0x442200, metalness: 0.8 });
+        const playerMat = new THREE.MeshStandardMaterial({ color: 0x4ec0e9, emissive: 0x004455, metalness: 0.2 });
+        
+        // Создание игрока (динамический куб)
+        function createPlayer() {
+            const geometry = new THREE.BoxGeometry(0.8, 0.9, 0.8);
+            const cube = new THREE.Mesh(geometry, playerMat);
+            cube.castShadow = true;
+            cube.receiveShadow = true;
+            cube.position.set(0, 0.45, 0);
+            scene.add(cube);
+            // добавим светящийся контур
+            const wireframeGeo = new THREE.BoxGeometry(0.85, 0.95, 0.85);
+            const wireframeMat = new THREE.MeshBasicMaterial({ color: 0xffaa55, wireframe: true, transparent: true, opacity: 0.3 });
+            const outline = new THREE.Mesh(wireframeGeo, wireframeMat);
+            cube.add(outline);
+            return cube;
         }
-        container.innerHTML = filtered.map(news => `
-            <div class="news-card" data-id="${news.id}">
-                <div class="news-category">${getCategoryName(news.category)}</div>
-                <div class="news-title">${news.title}</div>
-                <div class="news-date"><i class="far fa-calendar-alt"></i> ${news.date}</div>
-                <div class="news-descr">${news.description}</div>
-                <button class="read-more" data-id="${news.id}">Подробнее <i class="fas fa-arrow-right"></i></button>
-            </div>
-        `).join("");
-
-        // attach event listeners to "read more"
-        document.querySelectorAll(".read-more").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                const newsItem = newsData.find(n => n.id === id);
-                if (newsItem) openModal(newsItem);
-            });
-        });
-        // full card click modal
-        document.querySelectorAll(".news-card").forEach(card => {
-            card.addEventListener("click", (e) => {
-                if (e.target.classList.contains("read-more")) return;
-                const id = parseInt(card.dataset.id);
-                const newsItem = newsData.find(n => n.id === id);
-                if (newsItem) openModal(newsItem);
-            });
-        });
-    }
-
-    function getCategoryName(cat) {
-        if (cat === "promo") return "Акция";
-        if (cat === "update") return "Обновление";
-        if (cat === "guide") return "Гайд";
-        return "Новость";
-    }
-
-    function openModal(news) {
-        currentNewsItem = news;
-        const modal = document.getElementById("newsModal");
-        document.getElementById("modalTitle").innerText = news.title;
-        document.getElementById("modalDate").innerHTML = `<i class="far fa-calendar-alt"></i> ${news.date}`;
-        document.getElementById("modalText").innerHTML = news.fullText || news.description;
-        modal.style.display = "flex";
-    }
-
-    // filter buttons
-    function initFilters() {
-        const btns = document.querySelectorAll(".filter-btn");
-        btns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                btns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                currentFilter = btn.getAttribute("data-filter");
-                renderNews();
-            });
-        });
-    }
-
-    // modal close
-    function initModal() {
-        const modal = document.getElementById("newsModal");
-        const closeSpan = document.querySelector(".modal-close");
-        closeSpan.onclick = () => modal.style.display = "none";
-        window.onclick = function(e) {
-            if (e.target === modal) modal.style.display = "none";
+        
+        // Генерация платформы (сегмент трассы)
+        function generateSegment(zPos) {
+            // Основная платформа (ширина 4, длина 5)
+            const platformWidth = 3.8;
+            const platformLength = 5;
+            const platGeo = new THREE.BoxGeometry(platformWidth, 0.3, platformLength);
+            const platformMesh = new THREE.Mesh(platGeo, platformMat);
+            platformMesh.position.set(0, -0.15, zPos);
+            platformMesh.receiveShadow = true;
+            platformMesh.castShadow = true;
+            scene.add(platformMesh);
+            platforms.push(platformMesh);
+            
+            // Случайное количество препятствий (0-2)
+            const obsCount = Math.random() > 0.6 ? (Math.random() > 0.5 ? 1 : 2) : 0;
+            for (let i = 0; i < obsCount; i++) {
+                let obsX = (Math.random() - 0.5) * 2.2;
+                let obsZ = zPos + (Math.random() - 0.5) * 3.2;
+                const obsH = 0.8 + Math.random() * 0.5;
+                const obsGeo = new THREE.BoxGeometry(0.7, obsH, 0.7);
+                const obstacle = new THREE.Mesh(obsGeo, obstacleMat);
+                obstacle.position.set(obsX, obsH/2, obsZ);
+                obstacle.castShadow = true;
+                scene.add(obstacle);
+                obstacles.push(obstacle);
+            }
+            
+            // Монеты (от 1 до 3)
+            const coinCount = Math.floor(Math.random() * 3) + 1;
+            for (let i = 0; i < coinCount; i++) {
+                const coinGeo = new THREE.SphereGeometry(0.22, 16, 16);
+                const coin = new THREE.Mesh(coinGeo, coinMat);
+                let coinX = (Math.random() - 0.5) * 2.8;
+                let coinZ = zPos + (Math.random() - 0.5) * 3.8;
+                coin.position.set(coinX, 0.35, coinZ);
+                coin.castShadow = true;
+                scene.add(coin);
+                coins.push(coin);
+            }
         }
-        const modalBotBtn = document.getElementById("modalBotBtn");
-        if (modalBotBtn) modalBotBtn.onclick = () => {
-            window.open("https://t.me/skeers_stars_bot", "_blank");
-        }
-    }
-
-    // кнопки перехода в бот (Telegram)
-    function initBotLinks() {
-        const botUrl = "https://t.me/skeers_stars_bot";
-        const openBtns = [document.getElementById("openBotLink"), document.getElementById("heroBotBtn")];
-        openBtns.forEach(btn => {
-            if (btn) btn.addEventListener("click", (e) => {
-                e.preventDefault();
-                window.open(botUrl, "_blank");
-            });
-        });
-        // price buttons actions
-        const priceBtns = document.querySelectorAll(".price-btn");
-        priceBtns.forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const product = btn.getAttribute("data-product") || "product";
-                let msg = "";
-                if (product === "stars") msg = "Узнать цены на звезды → /stars";
-                else if (product === "premium") msg = "Купить Telegram Premium → /premium";
-                else if (product === "gifts") msg = "Каталог подарков → /gifts";
-                else msg = "Подробности в боте!";
-                // небольшой тост в виде алерта, но лучше имитировать уведомление
-                if (confirm(`Перейти в Telegram бот для заказа? ${msg}`)) {
-                    window.open(botUrl, "_blank");
+        
+        // Удаление объектов позади
+        function despawnOldObjects(playerZ) {
+            // платформы
+            for (let i = platforms.length-1; i >= 0; i--) {
+                if (platforms[i].position.z < playerZ + DESPAWN_DIST) {
+                    scene.remove(platforms[i]);
+                    platforms.splice(i,1);
                 }
-            });
-        });
-        // также обработка для карточек цен
-        document.querySelectorAll(".price-card .price-btn").forEach(btn => {
-            btn.addEventListener("click", () => {});
-        });
-    }
-
-    // дополнительная инициализация, чтобы избежать конфликтов
-    function addCoolHover() {
-        // стили уже есть, просто гарантия плавности
-    }
-
-    // также зададим реальную ссылку на бота: skeers_stars_bot (существующий или демо)
-    // все ссылки ведут на t.me/skeers_stars_bot (замените на актуальный юзернейм если нужно)
-    // но по условию делаем рабочий прототип
-    renderNews();
-    initFilters();
-    initModal();
-    initBotLinks();
-    addCoolHover();
-
-    // сделать активную навигацию по якорям
-    document.querySelectorAll('.nav-links a').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const hash = this.getAttribute('href');
-            if (hash && hash.startsWith('#')) {
+            }
+            for (let i = obstacles.length-1; i >= 0; i--) {
+                if (obstacles[i].position.z < playerZ + DESPAWN_DIST) {
+                    scene.remove(obstacles[i]);
+                    obstacles.splice(i,1);
+                }
+            }
+            for (let i = coins.length-1; i >= 0; i--) {
+                if (coins[i].position.z < playerZ + DESPAWN_DIST) {
+                    scene.remove(coins[i]);
+                    coins.splice(i,1);
+                }
+            }
+        }
+        
+        // Проверка столкновений с препятствиями (AABB)
+        function checkCollisions(playerPos) {
+            if (!gameActive) return false;
+            const playerBox = new THREE.Box3().setFromObject(player);
+            // препятствия
+            for (let obs of obstacles) {
+                const obsBox = new THREE.Box3().setFromObject(obs);
+                if (playerBox.intersectsBox(obsBox)) {
+                    return true; // столкновение -> смерть
+                }
+            }
+            return false;
+        }
+        
+        // Сбор монет
+        function collectCoins(playerPos) {
+            if (!gameActive) return;
+            const playerBox = new THREE.Box3().setFromObject(player);
+            for (let i=0; i<coins.length; i++) {
+                const coinBox = new THREE.Box3().setFromObject(coins[i]);
+                if (playerBox.intersectsBox(coins[i])) {
+                    scene.remove(coins[i]);
+                    coins.splice(i,1);
+                    score += 10;
+                    scoreSpan.innerText = score;
+                    i--;
+                    // легкий звуковой эффект (визуальный)
+                    const glint = new THREE.PointLight(0xffaa66, 0.7, 4);
+                    glint.position.copy(coins[i]?.position || playerPos);
+                    scene.add(glint);
+                    setTimeout(() => scene.remove(glint), 150);
+                }
+            }
+        }
+        
+        // Обновление позиции камеры (след за игроком + плавное вращение)
+        function updateCamera(deltaTime) {
+            if (!player) return;
+            // Плавный поворот камеры (Yaw) из targetYaw
+            rotationYaw += (targetYaw - rotationYaw) * Math.min(1, deltaTime * 12);
+            // Позиция камеры относительно игрока: смещение назад и вверх
+            const distBack = 5.2;
+            const heightOff = 2.2;
+            const camX = player.position.x - Math.sin(rotationYaw) * distBack;
+            const camZ = player.position.z - Math.cos(rotationYaw) * distBack;
+            camera.position.x = camX;
+            camera.position.z = camZ;
+            camera.position.y = player.position.y + heightOff;
+            // Камера смотрит на игрока + чуть вперед
+            const lookAtX = player.position.x + Math.sin(rotationYaw) * 1.5;
+            const lookAtZ = player.position.z + Math.cos(rotationYaw) * 1.5;
+            camera.lookAt(lookAtX, player.position.y + 0.8, lookAtZ);
+        }
+        
+        // Обновление движения игрока, физика, генерация
+        function updateGame(deltaTime) {
+            if (!gameActive || !player) return;
+            
+            let dt = Math.min(deltaTime, 0.033);
+            
+            // ---------- ДВИЖЕНИЕ ВПЕРЕД (по направлению камеры) ----------
+            const forwardDir = new THREE.Vector3(Math.sin(rotationYaw), 0, Math.cos(rotationYaw)).normalize();
+            const moveStep = forwardDir.clone().multiplyScalar(currentForwardSpeed * dt);
+            let newPos = player.position.clone().add(moveStep);
+            // Ограничение по X (чтобы не выпадать с платформы)
+            newPos.x = Math.min(Math.max(newPos.x, -2.8), 2.8);
+            player.position.x = newPos.x;
+            player.position.z = newPos.z;
+            
+            // ---------- ФИЗИКА ПРЫЖКА ----------
+            if (isGrounded && keyState.Space) {
+                playerVelocityY = JUMP_FORCE;
+                isGrounded = false;
+                keyState.Space = false; // одноразовый прыжок
+                // небольшой эффект
+                const dust = new THREE.PointLight(0x88aaff, 0.5, 2);
+                dust.position.copy(player.position);
+                scene.add(dust);
+                setTimeout(() => scene.remove(dust), 200);
+            }
+            
+            if (!isGrounded) {
+                playerVelocityY -= GRAVITY * dt;
+                player.position.y += playerVelocityY * dt;
+                // проверка земли (platform level Y ~ 0)
+                if (player.position.y <= 0.45) {
+                    player.position.y = 0.45;
+                    playerVelocityY = 0;
+                    isGrounded = true;
+                }
+            } else {
+                player.position.y = 0.45;
+            }
+            
+            // ---------- ПРОВЕРКА СТОЛКНОВЕНИЙ И СБОР МОНЕТ ----------
+            if (checkCollisions(player.position)) {
+                gameActive = false;
+                gameOverDiv.style.display = "flex";
+                restartBtn.style.display = "block";
+                return;
+            }
+            collectCoins(player.position);
+            
+            // ---------- ГЕНЕРАЦИЯ УРОВНЯ ----------
+            if (player.position.z > nextGenZ) {
+                generateSegment(nextGenZ + 2.5);
+                nextGenZ += GEN_INTERVAL;
+                // увеличиваем сложность (скорость со временем)
+                if (currentForwardSpeed < 13) {
+                    currentForwardSpeed += 0.03;
+                }
+            }
+            // Удаление старых объектов
+            despawnOldObjects(player.position.z);
+            
+            // динамическое изменение скорости отображения
+            const speedFactor = currentForwardSpeed / forwardSpeed;
+            // эффект разгона
+        }
+        
+        // ---------- УПРАВЛЕНИЕ ПОВОРОТОМ (МЫШЬ + КЛАВИШИ) ----------
+        function handleMouseMove(event) {
+            if (!gameActive) return;
+            // Без инверсии: движение вправо -> увеличение yaw
+            const dx = event.movementX || 0;
+            targetYaw += dx * mouseSensitivity;
+            // нормализация не требуется, но можно ограничить по кругу
+        }
+        
+        function handleKeyDown(e) {
+            const code = e.code;
+            if (code === 'Space') {
                 e.preventDefault();
-                const target = document.querySelector(hash);
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
-            } else if (hash === '#') {
-                if(this.id !== 'openBotLink') e.preventDefault();
+                if (gameActive) keyState.Space = true;
+            }
+            if (code === 'KeyA' || code === 'ArrowLeft') {
+                keyState.KeyA = true;
+                keyState.ArrowLeft = true;
+            }
+            if (code === 'KeyD' || code === 'ArrowRight') {
+                keyState.KeyD = true;
+                keyState.ArrowRight = true;
+            }
+            // рестарт по R
+            if (code === 'KeyR' && !gameActive) {
+                restartGame();
+            }
+        }
+        
+        function handleKeyUp(e) {
+            const code = e.code;
+            if (code === 'KeyA' || code === 'ArrowLeft') {
+                keyState.KeyA = false;
+                keyState.ArrowLeft = false;
+            }
+            if (code === 'KeyD' || code === 'ArrowRight') {
+                keyState.KeyD = false;
+                keyState.ArrowRight = false;
+            }
+            if (code === 'Space') {
+                keyState.Space = false;
+            }
+        }
+        
+        // Обновление поворота от клавиш (A/D) плавно
+        function updateTurnFromKeys(deltaTime) {
+            let turnDelta = 0;
+            const turnSpeed = 2.4; // радиан в секунду
+            if (keyState.KeyA || keyState.ArrowLeft) turnDelta = turnSpeed * deltaTime;
+            if (keyState.KeyD || keyState.ArrowRight) turnDelta = -turnSpeed * deltaTime;
+            if (turnDelta !== 0) {
+                targetYaw += turnDelta;
+            }
+        }
+        
+        // ---------- ПЕРЕЗАПУСК ИГРЫ ----------
+        function restartGame() {
+            // очистка сцены от динамических объектов
+            platforms.forEach(p => scene.remove(p));
+            obstacles.forEach(o => scene.remove(o));
+            coins.forEach(c => scene.remove(c));
+            platforms = [];
+            obstacles = [];
+            coins = [];
+            if (player) scene.remove(player);
+            
+            // сброс параметров
+            gameActive = true;
+            score = 0;
+            scoreSpan.innerText = "0";
+            currentForwardSpeed = forwardSpeed;
+            targetYaw = 0;
+            rotationYaw = 0;
+            playerVelocityY = 0;
+            isGrounded = true;
+            nextGenZ = 5;
+            lastGenZ = 0;
+            gameOverDiv.style.display = "none";
+            restartBtn.style.display = "none";
+            
+            // создаем нового игрока
+            player = createPlayer();
+            player.position.set(0, 0.45, 0);
+            
+            // генерируем начальные сегменты
+            for (let z = -3; z <= 12; z += GEN_INTERVAL) {
+                generateSegment(z);
+            }
+            nextGenZ = 8;
+            
+            // камера сразу смотрит вперед
+            camera.position.set(0, 3.5, 7);
+            camera.lookAt(0, 1, 2);
+        }
+        
+        // ---------- ОПТИМИЗАЦИЯ И FPS ----------
+        let lastFrameTime = performance.now();
+        function animate() {
+            const now = performance.now();
+            let delta = Math.min(0.033, (now - lastFrameTime) / 1000);
+            lastFrameTime = now;
+            
+            if (delta > 0.001) {
+                // Обновление поворота от клавиш
+                updateTurnFromKeys(delta);
+                // обновление игровой логики
+                updateGame(delta);
+                // обновление камеры
+                updateCamera(delta);
+            }
+            
+            // Рендер
+            renderer.render(scene, camera);
+            
+            // Подсчет FPS (средний за 1 секунду)
+            frameCount++;
+            const timeSinceLast = now - lastTime;
+            if (timeSinceLast >= 1000) {
+                const fps = Math.round((frameCount * 1000) / timeSinceLast);
+                fpsSpan.innerText = fps;
+                frameCount = 0;
+                lastTime = now;
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // ---------- ЗАХВАТ МЫШИ (для плавного вращения) ----------
+        function lockMouse() {
+            renderer.domElement.requestPointerLock = renderer.domElement.requestPointerLock || renderer.domElement.mozRequestPointerLock;
+            renderer.domElement.requestPointerLock();
+        }
+        renderer.domElement.addEventListener('click', () => {
+            if (gameActive && document.pointerLockElement !== renderer.domElement) {
+                renderer.domElement.requestPointerLock();
             }
         });
-    });
-</script>
+        document.addEventListener('pointerlockchange', lockChange);
+        function lockChange() {
+            if (document.pointerLockElement === renderer.domElement) {
+                document.addEventListener('mousemove', handleMouseMove);
+                lookEnabled = true;
+            } else {
+                document.removeEventListener('mousemove', handleMouseMove);
+                lookEnabled = false;
+            }
+        }
+        
+        // Обработчики клавиш
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        restartBtn.addEventListener('click', () => restartGame());
+        
+        // Старт игры
+        restartGame();
+        
+        // Адаптация размера окна
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Добавим декоративные парящие частицы (не влияют на производительность)
+        const particleGeo = new THREE.BufferGeometry();
+        const particleCount = 300;
+        const particlePositions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 40;
+            particlePositions[i*3+1] = Math.random() * 5;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 50 - 20;
+        }
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particleMatGlow = new THREE.PointsMaterial({ color: 0x88aaff, size: 0.07, transparent: true, opacity: 0.5 });
+        const particles = new THREE.Points(particleGeo, particleMatGlow);
+        scene.add(particles);
+        
+        function animateParticles() {
+            particles.rotation.y += 0.002;
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+        
+        // Запуск основного цикла
+        animate();
+        
+        // Стили для кнопки и сообщения
+        console.log('3D Bunny Hop Parkour запущен | Плавная камера | FPS счетчик');
+    </script>
 </body>
 </html>
