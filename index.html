@@ -3,74 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>3D Parkour Bunny Hop | Плавная камера + FPS</title>
+    <title>Bunny Hop Parkour — 3D экшен с плавной камерой</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Segoe UI', 'Poppins', 'Impact', system-ui, monospace;
+            font-family: 'Segoe UI', 'Poppins', monospace;
         }
-        #info {
+        #ui {
             position: absolute;
             top: 20px;
             left: 20px;
             background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(8px);
             padding: 8px 18px;
             border-radius: 30px;
-            color: #ffefb9;
-            font-weight: bold;
-            pointer-events: none;
+            color: #ffecb3;
             z-index: 10;
-            font-size: 1rem;
-            border: 1px solid #ffbb55;
-            box-shadow: 0 4px 15px black;
+            pointer-events: none;
+            font-weight: bold;
+            border-left: 3px solid #ffaa44;
         }
-        #scorePanel {
+        #score-panel {
             position: absolute;
             top: 20px;
             right: 20px;
             background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(6px);
-            padding: 8px 20px;
-            border-radius: 30px;
-            color: #ffd966;
+            backdrop-filter: blur(8px);
+            padding: 8px 24px;
+            border-radius: 40px;
+            color: #ffdd88;
+            font-size: 1.5rem;
             font-weight: bold;
-            font-size: 1.3rem;
             font-family: monospace;
-            pointer-events: none;
             z-index: 10;
-            letter-spacing: 1px;
-            border: 1px solid #ffaa44;
+            pointer-events: none;
         }
-        #fps {
+        #fps-panel {
             position: absolute;
             bottom: 20px;
             left: 20px;
             background: #000000aa;
-            padding: 5px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
             color: #aaffdd;
             font-family: monospace;
             font-weight: bold;
-            font-size: 1rem;
-            backdrop-filter: blur(4px);
-            pointer-events: none;
             z-index: 10;
+            pointer-events: none;
         }
-        #controlsHint {
+        #controls {
             position: absolute;
             bottom: 20px;
             right: 20px;
             background: #000000aa;
-            padding: 8px 15px;
-            border-radius: 30px;
+            padding: 8px 16px;
+            border-radius: 24px;
             color: #ccc;
-            font-size: 0.8rem;
-            backdrop-filter: blur(4px);
-            pointer-events: none;
-            font-family: monospace;
+            font-size: 12px;
             text-align: right;
+            font-family: monospace;
+            pointer-events: none;
+            z-index: 10;
         }
         .game-over {
             position: absolute;
@@ -79,177 +73,157 @@
             transform: translate(-50%, -50%);
             background: #000000cc;
             backdrop-filter: blur(12px);
-            padding: 20px 40px;
-            border-radius: 60px;
-            color: #ffc285;
-            font-weight: bold;
-            font-size: 2rem;
+            padding: 20px 30px;
+            border-radius: 50px;
+            color: #ffaa66;
+            font-size: 1.8rem;
             text-align: center;
             z-index: 20;
-            border: 2px solid #ffaa55;
-            pointer-events: none;
             white-space: nowrap;
-            font-family: monospace;
+            display: none;
+            border: 2px solid #ffaa55;
+            font-weight: bold;
         }
         button {
             position: absolute;
             bottom: 30%;
             left: 50%;
             transform: translateX(-50%);
-            background: #f0a34b;
+            background: #f5a342;
             border: none;
             font-size: 1.2rem;
-            padding: 12px 28px;
-            border-radius: 50px;
             font-weight: bold;
+            padding: 12px 28px;
+            border-radius: 60px;
             cursor: pointer;
             z-index: 25;
-            font-family: inherit;
-            box-shadow: 0 5px 0 #6b3f12;
-            transition: 0.05s linear;
             display: none;
+            font-family: inherit;
+            box-shadow: 0 4px 0 #7a4010;
+            transition: 0.05s linear;
         }
         button:active {
             transform: translateX(-50%) translateY(2px);
-            box-shadow: 0 2px 0 #6b3f12;
+            box-shadow: 0 1px 0 #7a4010;
         }
-        @media (max-width: 700px) {
-            #scorePanel { font-size: 1rem; top: 12px; right: 12px; }
-            #info { font-size: 0.8rem; top: 12px; left: 12px; }
-            .game-over { font-size: 1.3rem; white-space: normal; padding: 15px 25px; width: 80%; text-align: center; }
+        @media (max-width: 600px) {
+            .game-over { font-size: 1rem; white-space: normal; width: 70%; }
+            #score-panel { font-size: 1rem; top: 12px; right: 12px; }
         }
     </style>
 </head>
 <body>
-    <div id="info">🏆 БАННИ ХОП ПАРКУР 🏆</div>
-    <div id="scorePanel">⭐ SCORE: <span id="scoreValue">0</span></div>
-    <div id="fps">FPS: <span id="fpsValue">--</span></div>
-    <div id="controlsHint">🖱️ МЫШЬ: поворот камеры<br>🔼 ПРОБЕЛ: прыжок<br>🔄 A / D: поворот</div>
-    <div class="game-over" id="gameOverMsg" style="display: none;">💀 GAME OVER 💀<br><span style="font-size:1rem;">Нажмите R для рестарта</span></div>
+    <div id="ui">🏆 BUNNY HOP PARKOUR 🏆</div>
+    <div id="score-panel">⭐ SCORE: <span id="scoreValue">0</span></div>
+    <div id="fps-panel">FPS: <span id="fpsValue">--</span></div>
+    <div id="controls">🖱️ МЫШЬ: поворот камеры (без инверсии)<br>🔹 ПРОБЕЛ: прыжок &nbsp;&nbsp;| 🔄 A/D: поворот</div>
+    <div class="game-over" id="gameOverMsg">💀 GAME OVER 💀<br><span style="font-size:1rem;">Нажми R или кнопку</span></div>
     <button id="restartBtn">🔄 НОВАЯ ИГРА</button>
 
-    <!-- Подключаем Three.js и дополнения -->
     <script type="importmap">
         {
             "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
             }
         }
     </script>
 
     <script type="module">
         import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; // не используем, своя камера
-        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-        // ---------- ИНИЦИАЛИЗАЦИЯ ----------
+        // ---------- НАСТРОЙКИ ----------
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x071a3b);
-        scene.fog = new THREE.FogExp2(0x071a3b, 0.008); // туман для оптимизации
+        scene.background = new THREE.Color(0x0a1030);
+        scene.fog = new THREE.FogExp2(0x0a1030, 0.01);
 
-        // Камера (от третьего лица)
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 3.5, 8);
-        
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 200);
+        camera.position.set(0, 3.2, 7);
+
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true; // тени для атмосферы
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
-        
-        // Освещение
+
+        // ----- ОСВЕЩЕНИЕ (чтобы точно всё было видно) -----
         // Ambient
-        const ambientLight = new THREE.AmbientLight(0x404060);
-        scene.add(ambientLight);
-        // Directional light
-        const dirLight = new THREE.DirectionalLight(0xfff5d1, 1.2);
-        dirLight.position.set(5, 12, 3);
+        const ambient = new THREE.AmbientLight(0x404060);
+        scene.add(ambient);
+        // Главный направленный свет
+        const dirLight = new THREE.DirectionalLight(0xfff5c0, 1.2);
+        dirLight.position.set(4, 10, 3);
         dirLight.castShadow = true;
         dirLight.receiveShadow = true;
         dirLight.shadow.mapSize.width = 1024;
         dirLight.shadow.mapSize.height = 1024;
         dirLight.shadow.camera.near = 0.5;
-        dirLight.shadow.camera.far = 25;
-        dirLight.shadow.camera.left = -10;
-        dirLight.shadow.camera.right = 10;
-        dirLight.shadow.camera.top = 10;
-        dirLight.shadow.camera.bottom = -10;
+        dirLight.shadow.camera.far = 20;
         scene.add(dirLight);
-        // Fill light
-        const fillLight = new THREE.PointLight(0x5577aa, 0.4);
-        fillLight.position.set(0, 3, 2);
+        // Заполняющий свет сзади
+        const backLight = new THREE.PointLight(0x5588aa, 0.5);
+        backLight.position.set(-2, 3, -4);
+        scene.add(backLight);
+        // Тёплый свет снизу
+        const fillLight = new THREE.PointLight(0xffaa66, 0.4);
+        fillLight.position.set(0, 1, 2);
         scene.add(fillLight);
-        // Rim light
-        const rimLight = new THREE.PointLight(0xffaa66, 0.5);
-        rimLight.position.set(-2, 4, -4);
-        scene.add(rimLight);
         
-        // Вспомогательная сетка (для референса, но не влияет)
-        const gridHelper = new THREE.GridHelper(200, 30, 0x88aaff, 0x335588);
-        gridHelper.position.y = -0.8;
+        // Декоративная сетка (пол)
+        const gridHelper = new THREE.GridHelper(80, 40, 0x88aaff, 0x335588);
+        gridHelper.position.y = -0.5;
         gridHelper.material.transparent = true;
-        gridHelper.material.opacity = 0.3;
+        gridHelper.material.opacity = 0.25;
         scene.add(gridHelper);
         
         // ----- ПЕРЕМЕННЫЕ ИГРЫ -----
-        let player = null;          // объект игрока (куб)
+        let player;                 // Mesh игрока
         let playerVelocityY = 0;
         let isGrounded = true;
         let score = 0;
         let gameActive = true;
         
-        // Параметры бега / движения
-        let forwardSpeed = 7.5;     // скорость бега вперед (м/с)
-        let currentForwardSpeed = forwardSpeed;
-        let rotationYaw = 0;        // угол поворота камеры (в радианах)
+        let forwardSpeed = 8.2;          // базовая скорость бега
+        let currentSpeed = forwardSpeed;
+        let rotationYaw = 0;              // текущий угол камеры/игрока
         let targetYaw = 0;
         
-        // Управление мышью
-        let mouseX = 0, mouseY = 0;
+        // Управление мышью (без инверсии)
         let mouseSensitivity = 0.0022;
-        let lookEnabled = true;
+        let mouseX = 0;
         
-        // Клавиши
-        const keyState = {
-            ArrowLeft: false,
-            ArrowRight: false,
-            KeyA: false,
-            KeyD: false,
+        // Состояние клавиш
+        const keys = {
+            ArrowLeft: false, ArrowRight: false,
+            KeyA: false, KeyD: false,
             Space: false
         };
         
-        // Массивы объектов уровня
-        let platforms = [];         // платформы (основа)
-        let obstacles = [];         // препятствия (блоки)
-        let coins = [];             // монеты (сбор)
-        let activeObjects = [];      // для удаления
-        let lastGenZ = 0;
-        const GEN_INTERVAL = 4.5;    // интервал генерации сегментов (м)
-        let nextGenZ = 5;
+        // Объекты мира
+        let platforms = [];     // платформы
+        let obstacles = [];     // препятствия
+        let coins = [];         // монеты
         
-        // расстояние удаления объектов позади игрока
-        const DESPAWN_DIST = -12;
+        let nextGenZ = 6;
+        const GEN_STEP = 5.5;    // интервал генерации
         
         // Физика прыжка
         const GRAVITY = 22;
-        const JUMP_FORCE = 8.2;
+        const JUMP_FORCE = 8.5;
         
         // Для FPS
         let frameCount = 0;
-        let lastTime = performance.now();
+        let lastFpsTime = performance.now();
         const fpsSpan = document.getElementById('fpsValue');
         const scoreSpan = document.getElementById('scoreValue');
         const gameOverDiv = document.getElementById('gameOverMsg');
         const restartBtn = document.getElementById('restartBtn');
         
-        // Вспомогательные текстуры/материалы
-        const platformMat = new THREE.MeshStandardMaterial({ color: 0x5c6e5e, roughness: 0.6, metalness: 0.1 });
-        const obstacleMat = new THREE.MeshStandardMaterial({ color: 0xbc5a3c, roughness: 0.4, emissive: 0x331100 });
-        const coinMat = new THREE.MeshStandardMaterial({ color: 0xffcc44, emissive: 0x442200, metalness: 0.8 });
-        const playerMat = new THREE.MeshStandardMaterial({ color: 0x4ec0e9, emissive: 0x004455, metalness: 0.2 });
+        // Материалы
+        const platformMat = new THREE.MeshStandardMaterial({ color: 0x679267, roughness: 0.5, metalness: 0.1 });
+        const obstacleMat = new THREE.MeshStandardMaterial({ color: 0xc95c3a, roughness: 0.3, emissive: 0x221100 });
+        const coinMat = new THREE.MeshStandardMaterial({ color: 0xffcc55, emissive: 0x442200, metalness: 0.7 });
+        const playerMat = new THREE.MeshStandardMaterial({ color: 0x5bc0ff, emissive: 0x004466, metalness: 0.2 });
         
-        // Создание игрока (динамический куб)
+        // ----- СОЗДАНИЕ ИГРОКА -----
         function createPlayer() {
             const geometry = new THREE.BoxGeometry(0.8, 0.9, 0.8);
             const cube = new THREE.Mesh(geometry, playerMat);
@@ -257,94 +231,92 @@
             cube.receiveShadow = true;
             cube.position.set(0, 0.45, 0);
             scene.add(cube);
-            // добавим светящийся контур
-            const wireframeGeo = new THREE.BoxGeometry(0.85, 0.95, 0.85);
-            const wireframeMat = new THREE.MeshBasicMaterial({ color: 0xffaa55, wireframe: true, transparent: true, opacity: 0.3 });
-            const outline = new THREE.Mesh(wireframeGeo, wireframeMat);
+            // Добавим небольшой контур
+            const wireGeo = new THREE.BoxGeometry(0.84, 0.94, 0.84);
+            const wireMat = new THREE.MeshBasicMaterial({ color: 0xffaa66, wireframe: true, transparent: true, opacity: 0.35 });
+            const outline = new THREE.Mesh(wireGeo, wireMat);
             cube.add(outline);
             return cube;
         }
         
-        // Генерация платформы (сегмент трассы)
+        // ----- ГЕНЕРАЦИЯ СЕГМЕНТА (платформа + препятствия + монеты) -----
         function generateSegment(zPos) {
-            // Основная платформа (ширина 4, длина 5)
-            const platformWidth = 3.8;
-            const platformLength = 5;
-            const platGeo = new THREE.BoxGeometry(platformWidth, 0.3, platformLength);
-            const platformMesh = new THREE.Mesh(platGeo, platformMat);
-            platformMesh.position.set(0, -0.15, zPos);
-            platformMesh.receiveShadow = true;
-            platformMesh.castShadow = true;
-            scene.add(platformMesh);
-            platforms.push(platformMesh);
+            // Платформа (ширина 3.6, длина 5)
+            const platGeo = new THREE.BoxGeometry(3.6, 0.25, 5);
+            const platform = new THREE.Mesh(platGeo, platformMat);
+            platform.position.set(0, -0.1, zPos);
+            platform.receiveShadow = true;
+            platform.castShadow = true;
+            scene.add(platform);
+            platforms.push(platform);
             
-            // Случайное количество препятствий (0-2)
-            const obsCount = Math.random() > 0.6 ? (Math.random() > 0.5 ? 1 : 2) : 0;
+            // Препятствия (0-2)
+            const obsCount = Math.random() > 0.65 ? (Math.random() > 0.5 ? 1 : 2) : 0;
             for (let i = 0; i < obsCount; i++) {
-                let obsX = (Math.random() - 0.5) * 2.2;
-                let obsZ = zPos + (Math.random() - 0.5) * 3.2;
-                const obsH = 0.8 + Math.random() * 0.5;
-                const obsGeo = new THREE.BoxGeometry(0.7, obsH, 0.7);
-                const obstacle = new THREE.Mesh(obsGeo, obstacleMat);
-                obstacle.position.set(obsX, obsH/2, obsZ);
-                obstacle.castShadow = true;
-                scene.add(obstacle);
-                obstacles.push(obstacle);
+                const xOff = (Math.random() - 0.5) * 2.2;
+                const zOff = (Math.random() - 0.5) * 3.4;
+                const height = 0.7 + Math.random() * 0.6;
+                const obsGeo = new THREE.BoxGeometry(0.7, height, 0.7);
+                const obs = new THREE.Mesh(obsGeo, obstacleMat);
+                obs.position.set(xOff, height/2, zPos + zOff);
+                obs.castShadow = true;
+                scene.add(obs);
+                obstacles.push(obs);
             }
             
-            // Монеты (от 1 до 3)
-            const coinCount = Math.floor(Math.random() * 3) + 1;
-            for (let i = 0; i < coinCount; i++) {
+            // Монеты (1-3 шт)
+            const coinAmount = Math.floor(Math.random() * 3) + 1;
+            for (let i = 0; i < coinAmount; i++) {
                 const coinGeo = new THREE.SphereGeometry(0.22, 16, 16);
                 const coin = new THREE.Mesh(coinGeo, coinMat);
-                let coinX = (Math.random() - 0.5) * 2.8;
-                let coinZ = zPos + (Math.random() - 0.5) * 3.8;
-                coin.position.set(coinX, 0.35, coinZ);
+                const xCoin = (Math.random() - 0.5) * 2.6;
+                const zCoin = zPos + (Math.random() - 0.5) * 3.8;
+                coin.position.set(xCoin, 0.35, zCoin);
                 coin.castShadow = true;
                 scene.add(coin);
                 coins.push(coin);
             }
         }
         
-        // Удаление объектов позади
-        function despawnOldObjects(playerZ) {
+        // ----- ОЧИСТКА СТАРЫХ ОБЪЕКТОВ -----
+        function despawnBehind(playerZ) {
+            const limit = playerZ - 12;
             // платформы
             for (let i = platforms.length-1; i >= 0; i--) {
-                if (platforms[i].position.z < playerZ + DESPAWN_DIST) {
+                if (platforms[i].position.z < limit) {
                     scene.remove(platforms[i]);
                     platforms.splice(i,1);
                 }
             }
             for (let i = obstacles.length-1; i >= 0; i--) {
-                if (obstacles[i].position.z < playerZ + DESPAWN_DIST) {
+                if (obstacles[i].position.z < limit) {
                     scene.remove(obstacles[i]);
                     obstacles.splice(i,1);
                 }
             }
             for (let i = coins.length-1; i >= 0; i--) {
-                if (coins[i].position.z < playerZ + DESPAWN_DIST) {
+                if (coins[i].position.z < limit) {
                     scene.remove(coins[i]);
                     coins.splice(i,1);
                 }
             }
         }
         
-        // Проверка столкновений с препятствиями (AABB)
-        function checkCollisions(playerPos) {
-            if (!gameActive) return false;
+        // ----- СТОЛКНОВЕНИЕ С ПРЕПЯТСТВИЯМИ (AABB) -----
+        function checkCollision() {
+            if (!gameActive) return true;
             const playerBox = new THREE.Box3().setFromObject(player);
-            // препятствия
             for (let obs of obstacles) {
                 const obsBox = new THREE.Box3().setFromObject(obs);
                 if (playerBox.intersectsBox(obsBox)) {
-                    return true; // столкновение -> смерть
+                    return true;
                 }
             }
             return false;
         }
         
-        // Сбор монет
-        function collectCoins(playerPos) {
+        // ----- СБОР МОНЕТ -----
+        function collectCoinsAndScore() {
             if (!gameActive) return;
             const playerBox = new THREE.Box3().setFromObject(player);
             for (let i=0; i<coins.length; i++) {
@@ -355,65 +327,46 @@
                     score += 10;
                     scoreSpan.innerText = score;
                     i--;
-                    // легкий звуковой эффект (визуальный)
-                    const glint = new THREE.PointLight(0xffaa66, 0.7, 4);
-                    glint.position.copy(coins[i]?.position || playerPos);
-                    scene.add(glint);
-                    setTimeout(() => scene.remove(glint), 150);
+                    // визуальный эффект вспышки
+                    const spark = new THREE.PointLight(0xffaa66, 0.6, 3);
+                    spark.position.copy(player.position);
+                    scene.add(spark);
+                    setTimeout(() => scene.remove(spark), 120);
                 }
             }
         }
         
-        // Обновление позиции камеры (след за игроком + плавное вращение)
-        function updateCamera(deltaTime) {
-            if (!player) return;
-            // Плавный поворот камеры (Yaw) из targetYaw
-            rotationYaw += (targetYaw - rotationYaw) * Math.min(1, deltaTime * 12);
-            // Позиция камеры относительно игрока: смещение назад и вверх
-            const distBack = 5.2;
-            const heightOff = 2.2;
-            const camX = player.position.x - Math.sin(rotationYaw) * distBack;
-            const camZ = player.position.z - Math.cos(rotationYaw) * distBack;
-            camera.position.x = camX;
-            camera.position.z = camZ;
-            camera.position.y = player.position.y + heightOff;
-            // Камера смотрит на игрока + чуть вперед
-            const lookAtX = player.position.x + Math.sin(rotationYaw) * 1.5;
-            const lookAtZ = player.position.z + Math.cos(rotationYaw) * 1.5;
-            camera.lookAt(lookAtX, player.position.y + 0.8, lookAtZ);
-        }
-        
-        // Обновление движения игрока, физика, генерация
-        function updateGame(deltaTime) {
+        // ----- ОБНОВЛЕНИЕ ФИЗИКИ И ДВИЖЕНИЯ -----
+        function updateGame(delta) {
             if (!gameActive || !player) return;
+            let dt = Math.min(delta, 0.033);
             
-            let dt = Math.min(deltaTime, 0.033);
-            
-            // ---------- ДВИЖЕНИЕ ВПЕРЕД (по направлению камеры) ----------
+            // Движение вперёд по направлению камеры (вдоль оси Z в локальном направлении)
             const forwardDir = new THREE.Vector3(Math.sin(rotationYaw), 0, Math.cos(rotationYaw)).normalize();
-            const moveStep = forwardDir.clone().multiplyScalar(currentForwardSpeed * dt);
-            let newPos = player.position.clone().add(moveStep);
-            // Ограничение по X (чтобы не выпадать с платформы)
-            newPos.x = Math.min(Math.max(newPos.x, -2.8), 2.8);
-            player.position.x = newPos.x;
-            player.position.z = newPos.z;
+            const move = forwardDir.clone().multiplyScalar(currentSpeed * dt);
+            let newX = player.position.x + move.x;
+            let newZ = player.position.z + move.z;
+            // Ограничение по ширине платформы
+            newX = Math.min(Math.max(newX, -2.6), 2.6);
+            player.position.x = newX;
+            player.position.z = newZ;
             
-            // ---------- ФИЗИКА ПРЫЖКА ----------
-            if (isGrounded && keyState.Space) {
+            // Прыжок
+            if (isGrounded && keys.Space) {
                 playerVelocityY = JUMP_FORCE;
                 isGrounded = false;
-                keyState.Space = false; // одноразовый прыжок
-                // небольшой эффект
-                const dust = new THREE.PointLight(0x88aaff, 0.5, 2);
+                keys.Space = false;
+                // Эффект
+                const dust = new THREE.PointLight(0x88bbff, 0.5, 2);
                 dust.position.copy(player.position);
                 scene.add(dust);
-                setTimeout(() => scene.remove(dust), 200);
+                setTimeout(() => scene.remove(dust), 180);
             }
             
+            // Гравитация
             if (!isGrounded) {
                 playerVelocityY -= GRAVITY * dt;
                 player.position.y += playerVelocityY * dt;
-                // проверка земли (platform level Y ~ 0)
                 if (player.position.y <= 0.45) {
                     player.position.y = 0.45;
                     playerVelocityY = 0;
@@ -423,90 +376,81 @@
                 player.position.y = 0.45;
             }
             
-            // ---------- ПРОВЕРКА СТОЛКНОВЕНИЙ И СБОР МОНЕТ ----------
-            if (checkCollisions(player.position)) {
+            // Проверки
+            if (checkCollision()) {
                 gameActive = false;
                 gameOverDiv.style.display = "flex";
                 restartBtn.style.display = "block";
                 return;
             }
-            collectCoins(player.position);
+            collectCoinsAndScore();
             
-            // ---------- ГЕНЕРАЦИЯ УРОВНЯ ----------
+            // Генерация мира
             if (player.position.z > nextGenZ) {
-                generateSegment(nextGenZ + 2.5);
-                nextGenZ += GEN_INTERVAL;
-                // увеличиваем сложность (скорость со временем)
-                if (currentForwardSpeed < 13) {
-                    currentForwardSpeed += 0.03;
-                }
+                generateSegment(nextGenZ + 2.2);
+                nextGenZ += GEN_STEP;
+                // Постепенное увеличение скорости
+                if (currentSpeed < 13.5) currentSpeed += 0.02;
             }
-            // Удаление старых объектов
-            despawnOldObjects(player.position.z);
-            
-            // динамическое изменение скорости отображения
-            const speedFactor = currentForwardSpeed / forwardSpeed;
-            // эффект разгона
+            despawnBehind(player.position.z);
         }
         
-        // ---------- УПРАВЛЕНИЕ ПОВОРОТОМ (МЫШЬ + КЛАВИШИ) ----------
-        function handleMouseMove(event) {
+        // ----- ПЛАВНАЯ КАМЕРА (след за игроком, вращение без инверсии) -----
+        function updateCamera(delta) {
+            if (!player) return;
+            // Плавное сглаживание угла поворота
+            rotationYaw += (targetYaw - rotationYaw) * Math.min(1, delta * 12);
+            // Расчёт позиции камеры: сзади-сверху
+            const distance = 5.4;
+            const height = 2.3;
+            const camX = player.position.x - Math.sin(rotationYaw) * distance;
+            const camZ = player.position.z - Math.cos(rotationYaw) * distance;
+            camera.position.x = camX;
+            camera.position.z = camZ;
+            camera.position.y = player.position.y + height;
+            // Смотрим чуть впереди игрока
+            const lookAtX = player.position.x + Math.sin(rotationYaw) * 1.8;
+            const lookAtZ = player.position.z + Math.cos(rotationYaw) * 1.8;
+            camera.lookAt(lookAtX, player.position.y + 0.7, lookAtZ);
+        }
+        
+        // ----- УПРАВЛЕНИЕ С КЛАВИАРЫ (поворот A/D) -----
+        function handleTurnKeys(delta) {
+            let turn = 0;
+            const turnSpeed = 2.3; // радиан в секунду
+            if (keys.KeyA || keys.ArrowLeft) turn = turnSpeed * delta;
+            if (keys.KeyD || keys.ArrowRight) turn = -turnSpeed * delta;
+            if (turn !== 0) targetYaw += turn;
+        }
+        
+        // ----- ОБРАБОТЧИКИ СОБЫТИЙ -----
+        function onMouseMove(e) {
             if (!gameActive) return;
-            // Без инверсии: движение вправо -> увеличение yaw
-            const dx = event.movementX || 0;
-            targetYaw += dx * mouseSensitivity;
-            // нормализация не требуется, но можно ограничить по кругу
+            // Без инверсии: движение мыши вправо → увеличение угла
+            targetYaw += e.movementX * mouseSensitivity;
         }
         
-        function handleKeyDown(e) {
+        function onKeyDown(e) {
             const code = e.code;
             if (code === 'Space') {
                 e.preventDefault();
-                if (gameActive) keyState.Space = true;
+                if (gameActive) keys.Space = true;
             }
-            if (code === 'KeyA' || code === 'ArrowLeft') {
-                keyState.KeyA = true;
-                keyState.ArrowLeft = true;
-            }
-            if (code === 'KeyD' || code === 'ArrowRight') {
-                keyState.KeyD = true;
-                keyState.ArrowRight = true;
-            }
-            // рестарт по R
-            if (code === 'KeyR' && !gameActive) {
-                restartGame();
-            }
+            if (code === 'KeyA' || code === 'ArrowLeft') keys.KeyA = keys.ArrowLeft = true;
+            if (code === 'KeyD' || code === 'ArrowRight') keys.KeyD = keys.ArrowRight = true;
+            if (code === 'KeyR' && !gameActive) restartGame();
         }
         
-        function handleKeyUp(e) {
+        function onKeyUp(e) {
             const code = e.code;
-            if (code === 'KeyA' || code === 'ArrowLeft') {
-                keyState.KeyA = false;
-                keyState.ArrowLeft = false;
-            }
-            if (code === 'KeyD' || code === 'ArrowRight') {
-                keyState.KeyD = false;
-                keyState.ArrowRight = false;
-            }
-            if (code === 'Space') {
-                keyState.Space = false;
-            }
+            if (code === 'KeyA' || code === 'ArrowLeft') keys.KeyA = keys.ArrowLeft = false;
+            if (code === 'KeyD' || code === 'ArrowRight') keys.KeyD = keys.ArrowRight = false;
+            if (code === 'Space') keys.Space = false;
         }
         
-        // Обновление поворота от клавиш (A/D) плавно
-        function updateTurnFromKeys(deltaTime) {
-            let turnDelta = 0;
-            const turnSpeed = 2.4; // радиан в секунду
-            if (keyState.KeyA || keyState.ArrowLeft) turnDelta = turnSpeed * deltaTime;
-            if (keyState.KeyD || keyState.ArrowRight) turnDelta = -turnSpeed * deltaTime;
-            if (turnDelta !== 0) {
-                targetYaw += turnDelta;
-            }
-        }
-        
-        // ---------- ПЕРЕЗАПУСК ИГРЫ ----------
+        // ----- РЕСТАРТ -----
         function restartGame() {
-            // очистка сцены от динамических объектов
+            // Очистить старые объекты
             platforms.forEach(p => scene.remove(p));
             obstacles.forEach(o => scene.remove(o));
             coins.forEach(c => scene.remove(c));
@@ -515,70 +459,60 @@
             coins = [];
             if (player) scene.remove(player);
             
-            // сброс параметров
             gameActive = true;
             score = 0;
+            currentSpeed = forwardSpeed;
             scoreSpan.innerText = "0";
-            currentForwardSpeed = forwardSpeed;
             targetYaw = 0;
             rotationYaw = 0;
             playerVelocityY = 0;
             isGrounded = true;
-            nextGenZ = 5;
-            lastGenZ = 0;
+            nextGenZ = 6;
             gameOverDiv.style.display = "none";
             restartBtn.style.display = "none";
             
-            // создаем нового игрока
             player = createPlayer();
             player.position.set(0, 0.45, 0);
             
-            // генерируем начальные сегменты
-            for (let z = -3; z <= 12; z += GEN_INTERVAL) {
+            // Генерация начальных платформ
+            for (let z = -4; z <= 12; z += GEN_STEP) {
                 generateSegment(z);
             }
-            nextGenZ = 8;
-            
-            // камера сразу смотрит вперед
-            camera.position.set(0, 3.5, 7);
-            camera.lookAt(0, 1, 2);
+            nextGenZ = 9;
+            camera.position.set(0, 3.2, 7);
+            camera.lookAt(0, 0.8, 2);
         }
         
-        // ---------- ОПТИМИЗАЦИЯ И FPS ----------
-        let lastFrameTime = performance.now();
+        // ----- АНИМАЦИЯ И FPS -----
+        let lastFrame = performance.now();
         function animate() {
             const now = performance.now();
-            let delta = Math.min(0.033, (now - lastFrameTime) / 1000);
-            lastFrameTime = now;
+            let delta = Math.min(0.033, (now - lastFrame) / 1000);
+            lastFrame = now;
             
             if (delta > 0.001) {
-                // Обновление поворота от клавиш
-                updateTurnFromKeys(delta);
-                // обновление игровой логики
+                handleTurnKeys(delta);
                 updateGame(delta);
-                // обновление камеры
                 updateCamera(delta);
             }
             
-            // Рендер
             renderer.render(scene, camera);
             
-            // Подсчет FPS (средний за 1 секунду)
+            // FPS счётчик
             frameCount++;
-            const timeSinceLast = now - lastTime;
-            if (timeSinceLast >= 1000) {
-                const fps = Math.round((frameCount * 1000) / timeSinceLast);
+            const nowSec = performance.now();
+            if (nowSec - lastFpsTime >= 1000) {
+                const fps = Math.round((frameCount * 1000) / (nowSec - lastFpsTime));
                 fpsSpan.innerText = fps;
                 frameCount = 0;
-                lastTime = now;
+                lastFpsTime = nowSec;
             }
             
             requestAnimationFrame(animate);
         }
         
-        // ---------- ЗАХВАТ МЫШИ (для плавного вращения) ----------
-        function lockMouse() {
-            renderer.domElement.requestPointerLock = renderer.domElement.requestPointerLock || renderer.domElement.mozRequestPointerLock;
+        // ----- ЗАХВАТ МЫШИ -----
+        function requestLock() {
             renderer.domElement.requestPointerLock();
         }
         renderer.domElement.addEventListener('click', () => {
@@ -586,58 +520,48 @@
                 renderer.domElement.requestPointerLock();
             }
         });
-        document.addEventListener('pointerlockchange', lockChange);
-        function lockChange() {
+        document.addEventListener('pointerlockchange', () => {
             if (document.pointerLockElement === renderer.domElement) {
-                document.addEventListener('mousemove', handleMouseMove);
-                lookEnabled = true;
+                document.addEventListener('mousemove', onMouseMove);
             } else {
-                document.removeEventListener('mousemove', handleMouseMove);
-                lookEnabled = false;
+                document.removeEventListener('mousemove', onMouseMove);
             }
-        }
+        });
         
-        // Обработчики клавиш
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keyup', handleKeyUp);
+        window.addEventListener('keydown', onKeyDown);
+        window.addEventListener('keyup', onKeyUp);
         restartBtn.addEventListener('click', () => restartGame());
-        
-        // Старт игры
-        restartGame();
-        
-        // Адаптация размера окна
-        window.addEventListener('resize', onWindowResize, false);
-        function onWindowResize() {
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-        }
+        });
         
-        // Добавим декоративные парящие частицы (не влияют на производительность)
-        const particleGeo = new THREE.BufferGeometry();
-        const particleCount = 300;
-        const particlePositions = new Float32Array(particleCount * 3);
-        for (let i = 0; i < particleCount; i++) {
-            particlePositions[i*3] = (Math.random() - 0.5) * 40;
-            particlePositions[i*3+1] = Math.random() * 5;
-            particlePositions[i*3+2] = (Math.random() - 0.5) * 50 - 20;
-        }
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-        const particleMatGlow = new THREE.PointsMaterial({ color: 0x88aaff, size: 0.07, transparent: true, opacity: 0.5 });
-        const particles = new THREE.Points(particleGeo, particleMatGlow);
-        scene.add(particles);
-        
-        function animateParticles() {
-            particles.rotation.y += 0.002;
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
-        
-        // Запуск основного цикла
+        // СТАРТ!
+        restartGame();
         animate();
         
-        // Стили для кнопки и сообщения
-        console.log('3D Bunny Hop Parkour запущен | Плавная камера | FPS счетчик');
+        // Дополнительные визуальные эффекты: парящие частицы (не нагружают)
+        const particleCount = 400;
+        const particleGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            positions[i*3] = (Math.random() - 0.5) * 50;
+            positions[i*3+1] = Math.random() * 6;
+            positions[i*3+2] = (Math.random() - 0.5) * 40 - 15;
+        }
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particleMat = new THREE.PointsMaterial({ color: 0x77aaff, size: 0.08, transparent: true, opacity: 0.4 });
+        const particles = new THREE.Points(particleGeometry, particleMat);
+        scene.add(particles);
+        
+        function rotateParticles() {
+            particles.rotation.y += 0.0015;
+            requestAnimationFrame(rotateParticles);
+        }
+        rotateParticles();
+        
+        console.log("Игра запущена — плавный паркур, камера без багов!");
     </script>
 </body>
 </html>
